@@ -2051,7 +2051,8 @@ function recUI(){
   $('recHint').textContent=recSrc==='voice'?'Nuć, śpiewaj (np. „la-la” albo „da-da”) lub gwiżdż jedną melodię. Każdą nutę zaczynaj wyraźnie, a tę samą nutę powtarzaj z krótką przerwą. AnnApp sam dopasuje oktawę do pięciolinii. Najlepiej ze słuchawkami, żeby metronom nie wpadał do mikrofonu.':recSrc==='mic'?'Postaw tablet lub telefon blisko pianina. Graj po jednej nucie naraz, wyraźnie: mikrofon rozpoznaje melodię, ale nie akordy. Metronom pokazuje miary na ekranie (u góry), żeby jego dźwięk nie mylił mikrofonu.':
     recSrc==='midi'?(names.length?`Połączono: ${names.join(', ')}. Możesz grać akordy i obie ręce naraz.`:'Podłącz pianino cyfrowe kablem USB lub przez Bluetooth MIDI. Działa w Chrome i Edge na komputerze oraz na Androidzie.'):
     'Graj rytmicznie na pianinie na dole ekranu albo na klawiaturze komputera. Nuty zapiszą się razem z rytmem.';
-  $('recNote').textContent=inClaude?'Mikrofon i klawiatura MIDI działają w AnnApp na stronie annapp.rossa.me.':!canMic&&!window.isSecureContext?'Mikrofon zadziała, gdy strona otworzy się przez https.':'';
+  const secUrl='https://'+location.host+location.pathname;
+  $('recNote').innerHTML=inClaude?'Mikrofon i klawiatura MIDI działają w AnnApp na stronie annapp.rossa.me.':!canMic&&!window.isSecureContext&&location.protocol==='http:'?`Mikrofon działa tylko na bezpiecznej stronie. <a href="${secUrl}" style="color:inherit;font-weight:800">Otwórz ${secUrl.replace('https://','https://')}</a>`:!canMic?'Ta przeglądarka nie daje dostępu do mikrofonu.':'';
   $('recTempo').textContent=`${song.tempo} ćwierćnut na minutę, metrum ${song.msym||song.mn+'/'+song.md}.`+(song.hands===2?(recSrc==='voice'?' Melodia trafi do prawej ręki.':' Dźwięki od c¹ w górę trafią do prawej ręki, niższe do lewej.'):'');
 }
 $('recBtn').onclick=openRec;$('recClose').onclick=closeRec;$('rscrim').onclick=closeRec;$('recGo').onclick=startRec;
