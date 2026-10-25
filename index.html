@@ -152,6 +152,12 @@ button:disabled{opacity:.35;cursor:default}
 .wk.down{background:var(--shape);box-shadow:inset 0 -2px 0 rgba(0,0,0,.15);transform:translateY(1px)}
 .wk.down span{color:var(--onShape)}
 .bk.down{background:var(--shape);box-shadow:inset 0 -1px 0 rgba(0,0,0,.3)}
+.wk.kplay{background:var(--shape);box-shadow:inset 0 -2px 0 rgba(0,0,0,.15);transform:translateY(1px)}
+.wk.kplay span{color:var(--onShape)}
+.bk.kplay{background:var(--shape);box-shadow:inset 0 -1px 0 rgba(0,0,0,.3)}
+.wk.kplayb{background:#8DB2F7;box-shadow:inset 0 -2px 0 rgba(0,0,0,.15);transform:translateY(1px)}
+.wk.kplayb span{color:#0B2A6E}
+.bk.kplayb{background:#3E6FD8}
 
 /* instrument picker */
 .ico{display:inline-flex}.ico svg{width:20px;height:20px}
@@ -1241,9 +1247,9 @@ function voiceData(v){const arr=V(v),vel=[];let cv=.8;
     const f=art.includes('stacc2')?.25:art.includes('stac')?.42:art.includes('port')?.75:art.includes('ten')?.99:art.includes('breath')?.8:.92;
     const inst=pz&&INST[song.inst[v]]&&INST[song.inst[v]].cat==='smy'?'pizzicato':song.inst[v];
     if(n.gr){graces.push({n,i,inst,vol});return}
-    graces.forEach((g,k)=>{const pre=(graces.length-k)*(g.n.gr==='p'?.12:.075);g.n.ps.forEach((p,ci)=>ev.push({t,pre,len:0,full:0,p,ci,vol:g.vol*.85,inst:g.inst,n:g.n,i:g.i,grace:true}));hl.push({k:v+g.i,t,d:.25,v})});graces=[];
+    graces.forEach((g,k)=>{const pre=(graces.length-k)*(g.n.gr==='p'?.12:.075);g.n.ps.forEach((p,ci)=>ev.push({t,pre,len:0,full:0,p,ci,vol:g.vol*.85,inst:g.inst,n:g.n,i:g.i,grace:true,v}));hl.push({k:v+g.i,t,d:.25,v})});graces=[];
     const nt={},np=nextP(i);
-    n.ps.forEach((p,ci)=>{if(tied[p]){tied[p].len+=d;tied[p].full+=d;nt[p]=tied[p]}else{const e={t,len:d*f,full:d,p,ci,vol,inst,n,i,np};ev.push(e);nt[p]=e}});
+    n.ps.forEach((p,ci)=>{if(tied[p]){tied[p].len+=d;tied[p].full+=d;nt[p]=tied[p]}else{const e={t,len:d*f,full:d,p,ci,vol,inst,n,i,np,v};ev.push(e);nt[p]=e}});
     tied=n.tie?nt:{};hl.push({k:v+i,t,d,v});t+=d});
   return{ev,hl,end:t}}
 function measOrder(MF,count){const order=[];let k=0,start=0,pass=1,jumped=false,back=false;const times={};
@@ -1260,7 +1266,16 @@ function measOrder(MF,count){const order=[];let k=0,start=0,pass=1,jumped=false,
     if((f.dc||f.ds)&&!jumped){jumped=true;k=f.dc?0:Math.max(0,segno);back=true;continue}
     k++}
   return order}
-let voices=[],raf,metroTimer=null;
+let voices=[],raf,metroTimer=null,lastFollow=0;
+function lightKeys(m){for(const [p,el] of Object.entries(keyEls)){const v=m.get(+p);el.classList.toggle('kplay',v==='t');el.classList.toggle('kplayb',v==='b');
+  el.style.background=v&&song.color?NCOL[(+p)%12]:''}}
+function followKeys(m){if(!m.size)return;const ps=[...m.keys()];if(ps.every(p=>keyEls[p]))return;
+  const now=performance.now();if(now-lastFollow<350)return;lastFollow=now;
+  const wi=p=>{const q=SH[p%12]?p-1:p;return WHITES.indexOf(Math.max(MIN,Math.min(MAX,q)))};
+  const count=Object.values(keyEls).filter(e=>e.classList.contains('wk')).length;
+  const tps=ps.filter(p=>m.get(p)==='t'),use=tps.length&&ps.map(wi).reduce((a,b)=>Math.max(a,b))-ps.map(wi).reduce((a,b)=>Math.min(a,b))>=count?tps:ps;
+  const lo=Math.min(...use.map(wi)),hi=Math.max(...use.map(wi));
+  pianoStart=hi-lo<count?Math.max(0,Math.round((lo+hi)/2-count/2)):lo;buildPiano()}
 function stopClicks(){clicks.forEach(o=>{try{o.stop()}catch(e){}});clicks.length=0}
 function startMetro(){if(metroTimer||playing)return;audio();const unit=4/song.md;let next=ac.currentTime+.06,b=0;
   metroTimer=setInterval(()=>{while(next<ac.currentTime+.15){click(next,b%song.mn===0);next+=60/song.tempo*unit;b++}if(clicks.length>64)clicks.splice(0,32)},25)}
@@ -1298,17 +1313,17 @@ function play(){
   const tabS=new Float64Array(N*per+2);let acc=0,ix=0;
   seq.forEach(mk=>{const s=mk*L;for(let q=0;q<per;q++){tabS[ix++]=acc;acc+=spbAt(s+q/RES)/RES}});tabS[ix]=acc;tabS[ix+1]=acc;
   const tAt=x=>{x=Math.max(0,Math.min(N*L,x));const fq=x*RES,i=Math.floor(fq);return tabS[i]+(tabS[Math.min(i+1,ix)]-tabS[i])*(fq-i)};
-  const T0=ac.currentTime+.15-tAt(off0);voices=[];const tl=[];
+  const T0=ac.currentTime+.15-tAt(off0);voices=[];const tl=[],kt=[];
   const push=(m,t,d,vol,inst,o)=>voices.push(tone(m,t,d,vol,inst,o));
   seq.forEach((mk,j)=>{const s=mk*L,e=s+L,first=j===0,P=j*L;
     D.forEach(d=>{
       d.ev.forEach(ev=>{if(ev.t<s-1e-6||ev.t>=e-1e-6)return;if(first&&ev.t<s+off0-1e-6)return;
         const xs=P+warp(ev.t)-s,st0=T0+tAt(xs);
-        if(ev.grace){push(ev.p,st0-ev.pre,ev.n.gr==='p'?.11:.07,ev.vol,ev.inst);return}
+        if(ev.grace){push(ev.p,st0-ev.pre,ev.n.gr==='p'?.11:.07,ev.vol,ev.inst);kt.push({p:ev.p,a:st0-ev.pre,b:st0-ev.pre+.1,v:ev.v});return}
         const n=ev.n;let endB=ev.t+ev.len;const pe=pedEnd(ev.t);if(pe!=null)endB=Math.max(endB,pe);
         const durFull=Math.max(.04,tAt(P+warp(ev.t+ev.full)-s)-tAt(xs));
         const du=Math.max(.04,tAt(P+warp(endB)-s)-tAt(xs));
-        let st=st0;if(n.arp)st+=ev.ci*.035;
+        let st=st0;if(n.arp)st+=ev.ci*.035;kt.push({p:ev.p,a:st,b:st+Math.max(.09,Math.min(du,durFull)-.02),v:ev.v});
         const opt=n.jz?{bend:n.jz}:null,p=ev.p,vol=ev.vol,inst=ev.inst;
         if(n.trem){const sub={1:.5,2:.25,3:.125}[n.trem],cnt=Math.max(1,Math.round(ev.full/sub)),dt=durFull/cnt;for(let c=0;c<cnt;c++)push(p,st+c*dt,dt*.85,vol,inst)}
         else if(n.orn==='tr'){const up=nbr(p,1),q=.065;let c=0;for(let tt=st;tt<st+durFull-.04;tt+=q,c++)push(c%2?up:p,tt,q*.95,vol*.9,inst)}
@@ -1329,10 +1344,13 @@ function play(){
     on.forEach(k=>{if(!curS.has(k))svg.querySelector(`.note[data-k="${k}"]`)?.classList.remove('on')});
     curS.forEach(k=>{if(!on.has(k)){const g=svg.querySelector(`.note[data-k="${k}"]`);if(g){g.classList.add('on');
       if(k[0]==='t'){const a=g.getBoundingClientRect(),b=scoreEl.getBoundingClientRect();if(a.bottom>b.bottom-30||a.top<b.top)scoreEl.scrollTop+=a.top-b.top-60}}}});
-    on=curS;raf=requestAnimationFrame(tick)};
+    on=curS;
+    const km=new Map();for(const k of kt){if(now>=k.a&&now<k.b&&!(km.get(k.p)==='t'))km.set(k.p,k.v)}
+    followKeys(km);lightKeys(km);
+    raf=requestAnimationFrame(tick)};
   raf=requestAnimationFrame(tick);
 }
-function stop(){cancelAnimationFrame(raf);voices.forEach(v=>v.kill());voices=[];stopClicks();playing=false;
+function stop(){cancelAnimationFrame(raf);lightKeys(new Map());voices.forEach(v=>v.kill());voices=[];stopClicks();playing=false;
   $('playTxt').textContent='Graj';$('playIcon').innerHTML='<path d="M7 4.5v15l13-7.5z" fill="currentColor"/>';render();if(metro)startMetro()}
 $('metroBtn').onclick=()=>{metro=!metro;$('metroBtn').setAttribute('aria-pressed',metro);if(metro&&!playing)startMetro();else if(!metro)stopMetro()};
 
