@@ -1841,8 +1841,8 @@ const canMic=!inClaude&&!!(navigator.mediaDevices&&navigator.mediaDevices.getUse
 const canMidi=!inClaude&&!!navigator.requestMIDIAccess;
 let rec=null,recSrc=canMic?'mic':'screen',recGrid=.25,recMetro=true,midiAccess=null,micStream=null;
 const perfS=()=>performance.now()/1000;
-function recOn(m){if(!rec||!rec.phase)return;const t=perfS()-(rec.src==='mic'?.12:0);if(rec.open.has(m))recOff(m);rec.open.set(m,t);rec.count++;recBarUI()}
-function recOff(m){if(!rec)return;const a=rec.open.get(m);if(a==null)return;rec.open.delete(m);rec.events.push({m,a,b:perfS()-(rec.src==='mic'?.12:0)})}
+function recOn(m,t=perfS()){if(!rec||!rec.phase)return;if(rec.open.has(m))recOff(m);rec.open.set(m,t);rec.count++;recBarUI()}
+function recOff(m,t=perfS()){if(!rec)return;const a=rec.open.get(m);if(a==null)return;rec.open.delete(m);rec.events.push({m,a,b:Math.max(a+.02,t)})}
 /* --- MIDI keyboard: plays into AnnApp like the on-screen piano --- */
 async function connectMidi(){
   if(!canMidi){toast('Ta przeglądarka nie obsługuje klawiatur MIDI. Użyj Chrome lub Edge na komputerze albo Androidzie.');return false}
@@ -1862,18 +1862,52 @@ function yin(buf,sr){const W=buf.length>>1,d=new Float32Array(W);
   return{f:sr/(tau+sh),clarity:1-b}}
 async function startMic(){
   micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
-  const srcN=ac.createMediaStreamSource(micStream),an=ac.createAnalyser();an.fftSize=2048;srcN.connect(an);
-  const buf=new Float32Array(an.fftSize);let cur=null,cand=null,cc=0,quiet=0,prevRms=0,noise=[],thr=.012,frame=0;
-  const loop=()=>{if(!rec||rec.src!=='mic')return;rec.micRaf=requestAnimationFrame(loop);if(++frame%2)return;
-    an.getFloatTimeDomainData(buf);let rms=0;for(let i=0;i<buf.length;i++)rms+=buf[i]*buf[i];rms=Math.sqrt(rms/buf.length);
-    rec.level=rms;if(rec.phase==='count'){noise.push(rms);thr=Math.max(.008,(noise.reduce((a,b)=>a+b,0)/noise.length)*3.5);recBarUI();return}
-    if(rms<thr){if(cur!=null&&++quiet>=2){recOff(cur);keyEls[cur]?.classList.remove('down');cur=null}cand=null;prevRms=rms;recBarUI();return}
-    quiet=0;const r=yin(buf,ac.sampleRate);
-    if(r&&r.clarity>.8){const m=Math.round(69+12*Math.log2(r.f/440));
-      const attack=cur===m&&rms>prevRms*1.9&&rms>thr*2;
-      if(m!==cur||attack){if(cand===m)cc++;else{cand=m;cc=1}
-        if(cc>=2||attack){if(cur!=null){recOff(cur);keyEls[cur]?.classList.remove('down')}cur=m;recOn(m);keyEls[m]?.classList.add('down');cand=null}}}
-    prevRms=rms;recBarUI()};
+  const srcN=ac.createMediaStreamSource(micStream);
+  const an=ac.createAnalyser();an.fftSize=2048;an.smoothingTimeConstant=0;srcN.connect(an);
+  const anF=ac.createAnalyser();anF.fftSize=8192;anF.smoothingTimeConstant=0;srcN.connect(anF);
+  const sr=ac.sampleRate,td=new Float32Array(2048),fs=new Float32Array(an.frequencyBinCount),ps=new Float32Array(fs.length);
+  const fF=new Float32Array(anF.frequencyBinCount),pF=new Float32Array(fF.length),accF=new Float32Array(fF.length),hzS=sr/2048,hzF=sr/8192;
+  const sb0=Math.floor(60/hzS),sb1=Math.min(fs.length-1,Math.ceil(6000/hzS)),fb0=Math.floor(25/hzF),fb1=Math.min(fF.length-1,Math.ceil(5000/hzF));
+  let fr=[],cur=null,curPeak=0,quietSince=null,noiseR=[],noiseF=[],thr=.003,fluxFloor=0,hist=[],lastOn=-9,pend=null,yinRun=null,yinCnt=0,prevFlux=0;
+  const median=a=>{const b=[...a].sort((x,y)=>x-y);return b.length?b[b.length>>1]:0};
+  const pct=(a,q)=>{const b=[...a].sort((x,y)=>x-y);return b.length?b[Math.floor(q*(b.length-1))]:0};
+  const magAt=f=>{const i=f/hzF,j=Math.round(i);if(j<1||j>=accF.length-1)return 0;return Math.max(accF[j-1]*.6,accF[j],accF[j+1]*.6)};
+  const harmonicPitch=()=>{let best=null,bs=0;const W=[1,.85,.7,.6,.5,.45,.4];
+    for(let m=36;m<=96;m++){const f=440*Math.pow(2,(m-69)/12);let s=0,fund=magAt(f);for(let h=1;h<=7;h++){if(h*f>5000)break;s+=W[h-1]*magAt(h*f)}
+      if(f>=140&&fund<s*.06)continue;if(s>bs){bs=s;best=m}}
+    if(best!=null){const f=440*Math.pow(2,(best-69)/12),up=best+12;// octave-down guard: prefer the higher octave when odd harmonics are missing
+      let odd=0,even=0;for(let h=1;h<=5;h+=2)odd+=magAt(h*f);for(let h=2;h<=6;h+=2)even+=magAt(h*f);if(up<=96&&odd<even*.25)best=up}
+    return best};
+  const start=(m,t)=>{if(cur!=null)end(t);cur=m;curPeak=0;quietSince=null;recOn(m,t);keyEls[m]?.classList.add('down')};
+  const end=t=>{if(cur==null)return;recOff(cur,t);keyEls[cur]?.classList.remove('down');cur=null};
+  const loop=()=>{if(!rec||rec.src!=='mic')return;rec.micRaf=requestAnimationFrame(loop);
+    const now=perfS()-.045;
+    an.getFloatTimeDomainData(td);let rms=0;for(let i=0;i<td.length;i++)rms+=td[i]*td[i];rms=Math.sqrt(rms/td.length);rec.level=rms;
+    an.getFloatFrequencyData(fs);let flux=0;for(let i=sb0;i<=sb1;i++){const v=Math.pow(10,fs[i]/20),d=v-ps[i];if(d>0)flux+=d;ps[i]=v}
+    anF.getFloatFrequencyData(fF);for(let i=fb0;i<=fb1;i++){const v=Math.pow(10,fF[i]/20),d=v-pF[i];if(pend&&d>0)accF[i]+=d;pF[i]=v}
+    if(rec.phase==='count'){noiseR.push(rms);noiseF.push(flux);thr=Math.max(.0015,pct(noiseR,.5)*1.6);fluxFloor=pct(noiseF,.9)*1.2;recBarUI();return}
+    hist.push(flux);if(hist.length>40)hist.shift();
+    const adapt=median(hist)*1.5+fluxFloor;
+    // 1. onset: a sharp rise of new spectral energy
+    fr.push([now,rms]);if(fr.length>8)fr.shift();
+    const onset=rms>thr&&flux>adapt&&flux>prevFlux*1.05&&now-lastOn>.07;
+    prevFlux=flux;
+    const decide=()=>{const hp=harmonicPitch();let yp=null,yc=0;if(pend.yins.length){const ms=pend.yins.map(v=>v[0]);yp=median(ms);yc=Math.max(...pend.yins.filter(v=>v[0]===yp).map(v=>v[1]))}
+        let m=null;if(yp!=null&&yc>.9&&(hp==null||(yp-hp)%12===0))m=yp;else if(hp!=null)m=hp;else m=yp;
+        if(m!=null&&m>=28&&m<=100)start(m,pend.t);pend=null;yinRun=null};
+    if(onset){if(pend)decide();
+      let j=fr.length-1;while(j>0&&fr.length-1-j<4&&fr[j-1][1]<fr[j][1]*.88)j--;
+      lastOn=now;pend={t:Math.max(fr[j][0],lastOn-.1),n:0,yins:[]};accF.fill(0)}
+    if(cur!=null)curPeak=Math.max(curPeak,rms);
+    const y=rms>thr?yin(td,sr):null;const ym=y&&y.clarity>.82?Math.round(69+12*Math.log2(y.f/440)):null;
+    // 2. decide the pitch of a fresh onset after ~100 ms of evidence
+    if(pend){pend.n++;if(ym!=null&&pend.n>=2)pend.yins.push([ym,y.clarity]);
+      if(pend.n>=5)decide()}
+    // 3. legato change without a clear attack: a steady new pitch for 4 frames
+    else if(ym!=null&&y.clarity>.92&&rms>thr*1.5){if(yinRun&&yinRun.m===ym){if(++yinRun.c===4&&ym!==cur&&(cur==null||Math.abs(ym-cur)%12!==0))start(ym,yinRun.t)}else yinRun={m:ym,c:1,t:now}}
+    // 4. note end: real silence for 120 ms, or the sound has died away
+    if(cur!=null&&!pend){if(rms<thr||rms<curPeak*.03){if(quietSince==null)quietSince=now;else if(now-quietSince>.12)end(quietSince)}else quietSince=null}
+    recBarUI()};
   loop()}
 function stopMic(){if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null}}
 /* --- start / finish --- */
