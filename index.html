@@ -133,6 +133,17 @@ button:disabled{opacity:.35;cursor:default}
 .omrstat{font-weight:700;margin:0}
 .omrgo{align-self:flex-start;height:48px;padding:0 22px;border-radius:24px}
 .omrgo:disabled{opacity:.4}
+.omrgo svg{width:20px;height:20px}
+#rscrim{z-index:22}
+.recbar{position:fixed;z-index:25;left:50%;transform:translateX(-50%);top:calc(10px + env(safe-area-inset-top,0px));display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;
+  background:var(--panel);color:var(--ink);padding:8px 10px 8px 16px;border-radius:24px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-weight:800;font-variant-numeric:tabular-nums;max-width:calc(100vw - 24px);box-sizing:border-box}
+.beat{min-width:1.6em;height:1.6em;border-radius:.8em;display:inline-grid;place-items:center;background:var(--pill);font-size:15px}
+.beat.one{background:#E5484D;color:#fff}
+.recdot{width:12px;height:12px;border-radius:50%;background:#E5484D;animation:blink 1s ease-in-out infinite;flex:none}
+.lvl{width:70px;height:8px;border-radius:4px;background:var(--pill);overflow:hidden;display:inline-block}
+.lvl i{display:block;height:100%;width:0;background:#3FB950}
+#recBtn svg{width:20px;height:20px}
+.seg button:disabled{opacity:.4}
 .palette{display:flex;align-items:center;gap:6px;overflow-x:auto;padding-block:4px 8px;scrollbar-width:none;min-height:56px}
 .plabel{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.7;flex:none;padding-right:2px}
 .info{margin-left:auto;text-align:right;font-size:13px;font-weight:600;white-space:nowrap;padding-left:10px;opacity:.9;flex:none}
@@ -283,6 +294,7 @@ details summary{cursor:pointer;font-weight:800;font-size:13px;padding-block:4px}
     </div>
     <div class="grp">
       <button class="tb wide" id="writeBtn" aria-pressed="true" title="Klawisze pianina zapisują nuty"><svg viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16zM14 7l3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Zapisuj</button>
+      <button class="tb wide" id="recBtn" title="Nagraj nuty, grając na pianinie"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5" fill="#E5484D"/><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Nagraj</button>
     </div>
   </div>
   <div class="palette" id="palette" role="toolbar" aria-label="Znaki"></div>
@@ -341,6 +353,19 @@ details summary{cursor:pointer;font-weight:800;font-size:13px;padding-block:4px}
   <p class="omrstat" id="omrStat" hidden></p>
   <p class="phint">Po odczytaniu sprawdź nuty: przy trudnych zdjęciach coś może wymagać poprawki.</p>
 </section>
+<div class="scrim" id="rscrim" hidden></div>
+<section class="picker" id="recModal" hidden aria-label="Nagraj z pianina">
+  <div class="dhead"><h2>Nagraj z pianina</h2><button class="cbtn" id="recClose">Zamknij</button></div>
+  <p class="phint">Zagraj, a AnnApp zapisze nuty razem z rytmem. Najpierw odliczy jeden takt, potem zacznie nagrywać.</p>
+  <div class="row"><span>Skąd dźwięk</span><div class="seg" id="recSrc"></div></div>
+  <p class="phint" id="recHint"></p>
+  <div class="row"><span>Najkrótsza nuta</span><div class="seg" id="recGrid"><button data-g=".5">Ósemki</button><button data-g=".25">Szesnastki</button></div></div>
+  <div class="row"><span>Metronom w trakcie</span><div class="seg" id="recMet"><button data-m="1">Tak</button><button data-m="0">Nie</button></div></div>
+  <p class="phint"><b>Tempo:</b> <span id="recTempo"></span> Wolniejsze tempo daje dokładniejszy zapis. Zmienisz je suwakiem u góry.</p>
+  <button class="cbtn play omrgo" id="recGo"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5" fill="#E5484D"/><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Zacznij nagrywanie</button>
+  <p class="phint" id="recNote"></p>
+</section>
+<div class="recbar" id="recBar" hidden role="status"><span class="recdot"></span><b class="beat" id="recBeat"></b><span id="recTxt">Nagrywam</span><span class="lvl" id="recLvl" hidden><i></i></span><button class="cbtn solid" id="recStop">■ Zakończ</button><button class="cbtn" id="recCancel">Anuluj</button></div>
 <div class="toast" id="toast" hidden></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1220,12 +1245,13 @@ function buildPiano(){
   $('octDown').disabled=pianoStart===0;$('octUp').disabled=pianoStart+count>=WHITES.length;
 }
 const held=new Map();
-function keyDown(m,id){if(held.has(id))return;audio();const v=tone(m,ac.currentTime+.003,null,.85,song.inst[vo]);held.set(id,{m,v});keyEls[m]?.classList.add('down');
+function keyDown(m,id,silent){if(held.has(id))return;audio();const v=silent?{release(){},kill(){}}:tone(m,ac.currentTime+.003,null,.85,song.inst[vo]);held.set(id,{m,v});keyEls[m]?.classList.add('down');
+  if(rec){recOn(m);return}
   if(!write||playing)return;
   const n=cur();
   if(chord&&n&&n.ps.length&&chordAnchor===n){snap();const i=n.ps.indexOf(m);if(i>=0){if(n.ps.length>1)n.ps.splice(i,1)}else{n.ps.push(m);n.ps.sort((a,b)=>a-b)}changed();return}
   insert(newNote([m]));if(chord)chordAnchor=cur()}
-function keyUp(id){const h=held.get(id);if(!h)return;h.v.release();keyEls[h.m]?.classList.remove('down');held.delete(id)}
+function keyUp(id){const h=held.get(id);if(!h)return;h.v.release();keyEls[h.m]?.classList.remove('down');held.delete(id);if(rec)recOff(h.m)}
 piano.addEventListener('pointerdown',e=>{const k=e.target.closest('[data-m]');if(!k)return;e.preventDefault();keyDown(+k.dataset.m,e.pointerId)});
 ['pointerup','pointercancel','pointerleave'].forEach(t=>piano.addEventListener(t,e=>keyUp(e.pointerId)));
 $('octDown').onclick=()=>{pianoStart-=7;buildPiano()};
@@ -1809,6 +1835,121 @@ async function runOmr(){
 $('omrGo').onclick=runOmr;$('camBtn').onclick=openOmr;$('omrClose').onclick=()=>{if(omrCtl)omrCtl.abort();omrCtl=null;$('omr').hidden=true;$('oscrim').hidden=true};
 $('oscrim').onclick=closeOmr;$('omrRow').onclick=()=>{closeD();openOmr()};
 
+/* ---------- recording from a real piano (microphone, MIDI or the on-screen keys) ---------- */
+const inClaude=!!window.claude;
+const canMic=!inClaude&&!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)&&window.isSecureContext;
+const canMidi=!inClaude&&!!navigator.requestMIDIAccess;
+let rec=null,recSrc=canMic?'mic':'screen',recGrid=.25,recMetro=true,midiAccess=null,micStream=null;
+const perfS=()=>performance.now()/1000;
+function recOn(m){if(!rec||!rec.phase)return;const t=perfS()-(rec.src==='mic'?.12:0);if(rec.open.has(m))recOff(m);rec.open.set(m,t);rec.count++;recBarUI()}
+function recOff(m){if(!rec)return;const a=rec.open.get(m);if(a==null)return;rec.open.delete(m);rec.events.push({m,a,b:perfS()-(rec.src==='mic'?.12:0)})}
+/* --- MIDI keyboard: plays into AnnApp like the on-screen piano --- */
+async function connectMidi(){
+  if(!canMidi){toast('Ta przeglądarka nie obsługuje klawiatur MIDI. Użyj Chrome lub Edge na komputerze albo Androidzie.');return false}
+  try{midiAccess=midiAccess||await navigator.requestMIDIAccess()}catch(e){toast('Nie udało się połączyć z klawiaturą MIDI.');return false}
+  const hook=()=>{midiAccess.inputs.forEach(inp=>{inp.onmidimessage=ev=>{const [st,no,vel]=ev.data,c=st&0xf0;
+    if(c===0x90&&vel>0)keyDown(no,'midi'+no,true);else if(c===0x80||(c===0x90&&vel===0))keyUp('midi'+no)}})};
+  hook();midiAccess.onstatechange=()=>{hook();recUI()};
+  return true}
+const midiNames=()=>midiAccess?[...midiAccess.inputs.values()].map(i=>i.name).filter(Boolean):[];
+/* --- microphone pitch tracking (one note at a time) --- */
+function yin(buf,sr){const W=buf.length>>1,d=new Float32Array(W);
+  for(let tau=1;tau<W;tau++){let s=0;for(let i=0;i<W;i++){const x=buf[i]-buf[i+tau];s+=x*x}d[tau]=s}
+  let run=0;d[0]=1;for(let t=1;t<W;t++){run+=d[t];d[t]=run?d[t]*t/run:1}
+  const minT=Math.max(2,Math.floor(sr/1200)),maxT=Math.min(W-2,Math.floor(sr/55));let tau=-1;
+  for(let t=minT;t<maxT;t++){if(d[t]<.15){while(t+1<maxT&&d[t+1]<d[t])t++;tau=t;break}}
+  if(tau<0)return null;const a=d[tau-1],b=d[tau],c=d[tau+1],den=a-2*b+c,sh=den?(a-c)/(2*den):0;
+  return{f:sr/(tau+sh),clarity:1-b}}
+async function startMic(){
+  micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+  const srcN=ac.createMediaStreamSource(micStream),an=ac.createAnalyser();an.fftSize=2048;srcN.connect(an);
+  const buf=new Float32Array(an.fftSize);let cur=null,cand=null,cc=0,quiet=0,prevRms=0,noise=[],thr=.012,frame=0;
+  const loop=()=>{if(!rec||rec.src!=='mic')return;rec.micRaf=requestAnimationFrame(loop);if(++frame%2)return;
+    an.getFloatTimeDomainData(buf);let rms=0;for(let i=0;i<buf.length;i++)rms+=buf[i]*buf[i];rms=Math.sqrt(rms/buf.length);
+    rec.level=rms;if(rec.phase==='count'){noise.push(rms);thr=Math.max(.008,(noise.reduce((a,b)=>a+b,0)/noise.length)*3.5);recBarUI();return}
+    if(rms<thr){if(cur!=null&&++quiet>=2){recOff(cur);keyEls[cur]?.classList.remove('down');cur=null}cand=null;prevRms=rms;recBarUI();return}
+    quiet=0;const r=yin(buf,ac.sampleRate);
+    if(r&&r.clarity>.8){const m=Math.round(69+12*Math.log2(r.f/440));
+      const attack=cur===m&&rms>prevRms*1.9&&rms>thr*2;
+      if(m!==cur||attack){if(cand===m)cc++;else{cand=m;cc=1}
+        if(cc>=2||attack){if(cur!=null){recOff(cur);keyEls[cur]?.classList.remove('down')}cur=m;recOn(m);keyEls[m]?.classList.add('down');cand=null}}}
+    prevRms=rms;recBarUI()};
+  loop()}
+function stopMic(){if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null}}
+/* --- start / finish --- */
+async function startRec(){
+  if(playing)stop();stopMetro();audio();
+  if(recSrc==='midi'&&!midiNames().length){const ok=await connectMidi();if(!ok)return;if(!midiNames().length){toast('Nie widzę klawiatury MIDI. Podłącz ją kablem USB lub przez Bluetooth i spróbuj ponownie.');return}}
+  const unit=4/song.md,spb=60/song.tempo,beatS=spb*unit,lead=.25;
+  rec={src:recSrc,grid:recGrid,phase:'count',events:[],open:new Map(),count:0,level:0,clicks:[],spb};
+  const acNow=ac.currentTime,perfNow=perfS();rec.start=perfNow+lead+song.mn*beatS;
+  for(let k=0;k<song.mn;k++)click(acNow+lead+k*beatS,k===0);
+  if(recSrc==='mic'){try{await startMic()}catch(e){rec=null;toast('Brak dostępu do mikrofonu. Pozwól stronie używać mikrofonu i spróbuj ponownie.');return}}
+  closeRec();$('recBar').hidden=false;recBarUI();
+  setTimeout(()=>{if(!rec)return;rec.phase='rec';recBarUI();
+    if(recMetro&&recSrc!=='mic'){let b=0,next=ac.currentTime+.02;rec.metroT=setInterval(()=>{while(next<ac.currentTime+.15){click(next,b%song.mn===0);next+=beatS;b++}if(clicks.length>64)clicks.splice(0,32)},25)}
+    rec.tickT=setInterval(recBarUI,200)},(rec.start-perfS())*1000);
+  rec.beatT=setInterval(()=>{if(!rec)return;const bs=rec.spb*4/song.md,t=perfS()-rec.start+song.mn*bs,k=Math.floor(t/bs);const el=$('recBeat');if(t<0){el.textContent='';return}const b=((k%song.mn)+song.mn)%song.mn;el.textContent=b+1;el.classList.toggle('one',b===0)},40);
+}
+function finishRec(cancel){
+  if(!rec)return;const r=rec;rec=null;
+  clearInterval(r.metroT);clearInterval(r.tickT);clearInterval(r.beatT);cancelAnimationFrame(r.micRaf);stopMic();stopClicks();
+  [...r.open.keys()].forEach(m=>{r.events.push({m,a:r.open.get(m),b:perfS()});keyEls[m]?.classList.remove('down')});
+  $('recBar').hidden=true;
+  if(cancel){toast('Nagrywanie anulowane');return}
+  if(!r.events.length){toast('Nic nie zostało nagrane');return}
+  const res=buildFromRecording(r);if(!res){toast('Nic nie zostało nagrane');return}
+  toast(`Zapisano ${res} ${res===1?'nutę':res%10>=2&&res%10<=4&&(res%100<10||res%100>20)?'nuty':'nut'} z nagrania`)}
+const LEN_TABLE=[[4,'w',0],[3,'h',1],[2,'h',0],[1.5,'q',1],[1,'q',0],[.75,'e',1],[.5,'e',0],[.375,'s',1],[.25,'s',0],[.125,'t',0],[.0625,'x',0]];
+function piecesFor(len){const out=[];let b=len;for(const [v,d,dot] of LEN_TABLE){while(b>=v-1e-6){out.push({d,dot,v});b-=v}}return out}
+function buildFromRecording(r){
+  const g=r.grid,L=ML(),two=song.hands===2;
+  const evs=r.events.map(e=>{const on=(e.a-r.start)/r.spb,off=(e.b-r.start)/r.spb;let qa=Math.round(on/g)*g;if(qa<0){if(qa<-g)return null;qa=0}
+    return{m:e.m,qa,qb:Math.max(qa+g,Math.round(off/g)*g)}}).filter(Boolean);
+  if(!evs.length)return 0;
+  const split=two?(e=>e.m<60?'b':'t'):(()=>vo);
+  const lenOf=arr=>arr.reduce((a,n)=>a+beats(n),0);
+  snap();
+  const voicesUsed=two?['t','b']:[vo];
+  const startAt=Math.ceil((Math.max(...voicesUsed.map(v=>lenOf(V(v))))-1e-6)/L)*L;
+  let added=0;
+  voicesUsed.forEach(v=>{const arr=V(v);const pad=startAt-lenOf(arr);if(pad>1e-6)piecesFor(pad).forEach(p=>arr.push(normNote({ps:[],d:p.d,dot:p.dot})));
+    const mine=evs.filter(e=>split(e)===v);if(!mine.length)return;
+    const groups=new Map();mine.forEach(e=>{const k=e.qa.toFixed(4);const gq=groups.get(k)||{qa:e.qa,qb:e.qb,ps:new Set()};gq.ps.add(e.m);gq.qb=Math.max(gq.qb,e.qb);groups.set(k,gq)});
+    const segs=[...groups.values()].sort((a,b)=>a.qa-b.qa);
+    segs.forEach((s,i)=>{const nx=segs[i+1];if(nx&&s.qb>nx.qa)s.qb=nx.qa});
+    let pos=0;const emit=(len,ps)=>{while(len>1e-6){const room=L-((pos%L)+L)%L;const take=Math.min(len,room<1e-6?L:room);
+        const pcs=piecesFor(take);pcs.forEach((p,k)=>{const n={ps:[...ps].sort((a,b)=>a-b),d:p.d,dot:p.dot};const last=len-take<1e-6&&k===pcs.length-1;if(ps.length&&!last)n.tie=true;arr.push(normNote(n));if(ps.length&&k===0&&pos===seg0)added++});
+        pos+=take;len-=take}};
+    let seg0=-1;
+    segs.forEach(s=>{if(s.qa>pos+1e-6)emit(s.qa-pos,[]);seg0=pos;emit(s.qb-s.qa,[...s.ps])});
+    const tail=((pos%L)+L)%L;if(tail>1e-6)emit(L-tail,[])});
+  vo=voicesUsed[0];sel=V(vo).length-1;changed();buildPiano();
+  return added}
+/* --- UI --- */
+function recBarUI(){if(!rec)return;const el=$('recTxt');
+  if(rec.phase==='count'){const left=Math.max(0,rec.start-perfS()),beatS=rec.spb*4/song.md;el.textContent=`Przygotuj się… ${Math.max(1,Math.ceil(left/beatS))}`}
+  else{const bar=Math.floor(Math.max(0,perfS()-rec.start)/(rec.spb*ML()))+1;el.textContent=`Nagrywam · takt ${bar} · ${rec.count} ${rec.count===1?'nuta':rec.count%10>=2&&rec.count%10<=4&&(rec.count%100<10||rec.count%100>20)?'nuty':'nut'}`}
+  $('recLvl').hidden=rec.src!=='mic';if(rec.src==='mic')$('recLvl').firstElementChild.style.width=Math.min(100,rec.level*900)+'%'}
+function openRec(){if(rec)return;$('recModal').hidden=false;$('rscrim').hidden=false;recUI()}
+function closeRec(){$('recModal').hidden=true;$('rscrim').hidden=true}
+function recUI(){
+  const srcs=[['mic','Mikrofon',canMic],['midi','Klawiatura MIDI',canMidi],['screen','Pianino na ekranie',true]];
+  if(!srcs.find(s=>s[0]===recSrc)[2])recSrc='screen';
+  $('recSrc').innerHTML=srcs.map(([k,l,ok])=>`<button data-s="${k}" ${ok?'':'disabled'} aria-pressed="${recSrc===k}">${l}</button>`).join('');
+  $('recSrc').querySelectorAll('button').forEach(b=>b.onclick=async()=>{recSrc=b.dataset.s;if(recSrc==='midi')await connectMidi();recUI()});
+  $('recGrid').querySelectorAll('button').forEach(b=>{b.setAttribute('aria-pressed',+b.dataset.g===recGrid);b.onclick=()=>{recGrid=+b.dataset.g;recUI()}});
+  $('recMet').querySelectorAll('button').forEach(b=>{b.setAttribute('aria-pressed',(b.dataset.m==='1')===recMetro);b.disabled=recSrc==='mic';b.onclick=()=>{recMetro=b.dataset.m==='1';recUI()}});
+  const names=midiNames();
+  $('recHint').textContent=recSrc==='mic'?'Postaw tablet lub telefon blisko pianina. Graj po jednej nucie naraz, wyraźnie: mikrofon rozpoznaje melodię, ale nie akordy. Metronom pokazuje miary na ekranie (u góry), żeby jego dźwięk nie mylił mikrofonu.':
+    recSrc==='midi'?(names.length?`Połączono: ${names.join(', ')}. Możesz grać akordy i obie ręce naraz.`:'Podłącz pianino cyfrowe kablem USB lub przez Bluetooth MIDI. Działa w Chrome i Edge na komputerze oraz na Androidzie.'):
+    'Graj rytmicznie na pianinie na dole ekranu albo na klawiaturze komputera. Nuty zapiszą się razem z rytmem.';
+  $('recNote').textContent=inClaude?'Mikrofon i klawiatura MIDI działają w AnnApp na stronie annapp.rossa.me.':!canMic&&!window.isSecureContext?'Mikrofon zadziała, gdy strona otworzy się przez https.':'';
+  $('recTempo').textContent=`${song.tempo} ćwierćnut na minutę, metrum ${song.msym||song.mn+'/'+song.md}.`+(song.hands===2?' Dźwięki od c¹ w górę trafią do prawej ręki, niższe do lewej.':'');
+}
+$('recBtn').onclick=openRec;$('recClose').onclick=closeRec;$('rscrim').onclick=closeRec;$('recGo').onclick=startRec;
+$('recStop').onclick=()=>finishRec(false);$('recCancel').onclick=()=>finishRec(true);
+
 /* ---------- controls ---------- */
 $('title').addEventListener('input',e=>{song.title=e.target.value;song.updated=Date.now();song.example=false;persist(song)});
 $('title').addEventListener('keydown',e=>{if(e.key==='Enter')e.target.blur()});
@@ -1830,6 +1971,8 @@ document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey)&&k==='z'){e.preventDefault();e.shiftKey?redo():undo();return}
   if((e.ctrlKey||e.metaKey)&&k==='y'){e.preventDefault();redo();return}
   if(e.metaKey||e.ctrlKey||e.altKey)return;
+  if(rec&&k===' '){e.preventDefault();finishRec(false);return}
+  if(rec&&k==='escape'){finishRec(true);return}
   const ix=KB.indexOf(k);
   if(ix>=0){if(e.repeat)return;e.preventDefault();kbHeld.add(k);keyDown(firstVisible+ix,'kb'+k);return}
   if(k===' '){e.preventDefault();play()}
