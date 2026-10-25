@@ -538,7 +538,7 @@ function sampleTone(m,t,dur,vol,spec,list,opt){
     if(g.gain.cancelAndHoldAtTime)g.gain.cancelAndHoldAtTime(rt);else g.gain.cancelScheduledValues(rt);
     g.gain.setTargetAtTime(0,rt,tc);try{src.stop(rt+tc*8)}catch(e){}};
   if(dur!=null)release(t+dur,spec.rel);
-  return{release:()=>release(ac.currentTime,spec.rel),kill:()=>{done=false;release(ac.currentTime,.05)}};
+  return{release:()=>release(ac.currentTime,spec.rel),kill:()=>{done=true;const now=ac.currentTime;try{if(g.gain.cancelAndHoldAtTime)g.gain.cancelAndHoldAtTime(now);else g.gain.cancelScheduledValues(now);g.gain.setTargetAtTime(0,now,.012)}catch(e){}try{src.stop(now+.06)}catch(e){}}};
 }
 function synthTone(m,t,dur,vol){
   const f=440*Math.pow(2,(m-69)/12),g=ac.createGain(),lp=ac.createBiquadFilter();lp.type='lowpass';
@@ -547,7 +547,7 @@ function synthTone(m,t,dur,vol){
   const pk=.45*vol;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(pk,t+.006);g.gain.exponentialRampToValueAtTime(pk*.4,t+.3);g.gain.exponentialRampToValueAtTime(pk*.06,t+3);
   let done=false;const release=rt=>{if(done)return;done=true;rt=Math.max(rt,t+.04);if(g.gain.cancelAndHoldAtTime)g.gain.cancelAndHoldAtTime(rt);else g.gain.cancelScheduledValues(rt);
     g.gain.setTargetAtTime(0,rt,.08);oscs.forEach(o=>{try{o.stop(rt+.7)}catch(e){}})};
-  if(dur!=null)release(t+dur);return{release:()=>release(ac.currentTime),kill:()=>{done=false;release(ac.currentTime)}};
+  if(dur!=null)release(t+dur);return{release:()=>release(ac.currentTime),kill:()=>{done=true;const now=ac.currentTime;try{if(g.gain.cancelAndHoldAtTime)g.gain.cancelAndHoldAtTime(now);else g.gain.cancelScheduledValues(now);g.gain.setTargetAtTime(0,now,.012)}catch(e){}oscs.forEach(o=>{try{o.stop(now+.06)}catch(e){}})}};
 }
 function tone(m,t,dur,vol=.8,id='grand',opt=null){
   let spec=INST[id]||INST.grand,o=bufs[id];
