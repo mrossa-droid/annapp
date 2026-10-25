@@ -29,7 +29,8 @@
   --pill:rgba(255,255,255,.1);--pill2:rgba(255,255,255,.22);--keyw:#F3F0FF;--keyw2:#C9C5DD;--keyb:#08091C;--selbg:rgba(255,210,63,.2);--onShape:#17193A;--line:rgba(243,240,255,.25);color-scheme:dark}
 
 [hidden]{display:none!important}
-html,body{height:100%}
+html,body{height:100%;touch-action:manipulation;overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+@supports (height:100dvh){html,body,.app{height:100dvh}}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;overflow:hidden;-webkit-tap-highlight-color:transparent;transition:background .35s}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
@@ -219,7 +220,7 @@ button:disabled{opacity:.35;cursor:default}
 .seg{display:flex;flex-wrap:wrap;background:var(--pill);border-radius:12px;padding:3px;gap:2px}
 .seg button{height:34px;padding:0 10px;border-radius:9px;font-weight:800;font-size:13px;font-variant-numeric:tabular-nums}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--panel)}
-.sel{height:38px;border-radius:12px;border:0;background:var(--pill2);color:var(--ink);font:inherit;font-weight:700;padding:0 10px;max-width:100%}
+.sel{height:38px;border-radius:12px;border:0;background:var(--pill2);color:var(--ink);font:inherit;font-size:16px;font-weight:700;padding:0 10px;max-width:100%}
 .looks{display:flex;gap:8px}
 .lk{width:38px;height:38px;border-radius:50%;position:relative;overflow:hidden;box-shadow:inset 0 0 0 2px rgba(255,255,255,.4)}
 .lk i{position:absolute;width:22px;height:22px;border-radius:50%;right:-4px;top:-4px}
@@ -254,6 +255,14 @@ details summary{cursor:pointer;font-weight:800;font-size:13px;padding-block:4px}
   .piano{height:clamp(100px,19vh,150px)}
   .ctrls .lbl{display:none}
 }
+@media (orientation:landscape) and (max-height:900px){
+  .head{padding-block:8px 6px}.title{font-size:clamp(22px,3.2vw,34px)}.tword{font-size:18px}
+  .sbody{height:clamp(80px,17vh,170px)}.piano{height:clamp(80px,17vh,150px)}.pianowrap{padding-block:2px 8px}
+  .psec h4{margin:4px 0 4px}}
+@media (orientation:landscape) and (max-height:500px){
+  .head{gap:0;padding-block:6px 4px;padding-right:0}.title,.tword,.meta,.shape{display:none}
+  .row1{flex-wrap:nowrap}.ctrls{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.ctrls .lbl{display:none}.cbtn,.play{height:36px}
+  .tools{padding-block:4px 2px}.sbody{height:20vh;min-height:64px}.piano{height:24vh;min-height:70px}.pianowrap{padding-block:2px 4px}.stab{height:32px}}
 @media (prefers-reduced-motion:reduce){#svg .cur{animation:none}.wk,body{transition:none}}
 </style>
 
@@ -1121,7 +1130,9 @@ const SECS=[
     {txt:'Akordy',plain:true,t:'Symbole akordów nad nutami (Am, G7…)',on:()=>tab==='tekst'&&txtMode==='ch',go:()=>enterText('ch')},
     {txt:'Napis',plain:true,t:'Napis nad pięciolinią (Refren, Zwrotka 1…)',on:()=>tab==='tekst'&&txtMode==='tx',go:()=>enterText('tx')}]},
 ];
-let secOn=0,spyHold=0,sheetMin=false;try{sheetMin=localStorage.getItem('annapp-sheet-min')==='1'}catch(e){}
+let secOn=0,spyHold=0,sheetMin=false,sheetMinL=true;try{sheetMin=localStorage.getItem('annapp-sheet-min')==='1'}catch(e){}
+const shortMQ=matchMedia('(orientation:landscape) and (max-height:500px)');const isMin=()=>shortMQ.matches?sheetMinL:sheetMin;
+shortMQ.addEventListener&&shortMQ.addEventListener('change',()=>$('sheet').classList.toggle('min',isMin()));
 function mkItem(it){
   if(it==='|'){const d=document.createElement('span');d.className='pbr';return d}
   if(it.lab){const d=document.createElement('span');d.className='plabel';d.textContent=typeof it.lab==='function'?it.lab():it.lab;return d}
@@ -1141,7 +1152,7 @@ function palette(){
     d.innerHTML=`<h4>${sec.n}</h4><div class="pgrid"></div>`;const g=d.lastChild;
     sec.it.forEach(it=>{const e=mkItem(it);if(e)g.appendChild(e)});P.appendChild(d)});
   P.scrollTop=st;
-  $('sheet').classList.toggle('min',sheetMin);
+  $('sheet').classList.toggle('min',isMin());
   const tr=$('txtRow');tr.hidden=tab!=='tekst';
   if(tab==='tekst'){
     document.querySelectorAll('#txtSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===txtMode));
@@ -1154,11 +1165,11 @@ function markTab(){document.querySelectorAll('.stab').forEach(b=>{const on=+b.da
 function buildTabs(){const T=$('tabs');
   T.innerHTML=SECS.map((s,k)=>`<button class="stab" role="tab" data-k="${k}">${s.n}</button>`).join('')+
     `<button class="smin" id="sheetMin" aria-label="Zwiń lub rozwiń znaki" title="Zwiń / rozwiń"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`;
-  T.querySelectorAll('.stab').forEach(b=>b.onclick=()=>{secOn=+b.dataset.k;if(sheetMin)setSheetMin(false);
+  T.querySelectorAll('.stab').forEach(b=>b.onclick=()=>{secOn=+b.dataset.k;if(isMin())setSheetMin(false);
     const P=$('palette'),el=P.querySelector(`.psec[data-k="${secOn}"]`);spyHold=Date.now()+700;
     if(el)P.scrollTo({top:el.offsetTop-P.offsetTop-4,behavior:'smooth'});markTab();tabIntoView(b,true)});
-  $('sheetMin').onclick=()=>setSheetMin(!sheetMin)}
-function setSheetMin(v){sheetMin=v;try{localStorage.setItem('annapp-sheet-min',v?'1':'0')}catch(e){}$('sheet').classList.toggle('min',v)}
+  $('sheetMin').onclick=()=>setSheetMin(!isMin())}
+function setSheetMin(v){if(shortMQ.matches)sheetMinL=v;else{sheetMin=v;try{localStorage.setItem('annapp-sheet-min',v?'1':'0')}catch(e){}}$('sheet').classList.toggle('min',v)}
 $('palette').addEventListener('scroll',()=>{if(Date.now()<spyHold)return;const P=$('palette');let k=0;
   const secs=[...P.querySelectorAll('.psec')];
   if(P.scrollTop+P.clientHeight>=P.scrollHeight-2)k=secs.length-1;
@@ -2098,6 +2109,13 @@ document.addEventListener('keydown',e=>{
 });
 document.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(kbHeld.has(k)){kbHeld.delete(k);keyUp('kb'+k)}});
 
+/* no zooming: pinch, double-tap and Ctrl+wheel are blocked; the layout follows the window instead */
+['gesturestart','gesturechange','gestureend'].forEach(ev=>document.addEventListener(ev,e=>e.preventDefault(),{passive:false}));
+document.addEventListener('touchmove',e=>{if(e.touches.length>1||(e.scale&&e.scale!==1))e.preventDefault()},{passive:false});
+window.addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
+window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&['+','=','-','_','0'].includes(e.key))e.preventDefault()});
+const refit=()=>{clearTimeout(rz);rz=setTimeout(()=>{window.scrollTo(0,0);render();buildPiano()},120)};
+window.addEventListener('orientationchange',refit);window.visualViewport&&window.visualViewport.addEventListener('resize',refit);
 let rz;new ResizeObserver(()=>{clearTimeout(rz);rz=setTimeout(()=>{render();buildPiano()},60)}).observe(document.body);
 applySong(false);
 })();
