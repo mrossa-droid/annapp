@@ -1880,6 +1880,9 @@ $('oscrim').onclick=closeOmr;$('omrRow').onclick=()=>{closeD();openOmr()};
 
 /* ---------- recording from a real piano (microphone, MIDI or the on-screen keys) ---------- */
 const inClaude=!!window.claude;
+// opened over plain http (mic is blocked there): if the https version answers, move to it
+if(location.protocol==='http:'&&!/^(localhost|127\.|192\.168\.|10\.)/.test(location.hostname)){
+  fetch('https://'+location.host+'/manifest.webmanifest?'+Date.now(),{mode:'no-cors',cache:'no-store'}).then(()=>location.replace('https://'+location.host+location.pathname+location.search+location.hash)).catch(()=>{})}
 const canMic=!inClaude&&!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)&&window.isSecureContext;
 const canMidi=!inClaude&&!!navigator.requestMIDIAccess;
 let rec=null,recSrc=canMic?'mic':'screen',recGrid=.25,recMetro=true,midiAccess=null,micStream=null;
