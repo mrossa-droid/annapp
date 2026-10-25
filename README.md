@@ -9,4 +9,4 @@ Dźwięki: Salamander Grand Piano (Alexander Holm, CC BY 3.0), FluidR3 GM (Frank
 ## Odczyt nut ze zdjęcia (serwer)
 
 Folder `omr-server/` to mały serwer, który zamienia zdjęcie nut na MusicXML przy pomocy [homr](https://github.com/liebharc/homr) (AGPL-3.0).
-Plik `render.yaml` opisuje usługę `annapp-omr` na Render (Docker, 2 GB RAM, Frankfurt). Strona wysyła zdjęcia na `https://annapp-omr.onrender.com/api/convert`.
+Plik `render.yaml` opisuje usługę `annapp-omr` na Render (Docker, 2 GB RAM, Frankfurt). Strona wysyła zdjęcia na `https://annapp-omr-629336969711.europe-central2.run.app/api/convert (Google Cloud Run)`.

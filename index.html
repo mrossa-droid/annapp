@@ -1669,7 +1669,7 @@ async function importFile(f){
 $('mxlIn').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)importFile(f)});
 
 /* ---------- sheet music from a photo ---------- */
-const OMR_URL='https://annapp-omr.onrender.com';
+const OMR_URL='https://annapp-omr-629336969711.europe-central2.run.app';
 let sampler=null,omrLim=null,omrFiles=[],omrDest='new',omrCtl=null,omrEngine=null;
 (async()=>{
   if(window.claude&&window.claude.use){try{sampler=await window.claude.use('sample')}catch(e){sampler=null}
