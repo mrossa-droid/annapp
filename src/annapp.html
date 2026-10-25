@@ -2010,7 +2010,7 @@ async function startRec(){
   rec={src:recSrc,grid:recGrid,phase:'count',events:[],open:new Map(),count:0,level:0,clicks:[],spb};
   const acNow=ac.currentTime,perfNow=perfS();rec.start=perfNow+lead+song.mn*beatS;
   for(let k=0;k<song.mn;k++)click(acNow+lead+k*beatS,k===0);
-  if(recSrc==='mic'||recSrc==='voice'){if(!canMic){rec=null;openRec();return}try{await(recSrc==='voice'?startVoice():startMic());micState='granted'}catch(e){rec=null;micState=e&&e.name==='NotAllowedError'?'denied':micState;openRec();toast('Brak dostępu do mikrofonu. Naciśnij „Zezwól na mikrofon”.');return}}
+  if(recSrc==='mic'||recSrc==='voice'){if(!canMic){rec=null;openRec();return}try{await(recSrc==='voice'?startVoice():startMic());micState='granted'}catch(e){rec=null;{const n=e&&e.name||'';micState=n==='NotAllowedError'||n==='SecurityError'?'denied':n==='NotFoundError'?'nodev':'blocked'}openRec();return}}
   closeRec();$('recBar').hidden=false;recBarUI();
   setTimeout(()=>{if(!rec)return;rec.phase='rec';recBarUI();
     if(recMetro&&recSrc!=='mic'){let b=0,next=ac.currentTime+.02;rec.metroT=setInterval(()=>{while(next<ac.currentTime+.15){click(next,b%song.mn===0);next+=beatS;b++}if(clicks.length>64)clicks.splice(0,32)},25)}
@@ -2068,10 +2068,13 @@ function micUI(){const box=$('micPerm'),isMic=recSrc==='mic'||recSrc==='voice';b
   if(micState==='granted'){dot.classList.add('ok');txt.textContent='Mikrofon włączony. Możesz nagrywać.'}
   else if(micState==='denied'){dot.classList.add('no');
     txt.innerHTML=/iPhone|iPad|Macintosh/.test(navigator.userAgent)&&'ontouchend' in document?'Mikrofon jest zablokowany. Na iPhonie lub iPadzie: dotknij <b>aA</b> (lub ikonę) w pasku adresu → <b>Ustawienia witryny</b> → <b>Mikrofon: Zezwól</b>, albo Ustawienia → Aplikacje → Safari → Mikrofon. Potem odśwież stronę.':'Mikrofon jest zablokowany. Kliknij ikonę kłódki lub ustawień obok adresu strony → <b>Mikrofon: Zezwól</b>, potem odśwież stronę.'}
+  else if(micState==='nodev'){dot.classList.add('no');txt.textContent='Nie znaleziono mikrofonu w tym urządzeniu.'}
+  else if(micState==='blocked'){dot.classList.add('no');const ios=/iPhone|iPad|Macintosh/.test(navigator.userAgent)&&'ontouchend' in document;
+    txt.innerHTML=ios?'Ta przeglądarka nie udostępnia mikrofonu stronom internetowym. Otwórz <b>annapp.rossa.me w Safari</b> (przycisk Udostępnij → Otwórz w Safari) i tam naciśnij „Zezwól na mikrofon”. Sprawdź też Ustawienia → Prywatność i ochrona → Mikrofon, czy ta przeglądarka ma włączony mikrofon.':'Ta przeglądarka nie udostępnia mikrofonu tej stronie. Otwórz annapp.rossa.me w Chrome, Edge lub Safari i spróbuj ponownie.'}
   else{txt.textContent='Do nagrywania potrzebny jest mikrofon. Naciśnij przycisk i wybierz „Zezwól”.'}}
 async function refreshMicState(){if(canMic){try{const st=await navigator.permissions.query({name:'microphone'});micState=st.state;st.onchange=()=>{micState=st.state;if(!$('recModal').hidden)micUI()}}catch(e){}}micUI()}
 async function askMic(){if(!canMic)return micUI();try{const st=await navigator.mediaDevices.getUserMedia({audio:true});st.getTracks().forEach(t=>t.stop());micState='granted';toast('Mikrofon włączony')}
-  catch(e){micState=e&&(e.name==='NotAllowedError'||e.name==='SecurityError')?'denied':'unknown';if(micState!=='denied')toast('Nie udało się włączyć mikrofonu: '+(e&&e.name||'błąd'))}micUI()}
+  catch(e){const n=e&&e.name||'';micState=n==='NotAllowedError'||n==='SecurityError'?'denied':n==='NotFoundError'?'nodev':'blocked';}micUI()}
 function openRec(){if(rec)return;$('recModal').hidden=false;$('rscrim').hidden=false;recUI()}
 function closeRec(){$('recModal').hidden=true;$('rscrim').hidden=true}
 function recUI(){
