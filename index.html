@@ -380,7 +380,7 @@ details summary{cursor:pointer;font-weight:800;font-size:13px;padding-block:4px}
 </section>
 <div class="scrim" id="rscrim" hidden></div>
 <section class="picker" id="recModal" hidden aria-label="Nagraj z pianina">
-  <div class="dhead"><h2>Nagraj z pianina</h2><button class="cbtn" id="recClose">Zamknij</button></div>
+  <div class="dhead"><h2>Nagraj melodię</h2><button class="cbtn" id="recClose">Zamknij</button></div>
   <p class="phint">Zagraj, a AnnApp zapisze nuty razem z rytmem. Najpierw odliczy jeden takt, potem zacznie nagrywać.</p>
   <div class="row"><span>Skąd dźwięk</span><div class="seg" id="recSrc"></div></div>
   <p class="phint" id="recHint"></p>
@@ -1903,10 +1903,10 @@ async function connectMidi(){
   return true}
 const midiNames=()=>midiAccess?[...midiAccess.inputs.values()].map(i=>i.name).filter(Boolean):[];
 /* --- microphone pitch tracking (one note at a time) --- */
-function yin(buf,sr){const W=buf.length>>1,d=new Float32Array(W);
+function yin(buf,sr,fmax=1200,fmin=55){const W=buf.length>>1,d=new Float32Array(W);
   for(let tau=1;tau<W;tau++){let s=0;for(let i=0;i<W;i++){const x=buf[i]-buf[i+tau];s+=x*x}d[tau]=s}
   let run=0;d[0]=1;for(let t=1;t<W;t++){run+=d[t];d[t]=run?d[t]*t/run:1}
-  const minT=Math.max(2,Math.floor(sr/1200)),maxT=Math.min(W-2,Math.floor(sr/55));let tau=-1;
+  const minT=Math.max(2,Math.floor(sr/fmax)),maxT=Math.min(W-2,Math.floor(sr/fmin));let tau=-1;
   for(let t=minT;t<maxT;t++){if(d[t]<.15){while(t+1<maxT&&d[t+1]<d[t])t++;tau=t;break}}
   if(tau<0)return null;const a=d[tau-1],b=d[tau],c=d[tau+1],den=a-2*b+c,sh=den?(a-c)/(2*den):0;
   return{f:sr/(tau+sh),clarity:1-b}}
@@ -1959,6 +1959,44 @@ async function startMic(){
     if(cur!=null&&!pend){if(rms<thr||rms<curPeak*.03){if(quietSince==null)quietSince=now;else if(now-quietSince>.12)end(quietSince)}else quietSince=null}
     recBarUI()};
   loop()}
+/* --- voice: humming, singing or whistling (one note at a time, no sharp attacks) --- */
+async function startVoice(){
+  micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+  const srcN=ac.createMediaStreamSource(micStream);const an=ac.createAnalyser();an.fftSize=2048;an.smoothingTimeConstant=0;srcN.connect(an);
+  const sr=ac.sampleRate,td=new Float32Array(2048);
+  let noise=[],thr=.004,cur=null,curT=0,run=null,unv=null,vSince=null,off=0,meds=[],peak=0,dip=null,re=null,hist=[];
+  // earliest moment the raw pitch has been sitting on note m (walks back through recent frames)
+  const since=(m,fb)=>{let t=fb;for(let i=hist.length-1;i>=0;i--){const h=hist[i];if(h.m==null||Math.abs(h.m-off-m)>.6)break;t=h.t}return t};
+  const median=a=>{const b=[...a].sort((x,y)=>x-y);return b.length?b[b.length>>1]:0};
+  const pct=(a,q)=>{const b=[...a].sort((x,y)=>x-y);return b.length?b[Math.floor(q*(b.length-1))]:0};
+  const start=(m,t)=>{if(cur!=null)end(t);cur=m;curT=t;peak=0;dip=null;re=null;recOn(m,t);keyEls[m]?.classList.add('down')};
+  const relabel=m=>{const a=rec.open.get(cur);if(a==null)return start(m,curT);rec.open.delete(cur);rec.open.set(m,a);keyEls[cur]?.classList.remove('down');keyEls[m]?.classList.add('down');cur=m;re=null};
+  const end=t=>{if(cur==null)return;recOff(cur,t);keyEls[cur]?.classList.remove('down');cur=null};
+  const loop=()=>{if(!rec||rec.src!=='voice')return;rec.micRaf=requestAnimationFrame(loop);
+    const now=perfS()-.075;
+    an.getFloatTimeDomainData(td);let rms=0;for(let i=0;i<td.length;i++)rms+=td[i]*td[i];rms=Math.sqrt(rms/td.length);rec.level=rms;
+    if(rec.phase==='count'){noise.push(rms);thr=Math.max(.0025,pct(noise,.6)*2.5);recBarUI();return}
+    const y=rms>thr?yin(td,sr,4200,65):null,voiced=!!y&&y.clarity>.8&&y.f>=65&&y.f<=4200;
+    hist.push({t:now,m:voiced?69+12*Math.log2(y.f/440):null});if(hist.length>24)hist.shift();
+    if(!voiced){meds.length=0;run=null;vSince=null;if(unv==null)unv=now;if(cur!=null&&now-unv>.09)end(unv);recBarUI();return}
+    // back from a short break (a consonant: "da-da") = a new note, even on the same pitch
+    if(unv!=null){if(cur!=null&&now-unv>=.035)end(unv);unv=null}
+    if(vSince==null)vSince=now;
+    meds.push(69+12*Math.log2(y.f/440));if(meds.length>5)meds.shift();
+    if(meds.length<3){recBarUI();return}
+    const med=median(meds),rel=med-off,cand=Math.round(rel);
+    if(cand<24||cand>108){recBarUI();return}
+    if(cur==null){if(run&&run.m===cand){if(++run.c>=3){start(cand,vSince);run=null}}else run={m:cand,c:1}}
+    else if(cand!==cur&&Math.abs(rel-cur)>.62){re=null;
+      // a slide into the note right after it began (scoop): keep the start, fix the pitch
+      const young=now-curT<.2&&Math.abs(cand-cur)<=2;
+      if(run&&run.m===cand){if(++run.c>=(young?3:4)){if(young)relabel(cand);else start(cand,since(cand,run.t));run=null}}else run={m:cand,c:1,t:now-.05}}
+    else{run=null;const dev=med-cur;if(Math.abs(dev-off)<.5)off=Math.max(-.45,Math.min(.45,off+(dev-off)*.03));
+      // same pitch sung again on one breath ("a-a"): a clear dip in loudness, then a new swell
+      peak=Math.max(peak*.996,rms);if(rms<peak*.35)dip=dip==null?rms:Math.min(dip,rms);else if(dip!=null&&rms>dip*2.8&&rms>peak*.6){dip=null;re={t:now-.02,c:0}}
+      if(re&&++re.c>=4)start(cur,re.t)}
+    recBarUI()};
+  loop()}
 function stopMic(){if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null}}
 /* --- start / finish --- */
 async function startRec(){
@@ -1968,7 +2006,7 @@ async function startRec(){
   rec={src:recSrc,grid:recGrid,phase:'count',events:[],open:new Map(),count:0,level:0,clicks:[],spb};
   const acNow=ac.currentTime,perfNow=perfS();rec.start=perfNow+lead+song.mn*beatS;
   for(let k=0;k<song.mn;k++)click(acNow+lead+k*beatS,k===0);
-  if(recSrc==='mic'){try{await startMic()}catch(e){rec=null;toast('Brak dostępu do mikrofonu. Pozwól stronie używać mikrofonu i spróbuj ponownie.');return}}
+  if(recSrc==='mic'||recSrc==='voice'){try{await(recSrc==='voice'?startVoice():startMic())}catch(e){rec=null;toast('Brak dostępu do mikrofonu. Pozwól stronie używać mikrofonu i spróbuj ponownie.');return}}
   closeRec();$('recBar').hidden=false;recBarUI();
   setTimeout(()=>{if(!rec)return;rec.phase='rec';recBarUI();
     if(recMetro&&recSrc!=='mic'){let b=0,next=ac.currentTime+.02;rec.metroT=setInterval(()=>{while(next<ac.currentTime+.15){click(next,b%song.mn===0);next+=beatS;b++}if(clicks.length>64)clicks.splice(0,32)},25)}
@@ -1988,13 +2026,16 @@ const LEN_TABLE=[[4,'w',0],[3,'h',1],[2,'h',0],[1.5,'q',1],[1,'q',0],[.75,'e',1]
 function piecesFor(len){const out=[];let b=len;for(const [v,d,dot] of LEN_TABLE){while(b>=v-1e-6){out.push({d,dot,v});b-=v}}return out}
 function buildFromRecording(r){
   const g=r.grid,L=ML(),two=song.hands===2;
+  if(r.src==='voice'){let ev=r.events.filter(e=>e.b-e.a>=.09);if(!ev.length)return 0;
+    const tv=two?'t':vo,ms=ev.map(e=>e.m).sort((a,b)=>a-b),mid=ms[ms.length>>1],k=Math.round(((clefId(tv)==='b'?50:67)-mid)/12);
+    r={...r,events:ev.map(e=>({...e,m:e.m+12*k}))}}
   const evs=r.events.map(e=>{const on=(e.a-r.start)/r.spb,off=(e.b-r.start)/r.spb;let qa=Math.round(on/g)*g;if(qa<0){if(qa<-g)return null;qa=0}
     return{m:e.m,qa,qb:Math.max(qa+g,Math.round(off/g)*g)}}).filter(Boolean);
   if(!evs.length)return 0;
-  const split=two?(e=>e.m<60?'b':'t'):(()=>vo);
+  const split=r.src==='voice'?(()=>two?'t':vo):two?(e=>e.m<60?'b':'t'):(()=>vo);
   const lenOf=arr=>arr.reduce((a,n)=>a+beats(n),0);
   snap();
-  const voicesUsed=two?['t','b']:[vo];
+  const voicesUsed=two&&r.src!=='voice'?['t','b']:[two?'t':vo];
   const startAt=Math.ceil((Math.max(...voicesUsed.map(v=>lenOf(V(v))))-1e-6)/L)*L;
   let added=0;
   voicesUsed.forEach(v=>{const arr=V(v);const pad=startAt-lenOf(arr);if(pad>1e-6)piecesFor(pad).forEach(p=>arr.push(normNote({ps:[],d:p.d,dot:p.dot})));
@@ -2014,22 +2055,22 @@ function buildFromRecording(r){
 function recBarUI(){if(!rec)return;const el=$('recTxt');
   if(rec.phase==='count'){const left=Math.max(0,rec.start-perfS()),beatS=rec.spb*4/song.md;el.textContent=`Przygotuj się… ${Math.max(1,Math.ceil(left/beatS))}`}
   else{const bar=Math.floor(Math.max(0,perfS()-rec.start)/(rec.spb*ML()))+1;el.textContent=`Nagrywam · takt ${bar} · ${rec.count} ${rec.count===1?'nuta':rec.count%10>=2&&rec.count%10<=4&&(rec.count%100<10||rec.count%100>20)?'nuty':'nut'}`}
-  $('recLvl').hidden=rec.src!=='mic';if(rec.src==='mic')$('recLvl').firstElementChild.style.width=Math.min(100,rec.level*900)+'%'}
+  $('recLvl').hidden=rec.src!=='mic'&&rec.src!=='voice';if(!$('recLvl').hidden)$('recLvl').firstElementChild.style.width=Math.min(100,rec.level*900)+'%'}
 function openRec(){if(rec)return;$('recModal').hidden=false;$('rscrim').hidden=false;recUI()}
 function closeRec(){$('recModal').hidden=true;$('rscrim').hidden=true}
 function recUI(){
-  const srcs=[['mic','Mikrofon',canMic],['midi','Klawiatura MIDI',canMidi],['screen','Pianino na ekranie',true]];
+  const srcs=[['mic','Mikrofon (pianino)',canMic],['voice','Głos lub gwizd',canMic],['midi','Klawiatura MIDI',canMidi],['screen','Pianino na ekranie',true]];
   if(!srcs.find(s=>s[0]===recSrc)[2])recSrc='screen';
   $('recSrc').innerHTML=srcs.map(([k,l,ok])=>`<button data-s="${k}" ${ok?'':'disabled'} aria-pressed="${recSrc===k}">${l}</button>`).join('');
   $('recSrc').querySelectorAll('button').forEach(b=>b.onclick=async()=>{recSrc=b.dataset.s;if(recSrc==='midi')await connectMidi();recUI()});
   $('recGrid').querySelectorAll('button').forEach(b=>{b.setAttribute('aria-pressed',+b.dataset.g===recGrid);b.onclick=()=>{recGrid=+b.dataset.g;recUI()}});
   $('recMet').querySelectorAll('button').forEach(b=>{b.setAttribute('aria-pressed',(b.dataset.m==='1')===recMetro);b.disabled=recSrc==='mic';b.onclick=()=>{recMetro=b.dataset.m==='1';recUI()}});
   const names=midiNames();
-  $('recHint').textContent=recSrc==='mic'?'Postaw tablet lub telefon blisko pianina. Graj po jednej nucie naraz, wyraźnie: mikrofon rozpoznaje melodię, ale nie akordy. Metronom pokazuje miary na ekranie (u góry), żeby jego dźwięk nie mylił mikrofonu.':
+  $('recHint').textContent=recSrc==='voice'?'Nuć, śpiewaj (np. „la-la” albo „da-da”) lub gwiżdż jedną melodię. Każdą nutę zaczynaj wyraźnie, a tę samą nutę powtarzaj z krótką przerwą. AnnApp sam dopasuje oktawę do pięciolinii. Najlepiej ze słuchawkami, żeby metronom nie wpadał do mikrofonu.':recSrc==='mic'?'Postaw tablet lub telefon blisko pianina. Graj po jednej nucie naraz, wyraźnie: mikrofon rozpoznaje melodię, ale nie akordy. Metronom pokazuje miary na ekranie (u góry), żeby jego dźwięk nie mylił mikrofonu.':
     recSrc==='midi'?(names.length?`Połączono: ${names.join(', ')}. Możesz grać akordy i obie ręce naraz.`:'Podłącz pianino cyfrowe kablem USB lub przez Bluetooth MIDI. Działa w Chrome i Edge na komputerze oraz na Androidzie.'):
     'Graj rytmicznie na pianinie na dole ekranu albo na klawiaturze komputera. Nuty zapiszą się razem z rytmem.';
   $('recNote').textContent=inClaude?'Mikrofon i klawiatura MIDI działają w AnnApp na stronie annapp.rossa.me.':!canMic&&!window.isSecureContext?'Mikrofon zadziała, gdy strona otworzy się przez https.':'';
-  $('recTempo').textContent=`${song.tempo} ćwierćnut na minutę, metrum ${song.msym||song.mn+'/'+song.md}.`+(song.hands===2?' Dźwięki od c¹ w górę trafią do prawej ręki, niższe do lewej.':'');
+  $('recTempo').textContent=`${song.tempo} ćwierćnut na minutę, metrum ${song.msym||song.mn+'/'+song.md}.`+(song.hands===2?(recSrc==='voice'?' Melodia trafi do prawej ręki.':' Dźwięki od c¹ w górę trafią do prawej ręki, niższe do lewej.'):'');
 }
 $('recBtn').onclick=openRec;$('recClose').onclick=closeRec;$('rscrim').onclick=closeRec;$('recGo').onclick=startRec;
 $('recStop').onclick=()=>finishRec(false);$('recCancel').onclick=()=>finishRec(true);
