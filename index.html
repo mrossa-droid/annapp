@@ -52,7 +52,7 @@ button:disabled{opacity:.35;cursor:default}
 
 /* header */
 .head{position:relative;overflow:hidden;padding-block:14px 10px;padding-right:38px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:4px}
-.shape{position:absolute;right:120px;top:-70px;width:250px;height:250px;pointer-events:none;z-index:0}
+.shape{position:absolute;right:64px;top:54px;width:260px;height:260px;pointer-events:none;z-index:0}
 .shape svg{width:100%;height:100%;overflow:visible}
 .row1{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
 .meta{font-weight:700;font-size:13px;letter-spacing:.01em;font-variant-numeric:tabular-nums;font-stretch:110%}
@@ -85,7 +85,12 @@ button:disabled{opacity:.35;cursor:default}
 #svg .stem,#svg .rs,#svg .sh,#svg .clef,#svg .brace,#svg .tie,#svg .artl,#svg .hp,#svg .brk{stroke:var(--ink);fill:none;stroke-linecap:round;stroke-linejoin:round}
 #svg .ts{fill:var(--ink);font-family:var(--engr);font-weight:700}
 #svg .lyr{fill:var(--ink);font-family:var(--body);font-weight:600}
-#svg .dyn,#svg .ped,#svg .tri{fill:var(--ink);font-family:var(--engr);font-style:italic;font-weight:700}
+#svg .dyn,#svg .ped,#svg .tri,#svg .wd{fill:var(--ink);font-family:var(--engr);font-style:italic;font-weight:700}
+#svg .stx{fill:var(--ink);font-family:var(--body);font-weight:800}
+#svg .mnum{fill:var(--ink);opacity:.6;font-family:var(--body);font-weight:700}
+#svg .ln,#svg .box{stroke:var(--ink);fill:none;stroke-linecap:round;stroke-linejoin:round}
+#svg .oct{stroke-dasharray:4 4}
+#svg .note.on .artl{stroke:var(--shape)}
 #svg .note.on .hd,#svg .note.on .fl,#svg .note.on .dt,#svg .note.on .rf,#svg .note.on .art{fill:var(--shape)}
 #svg .note.on .hd.hollow{fill:none;stroke:var(--shape)}
 #svg .note.on .stem,#svg .note.on .rs,#svg .note.on .sh,#svg .note.on .led,#svg .note.on .artl{stroke:var(--shape)}
@@ -110,7 +115,23 @@ button:disabled{opacity:.35;cursor:default}
 .tb svg{width:24px;height:24px}
 .tb.wide{width:auto;padding:0 12px;font-weight:800;font-size:13px;gap:6px;display:flex;align-items:center}
 .tb.wide svg{width:18px;height:18px}
-.tb.dyn{font-family:var(--engr);font-style:italic;font-weight:700;font-size:19px;letter-spacing:-.02em}
+.tb.dyn{font-family:var(--engr);font-style:italic;font-weight:700;font-size:18px;letter-spacing:-.02em}
+.tb.plain{font-weight:800;font-size:15px;font-variant-numeric:tabular-nums}
+.tb.wide.dyn,.tb.wide.plain{padding:0 10px}
+.psep{width:1px;align-self:stretch;margin:6px 4px;background:var(--line);flex:none}
+.numwrap{display:flex;align-items:center;gap:6px;font-weight:800;font-family:var(--engr);font-style:italic;flex:none}
+.numin{width:74px;height:40px;border-radius:12px;border:0;background:var(--pill2);color:var(--ink);font:inherit;font-style:normal;font-weight:700;font-size:16px;padding:0 10px}
+.omrbtns{display:flex;gap:8px;flex-wrap:wrap}
+.big{height:52px;padding:0 18px;font-size:15px;border-radius:16px;cursor:pointer}
+.big svg{width:22px;height:22px}
+.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.th{position:relative}
+.th img{width:84px;height:112px;object-fit:cover;border-radius:12px;display:block;background:var(--pill)}
+.thx{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:13px;background:var(--ink);color:var(--panel);font-weight:800;line-height:1}
+.omrstat{font-weight:700;margin:0}
+.omrgo{align-self:flex-start;height:48px;padding:0 22px;border-radius:24px}
+.omrgo:disabled{opacity:.4}
 .palette{display:flex;align-items:center;gap:6px;overflow-x:auto;padding-block:4px 8px;scrollbar-width:none;min-height:56px}
 .plabel{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.7;flex:none;padding-right:2px}
 .info{margin-left:auto;text-align:right;font-size:13px;font-weight:600;white-space:nowrap;padding-left:10px;opacity:.9;flex:none}
@@ -134,7 +155,7 @@ button:disabled{opacity:.35;cursor:default}
 /* instrument picker */
 .ico{display:inline-flex}.ico svg{width:20px;height:20px}
 #pscrim{z-index:22}
-.picker{position:fixed;z-index:23;left:50%;top:50%;transform:translate(-50%,-50%);width:min(780px,calc(100vw - 32px));max-height:min(86vh,840px);overflow-y:auto;
+.picker{box-sizing:border-box;position:fixed;z-index:23;left:50%;top:50%;transform:translate(-50%,-50%);width:min(780px,calc(100vw - 32px));max-height:min(86vh,840px);overflow-y:auto;
   background:var(--panel);color:var(--ink);border-radius:26px;box-shadow:0 20px 60px rgba(0,0,0,.25);padding:22px;display:flex;flex-direction:column;gap:18px}
 .picker h2{font-family:var(--display);font-weight:900;font-stretch:112%;font-size:30px;margin:0;letter-spacing:-.02em}
 .picker h3{font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin:0;font-weight:800;opacity:.8}
@@ -156,7 +177,7 @@ button:disabled{opacity:.35;cursor:default}
 
 /* drawer */
 .scrim{position:fixed;inset:0;background:rgba(10,10,30,.35);z-index:20}
-.drawer{position:fixed;top:0;bottom:0;right:0;width:min(420px,94vw);background:var(--panel);color:var(--ink);z-index:21;box-shadow:-10px 0 40px rgba(0,0,0,.18);
+.drawer{box-sizing:border-box;position:fixed;top:0;bottom:0;right:0;width:min(420px,94vw);background:var(--panel);color:var(--ink);z-index:21;box-shadow:-10px 0 40px rgba(0,0,0,.18);
   display:flex;flex-direction:column;gap:18px;overflow-y:auto;
   padding:calc(18px + env(safe-area-inset-top,0px)) max(18px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) 20px}
 .drawer h2{font-family:var(--display);font-weight:900;font-stretch:112%;font-size:30px;margin:0;letter-spacing:-.02em}
@@ -216,6 +237,7 @@ details summary{cursor:pointer;font-weight:800;font-size:13px;padding-block:4px}
         <button class="cbtn metro" id="metroBtn" aria-pressed="false" title="Metronom (M)"><svg viewBox="0 0 24 24"><path d="M8 3h8l4 18H4z M12 15l5-9" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg><span class="lbl">Metronom</span></button>
         <button class="cbtn" id="instBtn" title="Instrument"><span class="ico" id="instIco"></span><span class="lbl" id="instLbl">Fortepian</span></button>
         <button class="cbtn play" id="playBtn"><svg viewBox="0 0 24 24" id="playIcon"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><span id="playTxt">Graj</span></button>
+        <button class="cbtn" id="camBtn" hidden title="Nuty ze zdjęcia"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.6" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="lbl">Ze zdjęcia</span></button>
         <button class="cbtn" id="newBtn" title="Nowy utwór"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg><span class="lbl">Nowy</span></button>
         <button class="cbtn" id="menuBtn"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg><span class="lbl">Menu</span></button>
       </div>
@@ -230,8 +252,10 @@ details summary{cursor:pointer;font-weight:800;font-size:13px;padding-block:4px}
     <div class="tabs" role="tablist" id="tabs">
       <button class="tab" role="tab" data-tab="nuty">Nuty</button>
       <button class="tab" role="tab" data-tab="znaki">Znaki</button>
+      <button class="tab" role="tab" data-tab="orn">Ozdobniki</button>
       <button class="tab" role="tab" data-tab="dyn">Dynamika</button>
-      <button class="tab" role="tab" data-tab="takty">Klucze i takty</button>
+      <button class="tab" role="tab" data-tab="takty">Takty</button>
+      <button class="tab" role="tab" data-tab="klucze">Klucze</button>
       <button class="tab" role="tab" data-tab="tekst">Tekst</button>
     </div>
     <div class="grow"></div>
@@ -271,6 +295,7 @@ details summary{cursor:pointer;font-weight:800;font-size:13px;padding-block:4px}
     <div class="row"><span>Kolor</span><div class="looks" id="looks"></div></div>
     <div class="row"><span>Klucze</span><div class="seg" id="handsSeg"><button data-s="t">Wiolinowy</button><button data-s="b">Basowy</button><button data-s="tb">Oba</button></div></div>
     <div class="row"><span>Instrument</span><button class="cbtn" id="instRow"></button></div>
+    <div class="row" id="omrRow" hidden><span>Nuty ze zdjęcia</span><button class="cbtn"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.6" fill="none" stroke="currentColor" stroke-width="2"/></svg>Zrób zdjęcie</button></div>
     <div class="row"><label for="keySel"><b>Tonacja</b></label><select class="sel" id="keySel"></select></div>
     <div class="row"><span>Metrum</span><div class="seg" id="meterSeg"></div></div>
     <div class="exp">
@@ -292,25 +317,40 @@ details summary{cursor:pointer;font-weight:800;font-size:13px;padding-block:4px}
   <div id="igroups" style="display:flex;flex-direction:column;gap:18px"></div>
   <p class="phint">Dotknij instrumentu, żeby go posłuchać. Wybór zapisuje się w utworze, a pianino na dole gra tym samym dźwiękiem.</p>
 </section>
+<div class="scrim" id="oscrim" hidden></div>
+<section class="picker" id="omr" hidden aria-label="Nuty ze zdjęcia">
+  <div class="dhead"><h2>Nuty ze zdjęcia</h2><button class="cbtn solid" id="omrClose">Zamknij</button></div>
+  <p class="phint">Zrób zdjęcie nut albo wybierz zdjęcia z galerii. Claude odczyta nuty i zapisze je w AnnApp, żeby można je było dalej edytować i odtwarzać. Najlepiej działa wyraźny druk, zdjęcie zrobione prosto z góry i w dobrym świetle.</p>
+  <div class="omrbtns">
+    <label class="cbtn solid big" for="omrCam"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.6" fill="none" stroke="currentColor" stroke-width="2"/></svg>Zrób zdjęcie</label><input class="vh" type="file" id="omrCam" accept="image/*" capture="environment">
+    <label class="cbtn big" for="omrPick"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 16l5-5 4 4 3-3 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Wybierz z galerii</label><input class="vh" type="file" id="omrPick" accept="image/*" multiple>
+  </div>
+  <div class="thumbs" id="omrThumbs"></div>
+  <div class="row"><span>Gdzie zapisać</span><div class="seg" id="omrDest"><button data-d="new">Nowy utwór</button><button data-d="add">Dopisz do tego</button></div></div>
+  <button class="cbtn play omrgo" id="omrGo" disabled><span id="omrGoTxt">Odczytaj nuty</span></button>
+  <p class="omrstat" id="omrStat" hidden></p>
+  <p class="phint">Odczyt korzysta z Twojego konta Claude. Po odczytaniu sprawdź nuty: przy trudnych zdjęciach coś może wymagać poprawki.</p>
+</section>
 <div class="toast" id="toast" hidden></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 (()=>{
 const $=id=>document.getElementById(id);
-const DUR={w:4,h:2,q:1,e:.5,s:.25};
-const DNAME={w:'cała nuta',h:'półnuta',q:'ćwierćnuta',e:'ósemka',s:'szesnastka'};
+const DUR={w:4,h:2,q:1,e:.5,s:.25,t:.125,x:.0625};
+const DNAME={w:'cała nuta',h:'półnuta',q:'ćwierćnuta',e:'ósemka',s:'szesnastka',t:'trzydziestodwójka',x:'sześćdziesięcioczwórka'};
 const LET=[0,0,1,1,2,3,3,4,4,5,5,6];
 const SH=[0,1,0,1,0,0,1,0,1,0,1,0];
 const BASEN=['c','d','e','f','g','a','h'],SHN=['cis','dis','eis','fis','gis','ais','his'],FLN=['ces','des','es','fes','ges','as','b'];
 const SUP=['','¹','²','³','⁴'];
-const DYNV={pp:.32,p:.48,mp:.64,mf:.8,f:.96,ff:1.12};
-const KEYS=[[0,'C-dur / a-moll'],[1,'G-dur / e-moll'],[2,'D-dur / h-moll'],[3,'A-dur / fis-moll'],[4,'E-dur / cis-moll'],[5,'H-dur / gis-moll'],
-  [-1,'F-dur / d-moll'],[-2,'B-dur / g-moll'],[-3,'Es-dur / c-moll'],[-4,'As-dur / f-moll'],[-5,'Des-dur / b-moll']];
-const METERS=[[2,4],[3,4],[4,4],[5,4],[2,2],[3,8],[6,8],[9,8],[12,8]];
+const DYNV={ppp:.22,pp:.32,p:.48,mp:.64,mf:.8,f:.96,ff:1.12,fff:1.26};
+const KEYS=[[0,'C-dur / a-moll'],[1,'G-dur / e-moll'],[2,'D-dur / h-moll'],[3,'A-dur / fis-moll'],[4,'E-dur / cis-moll'],[5,'H-dur / gis-moll'],[6,'Fis-dur / dis-moll'],[7,'Cis-dur / ais-moll'],
+  [-1,'F-dur / d-moll'],[-2,'B-dur / g-moll'],[-3,'Es-dur / c-moll'],[-4,'As-dur / f-moll'],[-5,'Des-dur / b-moll'],[-6,'Ges-dur / es-moll'],[-7,'Ces-dur / as-moll']];
+const METERS=[[2,4],[3,4],[4,4],[4,4,'C'],[2,2,'¢'],[2,2],[5,4],[6,4],[3,8],[6,8],[9,8],[12,8],[7,8],[3,2]];
+const CLEFS={t:{n:'Wiolinowy',base:30,ks:0},t8:{n:'Wiolinowy 8vb',base:23,ks:-7},b:{n:'Basowy',base:18,ks:-14},a:{n:'Altowy',base:24,ks:-7},ten:{n:'Tenorowy',base:22,ks:-7,ksSh:[24,28,25,29,26,30,27]}};
 const SORD=[3,0,4,1,5,2,6],FORD=[6,2,5,1,4,0,3];
 const KS_SH=[38,35,39,36,33,37,34],KS_FL=[34,37,33,36,32,35,31];
-const beats=n=>DUR[n.d]*(n.dot?1.5:1)*(n.tr?2/3:1);
+const beats=n=>n.gr?0:DUR[n.d]*(n.dot===2?1.75:n.dot?1.5:1)*(n.tr?2/3:1);
 const stepOf=m=>(Math.floor(m/12)-1)*7+LET[m%12];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const MIN=36,MAX=84;
@@ -355,12 +395,15 @@ const CI={
 };
 
 /* ---------- model ---------- */
-function normNote(n){const o={ps:Array.isArray(n.ps)?n.ps.filter(p=>typeof p==='number').sort((a,b)=>a-b):(typeof n.p==='number'?[n.p]:[]),d:DUR[n.d]?n.d:'q',dot:!!n.dot};
-  ['tr','tie','cn','rs','re'].forEach(k=>{if(n[k])o[k]=true});
-  ['t','sl','dyn','hp','ped','sp'].forEach(k=>{if(n[k])o[k]=n[k]});
-  if(Array.isArray(n.ar)&&n.ar.length)o.ar=n.ar.slice();return o}
-function norm(s){return{id:s.id||uid(),title:s.title||'Bez tytułu',tempo:+s.tempo||96,
-  mn:+s.mn||(+s.meter)||4,md:+s.md||4,key:Math.max(-5,Math.min(5,+s.key||0)),hands:s.hands===2?2:1,clef1:s.clef1==='b'?'b':'t',
+const NKEYS=['tr','tie','cn','rs','re','dbl','sg','co','fi','dc','ds','tco','br','reh','arp','gl'];
+const SKEYS=['t','sl','dyn','hp','ped','sp','gr','orn','jz','ott','ch','tx','tm','pz','sw'];
+function normNote(n){const o={ps:Array.isArray(n.ps)?n.ps.filter(p=>typeof p==='number').sort((a,b)=>a-b):(typeof n.p==='number'?[n.p]:[]),d:DUR[n.d]?n.d:'q',dot:n.dot===2?2:n.dot?1:0};
+  NKEYS.forEach(k=>{if(n[k])o[k]=true});SKEYS.forEach(k=>{if(n[k])o[k]=String(n[k])});
+  ['trem','rx','vo','tc'].forEach(k=>{if(+n[k])o[k]=+n[k]});
+  if(Array.isArray(n.ar)&&n.ar.length)o.ar=n.ar.filter(x=>typeof x==='string');return o}
+function norm(s){const cl=s.clefs&&typeof s.clefs==='object'?s.clefs:{};return{id:s.id||uid(),title:s.title||'Bez tytułu',tempo:+s.tempo||96,
+  mn:+s.mn||(+s.meter)||4,md:+s.md||4,msym:s.msym==='C'||s.msym==='¢'?s.msym:'',key:Math.max(-7,Math.min(7,+s.key||0)),hands:s.hands===2?2:1,
+  clefs:{t:CLEFS[cl.t]?cl.t:(s.clef1==='b'?'b':'t'),b:CLEFS[cl.b]?cl.b:'b'},color:!!s.color,
   look:LOOKS[s.look]?s.look:'roz',inst:{t:INST[s.inst&&s.inst.t]?s.inst.t:'grand',b:INST[s.inst&&s.inst.b]?s.inst.b:'grand'},notes:(Array.isArray(s.notes)?s.notes:[]).map(normNote),bass:(Array.isArray(s.bass)?s.bass:[]).map(normNote),
   updated:+s.updated||Date.now(),deleted:!!s.deleted,example:!!s.example}}
 function sample(){
@@ -389,7 +432,7 @@ function cacheLocal(){try{localStorage.setItem(CK,JSON.stringify(songs))}catch(e
 
 /* ---------- sync ---------- */
 let store=null,readOnly=false,pend=new Map(),writing=false,wT,firstSync=true;
-const ser=s=>({title:s.title,tempo:s.tempo,mn:s.mn,md:s.md,key:s.key,hands:s.hands,clef1:s.clef1,look:s.look,inst:s.inst,notes:s.notes,bass:s.bass,updated:s.updated,deleted:s.deleted});
+const ser=s=>({title:s.title,tempo:s.tempo,mn:s.mn,md:s.md,msym:s.msym,key:s.key,hands:s.hands,clefs:s.clefs,color:s.color,look:s.look,inst:s.inst,notes:s.notes,bass:s.bass,updated:s.updated,deleted:s.deleted});
 function setSync(state){$('sync').textContent={local:'Zapis tylko na tym urządzeniu',on:'Synchronizacja włączona: tablet, telefon i komputer',ro:'Tylko podgląd: brak uprawnień do zapisu'}[state]}
 function persist(s){cacheLocal();if(store&&!readOnly){pend.set(s.id,s);clearTimeout(wT);wT=setTimeout(flush,700)}}
 async function flush(){
@@ -421,16 +464,17 @@ async function flush(){
 })();
 
 /* ---------- editing state ---------- */
-let chordAnchor=null,vo='t',sel=song.notes.length-1,dur='q',dot=false,tri=false,chord=false,write=true,metro=false,playing=false,tab='nuty';
+let chordAnchor=null,vo='t',sel=song.notes.length-1,dur='q',dot=0,tri=false,grace=null,txtMode='t',chord=false,write=true,metro=false,playing=false,tab='nuty';
 let undoS=[],redoS=[];
 const V=v=>v==='t'?song.notes:song.bass;
 const cur=()=>V(vo)[sel];
-const CL=v=>v==='b'||(song.hands!==2&&song.clef1==='b')?'b':'t';
-const staffMode=()=>song.hands===2?'tb':song.clef1;
+const clefId=v=>(song.hands===2&&v==='b')?song.clefs.b:song.clefs.t;
+const CLF=v=>CLEFS[clefId(v)]||CLEFS.t;
+const staffMode=()=>song.hands===2?'tb':song.clefs.t;
 const ML=()=>song.mn*4/song.md;
-const stateStr=()=>JSON.stringify({notes:song.notes,bass:song.bass,mn:song.mn,md:song.md,key:song.key,hands:song.hands,clef1:song.clef1,inst:song.inst,vo,sel});
+const stateStr=()=>JSON.stringify({notes:song.notes,bass:song.bass,mn:song.mn,md:song.md,msym:song.msym,key:song.key,hands:song.hands,clefs:song.clefs,color:song.color,inst:song.inst,vo,sel});
 function snap(){undoS.push(stateStr());if(undoS.length>300)undoS.shift();redoS=[]}
-function restore(str){const o=JSON.parse(str);Object.assign(song,{notes:o.notes,bass:o.bass,mn:o.mn,md:o.md,key:o.key,hands:o.hands,clef1:o.clef1||'t',inst:o.inst||song.inst});vo=o.vo;sel=Math.min(o.sel,V(vo).length-1);changed()}
+function restore(str){const o=JSON.parse(str);Object.assign(song,{notes:o.notes,bass:o.bass,mn:o.mn,md:o.md,msym:o.msym||'',key:o.key,hands:o.hands,clefs:o.clefs||{t:'t',b:'b'},color:!!o.color,inst:o.inst||song.inst});vo=o.vo;sel=Math.min(o.sel,V(vo).length-1);changed()}
 function undo(){if(!undoS.length){toast('Nie ma czego cofnąć');return}redoS.push(stateStr());restore(undoS.pop())}
 function redo(){if(!redoS.length){toast('Nie ma czego przywrócić');return}undoS.push(stateStr());restore(redoS.pop())}
 function changed(){song.updated=Date.now();song.example=false;render();reveal();persist(song);header();palette()}
@@ -443,10 +487,12 @@ function spell(p,n){const pc=p%12;
   const q=flat?p+1:p-1;return{letter:LET[q%12],alt:flat?-1:1,step:stepOf(q)}}
 function pname(p,n){const s=spell(p,n),o=Math.floor(s.step/7),b=s.alt>0?SHN[s.letter]:s.alt<0?FLN[s.letter]:BASEN[s.letter];
   return o>=4?b+SUP[o-3]:o===3?b:b[0].toUpperCase()+b.slice(1)}
+const OTTSTEP={'8va':7,'8vb':-7,'15ma':14};
+const dstep=(p,n)=>spell(p,n).step-(n&&n.ott?OTTSTEP[n.ott]||0:0);
 function accMap(v){const arr=V(v),Lm=ML(),res=[];let acc=0,state={};
   arr.forEach((n,i)=>{if(acc>=Lm-1e-6){acc=0;state={}}
-    res[i]=n.ps.map(p=>{const s=spell(p,n),ka=state[s.step]!==undefined?state[s.step]:keyAlt(s.letter);
-      let show=null;if(s.alt!==ka||(n.cn&&s.alt===0))show=s.alt;state[s.step]=s.alt;return show});
+    res[i]=n.ps.map(p=>{const s=spell(p,n),ds=dstep(p,n),ka=state[ds]!==undefined?state[ds]:keyAlt(s.letter);
+      let show=null;if(s.alt!==ka||(n.cn&&s.alt===0))show=s.alt;state[ds]=s.alt;return show});
     acc+=beats(n)});
   return res}
 
@@ -473,9 +519,13 @@ function audio(){
   if(ac.state==='suspended')ac.resume();return ac;
 }
 ['pointerdown','touchend','keydown'].forEach(t=>document.addEventListener(t,()=>audio(),{once:true,capture:true}));
-function sampleTone(m,t,dur,vol,spec,list){
+function sampleTone(m,t,dur,vol,spec,list,opt){
   let best=list[0];for(const b of list)if(Math.abs(b[0]-m)<Math.abs(best[0]-m))best=b;
-  const src=ac.createBufferSource();src.buffer=best[1];src.playbackRate.value=Math.pow(2,(m-best[0])/12);
+  const src=ac.createBufferSource();src.buffer=best[1];const r0=Math.pow(2,(m-best[0])/12);src.playbackRate.value=r0;
+  if(opt&&opt.bend){const pr=src.playbackRate;
+    if(opt.bend==='scoop'){pr.setValueAtTime(r0*Math.pow(2,-3/12),t);pr.linearRampToValueAtTime(r0,t+.16)}
+    else if(opt.bend==='plop'){pr.setValueAtTime(r0*Math.pow(2,3/12),t);pr.linearRampToValueAtTime(r0,t+.14)}
+    else if(dur!=null){const e=t+Math.max(.06,dur*.55);pr.setValueAtTime(r0,e);pr.linearRampToValueAtTime(r0*Math.pow(2,(opt.bend==='fall'?-7:5)/12),t+dur)}}
   if(spec.sus&&best[1].duration>3){src.loop=true;src.loopStart=1.1;src.loopEnd=2.9}
   const g=ac.createGain(),pk=Math.min(1.4,vol)*.85*spec.gain;
   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(pk,t+(spec.sus?.03:.004));
@@ -495,10 +545,10 @@ function synthTone(m,t,dur,vol){
     g.gain.setTargetAtTime(0,rt,.08);oscs.forEach(o=>{try{o.stop(rt+.7)}catch(e){}})};
   if(dur!=null)release(t+dur);return{release:()=>release(ac.currentTime),kill:()=>{done=false;release(ac.currentTime)}};
 }
-function tone(m,t,dur,vol=.8,id='grand'){
+function tone(m,t,dur,vol=.8,id='grand',opt=null){
   let spec=INST[id]||INST.grand,o=bufs[id];
   if(!o||!o.list.length){if(ac&&!o)loadInst(id);spec=INST.grand;o=bufs.grand}
-  return o&&o.list.length?sampleTone(m,t,dur,vol,spec,o.list):synthTone(m,t,dur,vol)}
+  return o&&o.list.length?sampleTone(m,t,dur,vol,spec,o.list,opt):synthTone(m,t,dur,vol)}
 function blipNote(n,len=.6,v=vo){if(!n||!n.ps.length)return;audio();n.ps.forEach(p=>tone(p,ac.currentTime+.005,len,.8,song.inst[v]))}
 const clicks=[];
 function click(t,accent){const o=ac.createOscillator(),g=ac.createGain();o.type='square';o.frequency.value=accent?1760:1180;
@@ -511,17 +561,35 @@ const svg=$('svg'),scoreEl=$('score');
 let G=11;
 const TREBLE='M0.15 0.35C-0.5 0.35-0.5-0.55 0.1-0.6C0.9-0.6 1.0 0.7 0.1 0.85C-1.1 1.0-1.3-0.6-0.5-1.5C0.2-2.3 0.9-3.0 0.6-3.9C0.4-4.6-0.2-4.2-0.2-3.4L0.35 2.1C0.45 2.8-0.2 3.1-0.55 2.7';
 const BASS='M0.05 0.05C0-0.9 1.0-1.2 1.6-0.8C2.3-0.3 2.0 1.0 0.2 2.3';
-function splitVoice(arr,L){const ms=[];let cur=[],acc=0;arr.forEach((n,i)=>{cur.push({i,off:acc});acc+=beats(n);if(acc>=L-1e-6){ms.push(cur);cur=[];acc=0}});return{ms,cur}}
+const LVL={e:1,s:2,t:3,x:4};
+const NCOL=['#E53935','#E53935','#F57C00','#F57C00','#F9C80E','#43A047','#43A047','#00A6B8','#00A6B8','#1E6FE0','#1E6FE0','#8E24AA'];
+const TMW={accel:'accel.',rit:'rit.',atempo:'a tempo'};
+function splitVoice(arr,L){const ms=[];let cur=[],acc=0;arr.forEach((n,i)=>{cur.push({i,off:acc});acc+=beats(n);if(acc>=L-1e-6&&!n.gr){ms.push(cur);cur=[];acc=0}});return{ms,cur}}
 function accGlyph(kind,ax,y){
   if(kind===1)return`<path class="sh" stroke-width="${G*.11}" d="M${ax-G*.22} ${y-G*1.2}v${G*2.3}M${ax+G*.22} ${y-G*1.1}v${G*2.3}"/><path class="sh" stroke-width="${G*.22}" stroke-linecap="butt" d="M${ax-G*.5} ${y-G*.2}L${ax+G*.5} ${y-G*.5}M${ax-G*.5} ${y+G*.5}L${ax+G*.5} ${y+G*.2}"/>`;
   if(kind===-1)return`<path class="sh" stroke-width="${G*.13}" d="M${ax-G*.35} ${y-G*1.9}V${y+G*.5}"/><path class="sh" stroke-width="${G*.2}" d="M${ax-G*.35} ${y+G*.5}C${ax+G*.8} ${y-G*.1} ${ax+G*.45} ${y-G*.95} ${ax-G*.35} ${y-G*.2}"/>`;
   return`<path class="sh" stroke-width="${G*.11}" d="M${ax-G*.3} ${y-G*1.3}V${y+G*.45}M${ax+G*.3} ${y-G*.45}V${y+G*1.3}"/><path class="sh" stroke-width="${G*.22}" stroke-linecap="butt" d="M${ax-G*.3} ${y-G*.2}L${ax+G*.3} ${y-G*.4}M${ax-G*.3} ${y+G*.4}L${ax+G*.3} ${y+G*.2}"/>`;
 }
 function accCols(a){return a?Math.min(3,a.filter(x=>x!=null).length):0}
-function minW(n,a){return G*(n.d==='s'?1.9:n.d==='e'?2.3:2.7)+accCols(a)*G*1.1+(n.dot?G*.5:0)+(n.ps.length>1?G*.6:0)}
-function info0(n,v){const base=CL(v)==='t'?30:18,mid=base+4;const steps=n.ps.map(p=>spell(p,n).step);
+const preW=n=>(n.arp?G*.9:0)+(n.jz==='scoop'||n.jz==='plop'?G*1.1:0);
+function minW(n,a){if(n.gr)return 0;const l=LVL[n.d]||0;return G*(l>=2?1.9:l===1?2.3:2.7)+accCols(a)*G*1.1+(n.dot?G*.5:0)+(n.dot===2?G*.4:0)+(n.ps.length>1?G*.6:0)+preW(n)+(n.jz==='fall'||n.jz==='doit'?G*1.2:0)}
+function info0(n,v){const base=CLF(v).base,mid=base+4;const steps=n.ps.map(p=>dstep(p,n));
   let up=true;if(steps.length){const hi=steps[steps.length-1],lo=steps[0];up=!(hi-mid>=mid-lo)}
+  if(n.gr)up=true;
   return{base,mid,steps,up}}
+function ksSteps(id){const c=CLEFS[id]||CLEFS.t,k=song.key;if(!k)return[];const n=Math.abs(k);
+  return(k>0?(c.ksSh||KS_SH.map(s=>s+c.ks)):KS_FL.map(s=>s+c.ks)).slice(0,n)}
+function clefSVG(id,PADL,st){const c=CLEFS[id]||CLEFS.t,b=c.base;
+  if(id==='t'||id==='t8'){let s=`<path class="clef" d="${TREBLE}" transform="translate(${PADL+G*1.45} ${st.y(b+2)}) scale(${G})" stroke-width="0.19"/><circle class="clefdot" cx="${PADL+G*1.03}" cy="${st.y(b+2)+2.45*G}" r="${G*.32}"/>`;
+    if(id==='t8')s+=`<text class="ts" x="${PADL+G*1.3}" y="${st.bot+G*3.5}" font-size="${G*1.25}" text-anchor="middle">8</text>`;return s}
+  if(id==='b')return`<path class="clef" d="${BASS}" transform="translate(${PADL+G*.7} ${st.y(b+6)}) scale(${G})" stroke-width="0.26"/><circle class="clefdot" cx="${PADL+G*.95}" cy="${st.y(b+6)}" r="${G*.36}"/><circle class="clefdot" cx="${PADL+G*3}" cy="${st.y(b+7)}" r="${G*.2}"/><circle class="clefdot" cx="${PADL+G*3}" cy="${st.y(b+5)}" r="${G*.2}"/>`;
+  const cy=st.y(28),x0=PADL+G*.55,x1=x0+G*1.1;
+  const half=sg=>`<path class="clef" stroke-width="${G*.26}" d="M${x1} ${cy}L${x1+G*.5} ${cy-sg*G*.55}C${x1+G*.95} ${cy-sg*G*.95} ${x1+G*2.35} ${cy-sg*G*.75} ${x1+G*2.25} ${cy-sg*G*1.45}C${x1+G*2.15} ${cy-sg*G*2.15} ${x1+G*1.05} ${cy-sg*G*2.2} ${x1+G*1.05} ${cy-sg*G*1.6}"/><circle class="clefdot" cx="${x1+G*1.2}" cy="${cy-sg*G*1.6}" r="${G*.36}"/>`;
+  return`<line class="blk" stroke-width="${G*.6}" x1="${x0}" x2="${x0}" y1="${cy-G*2}" y2="${cy+G*2}"/><line class="bl" x1="${x0+G*.7}" x2="${x0+G*.7}" y1="${cy-G*2}" y2="${cy+G*2}"/>`+half(1)+half(-1);
+}
+function segnoSVG(x,y){return`<path class="ln" stroke-width="${G*.28}" d="M${x+G*.6} ${y-G*1.7}C${x+G*.2} ${y-G*2.2} ${x-G*.7} ${y-G*1.8} ${x-G*.4} ${y-G*1.2}C${x-G*.1} ${y-G*.7} ${x+G*.7} ${y-G*.6} ${x+G*.4} ${y-G*.05}C${x+G*.1} ${y+G*.4} ${x-G*.6} ${y+G*.2} ${x-G*.6} ${y-G*.2}"/><path class="ln" stroke-width="${G*.13}" d="M${x-G*.85} ${y+G*.15}L${x+G*.85} ${y-G*2}"/><circle class="art" cx="${x-G*.8}" cy="${y-G*1.3}" r="${G*.18}"/><circle class="art" cx="${x+G*.8}" cy="${y-G*.6}" r="${G*.18}"/>`}
+function codaSVG(x,y){return`<ellipse class="ln" stroke-width="${G*.24}" cx="${x}" cy="${y-G*.9}" rx="${G*.55}" ry="${G*.8}"/><path class="ln" stroke-width="${G*.13}" d="M${x} ${y-G*2.1}V${y+G*.3}M${x-G*1.05} ${y-G*.9}H${x+G*1.05}"/>`}
+function tempoSVG(x,y,bpm){return`<ellipse class="hd" cx="${x+G*.45}" cy="${y-G*.35}" rx="${G*.5}" ry="${G*.36}" transform="rotate(-22 ${x+G*.45} ${y-G*.35})"/><line class="stem" stroke-width="${G*.1}" x1="${x+G*.92}" x2="${x+G*.92}" y1="${y-G*.4}" y2="${y-G*2.3}"/><text class="stx" x="${x+G*1.5}" y="${y}" font-size="${G*1.3}">= ${bpm}</text>`}
 
 function build(o){
   G=o.G;const W=o.W,print=o.print,two=song.hands===2,L=ML();
@@ -529,37 +597,54 @@ function build(o){
   const count=Math.max(T.ms.length,B.ms.length)+1;
   const getM=(S,k)=>k<S.ms.length?S.ms[k]:k===S.ms.length?S.cur:[];
   const AM={t:accMap('t'),b:two?accMap('b'):[]};
-  const hasLyr=tab==='tekst'&&!print||song.notes.some(n=>n.t);
+  const all=two?song.notes.concat(song.bass):song.notes;
+  const editTxt=!print&&tab==='tekst';
+  const hasLyr=(editTxt&&txtMode==='t')||song.notes.some(n=>n.t);
   const hasDynT=song.notes.some(n=>n.dyn||n.hp),hasDynB=two&&song.bass.some(n=>n.dyn||n.hp);
   const hasPed=(two?song.bass:song.notes).some(n=>n.ped);
+  const anyCh=all.some(n=>n.ch)||(editTxt&&txtMode==='ch');
+  const anyTx=all.some(n=>n.tx||n.tm||n.tc||n.pz||n.sw)||(editTxt&&txtMode==='tx');
+  const anyVo=all.some(n=>n.vo);
+  const anyMk=all.some(n=>n.reh||n.sg||n.co||n.fi||n.dc||n.ds||n.tco||n.rx);
   const grpLen=song.md===8&&song.mn%3===0?1.5:song.md===2?2:1;
-  const ms=[];
+  let rehN=0;const ms=[];
   for(let k=0;k<count;k++){
     const t=getM(T,k),b=getM(B,k);let inner=G*L*2.7;
-    [[t,'t'],[b,'b']].forEach(([S,v])=>S.forEach(e=>{const n=V(v)[e.i];let need=minW(n,AM[v][e.i])*L/beats(n);
-      if(v==='t'&&hasLyr&&n.t)need=Math.max(need,(n.t.length*G*.72+G*.6)*L/beats(n));if(need>inner)inner=need}));
+    const nts=[...t.map(e=>song.notes[e.i]),...b.map(e=>song.bass[e.i])];
+    [[t,'t'],[b,'b']].forEach(([S,v])=>{let gb=0;S.forEach(e=>{const n=V(v)[e.i];if(n.gr){gb++;return}
+      let need=(minW(n,AM[v][e.i])+gb*G*1.5)*L/beats(n);gb=0;
+      if(v==='t'&&hasLyr&&n.t)need=Math.max(need,(n.t.length*G*.72+G*.6)*L/beats(n));
+      if(n.ch)need=Math.max(need,(n.ch.length*G*.85+G)*L/beats(n));
+      if(need>inner)inner=need});if(gb)inner+=gb*G*1.5});
     const last=k===count-1;
     if(last&&print&&!t.length&&!b.length)continue;
     if(last&&!print)inner=Math.max(inner,G*9);
-    const rs=[...t.map(e=>song.notes[e.i]),...b.map(e=>song.bass[e.i])].some(n=>n.rs);
-    const re=[...t.map(e=>song.notes[e.i]),...b.map(e=>song.bass[e.i])].some(n=>n.re);
-    ms.push({t,b,inner,rs,re,w:inner+G*1.8+(rs?G*1.5:0)+(re?G*1.2:0)});
+    const f={};['rs','re','dbl','sg','co','fi','dc','ds','tco','br','reh'].forEach(x=>{f[x]=nts.some(n=>n[x])});
+    f.rx=Math.max(0,...nts.map(n=>n.rx||0));f.vo=Math.max(0,...nts.map(n=>n.vo||0));
+    if(f.reh)f.rehL=String.fromCharCode(65+(rehN++%26));
+    f.hasCh=nts.some(n=>n.ch);f.hasTx=nts.some(n=>n.tx||n.tm||n.tc||n.pz||n.sw);f.hasVo=f.vo>0;f.hasMk=f.reh||f.sg||f.co||f.fi||f.dc||f.ds||f.tco||f.rx>2;
+    ms.push({t,b,inner,num:k+1,...f,w:inner+G*1.8+(f.rs?G*1.5:0)+(f.re?G*1.2:0)+(f.dbl?G*.4:0)+(f.sg||f.co?G*1.2:0)});
   }
-  const PADL=two?G*1.5:3,CLEFW=G*3.6,KSW=song.key?Math.abs(song.key)*G*1.0+G*.6:0,TSW=G*2.6;
-  const lines=[];let ln=null;
+  const PADL=two?G*1.5:3,CLEFW=G*3.6,KSW=song.key?Math.abs(song.key)*G*1.0+G*.6:0,TSW=G*2.8;
+  const lines=[];let ln=null,forceBr=false;
   ms.forEach(m=>{
     if(!ln){ln={ms:[],used:0,avail:W-PADL-CLEFW-KSW-TSW-4};lines.push(ln)}
-    if(ln.ms.length&&ln.used+m.w>ln.avail){ln={ms:[],used:0,avail:W-PADL-CLEFW-KSW-4};lines.push(ln)}
-    ln.ms.push(m);ln.used+=m.w});
-  const topOff=G*5.4,stH=G*4;
+    else if(ln.ms.length&&(forceBr||ln.used+m.w>ln.avail)){ln={ms:[],used:0,avail:W-PADL-CLEFW-KSW-4};lines.push(ln)}
+    ln.ms.push(m);ln.used+=m.w;forceBr=m.br});
+  const stH=G*4;
   const belowT=G*3.4+(hasDynT?G*2.4:0)+(hasLyr?G*2.4:0);
   const gapTB=Math.max(G*6.6,belowT+G*3.2);
-  const bottomExtra=G*3.4+((two?hasDynB:hasDynT)?G*2.4:0)+(!two&&hasLyr?G*2.4:0)+(hasPed?G*2.4:0);
-  const SYS=topOff+stH+(two?gapTB+stH:0)+bottomExtra;
-  let out='',over='';const pos={t:[],b:[]},systems=[];
+  const bottomExtra=G*3.6+((two?hasDynB:hasDynT)?G*2.4:0)+(!two&&hasLyr?G*2.4:0)+(hasPed?G*2.4:0);
+  let yAcc=0;
+  lines.forEach(ln=>{const eCh=editTxt&&txtMode==='ch',eTx=editTxt&&txtMode==='tx';
+    const g={ch:eCh||ln.ms.some(m=>m.hasCh),tx:eTx||ln.ms.some(m=>m.hasTx),vo:ln.ms.some(m=>m.hasVo),mk:ln.ms.some(m=>m.hasMk)};
+    let lane=G*3.6;g.chOff=lane;if(g.ch)lane+=G*2.3;g.txOff=lane;if(g.tx)lane+=G*2.5;g.voOff=lane;if(g.vo)lane+=G*2.1;g.mkOff=lane+G*.4;if(g.mk)lane+=G*2.9;
+    g.topOff=Math.max(G*5.4,lane+G*1.2);g.SYS=g.topOff+stH+(two?gapTB+stH:0)+bottomExtra;g.sy=yAcc;yAcc+=g.SYS;ln.g=g});
+  let out='',over='',hits='',ghits='';const pos={t:[],b:[]},systems=[];
   lines.forEach((ln,li)=>{
-    const sy=li*SYS,topT=sy+topOff,botT=topT+stH,topB=botT+gapTB,botB=topB+stH;
-    const yT=s=>botT-(s-(CL('t')==='t'?30:18))*G/2,yB=s=>botB-(s-18)*G/2;
+    const {chOff,txOff,voOff,mkOff,topOff,SYS,sy}=ln.g,anyTx=ln.g.tx,anyMk=ln.g.mk;const topT=sy+topOff,botT=topT+stH,topB=botT+gapTB,botB=topB+stH;
+    const bT=CLF('t').base,bB=CLF('b').base;
+    const yT=s=>botT-(s-bT)*G/2,yB=s=>botB-(s-bB)*G/2;
     const dynT=botT+G*3.1,lyrY=botT+G*(hasDynT?5.6:3.4),dynB=botB+G*3.1;
     const pedY=(two?botB:botT)+G*(3.3+((two?hasDynB:hasDynT)?2.4:0)+(!two&&hasLyr?2.4:0));
     const lastLine=li===lines.length-1;
@@ -568,34 +653,51 @@ function build(o){
     const xEnd=print&&lastLine?Math.min(W,x0+ln.used*sc):W;
     systems.push({y:sy,h:SYS});
     if(!print&&two){out+=`<rect class="zone${vo==='t'?' act':''}" data-z="t" x="0" y="${topT-G*2}" width="${W}" height="${stH+G*4}" rx="${G}"/><rect class="zone${vo==='b'?' act':''}" data-z="b" x="0" y="${topB-G*2}" width="${W}" height="${stH+G*4}" rx="${G}"/>`}
-    const staves=[{v:'t',top:topT,bot:botT,y:yT}];if(two)staves.push({v:'b',top:topB,bot:botB,y:yB});
+    const staves=[{v:'t',top:topT,bot:botT,y:yT,id:song.clefs.t}];if(two)staves.push({v:'b',top:topB,bot:botB,y:yB,id:song.clefs.b});
     staves.forEach(st=>{
+      const c=CLEFS[st.id]||CLEFS.t;
       for(let k=0;k<5;k++)out+=`<line class="stl" x1="${PADL}" x2="${xEnd}" y1="${st.top+k*G}" y2="${st.top+k*G}"/>`;
-      if(CL(st.v)==='t')out+=`<path class="clef" d="${TREBLE}" transform="translate(${PADL+G*1.45} ${st.y(32)}) scale(${G})" stroke-width="0.19"/><circle class="clefdot" cx="${PADL+G*1.03}" cy="${st.y(32)+2.45*G}" r="${G*.32}"/>`;
-      else out+=`<path class="clef" d="${BASS}" transform="translate(${PADL+G*.7} ${st.y(24)}) scale(${G})" stroke-width="0.26"/><circle class="clefdot" cx="${PADL+G*.95}" cy="${st.y(24)}" r="${G*.36}"/><circle class="clefdot" cx="${PADL+G*3}" cy="${st.y(25)}" r="${G*.2}"/><circle class="clefdot" cx="${PADL+G*3}" cy="${st.y(23)}" r="${G*.2}"/>`;
-      const sgn=song.key>0?1:-1,posL=song.key>0?KS_SH:KS_FL;
-      for(let k=0;k<Math.abs(song.key);k++){const s=posL[k]-(CL(st.v)==='b'?14:0);out+=accGlyph(sgn,PADL+CLEFW+G*.3+k*G*1.0,st.y(s))}
-      if(li===0){const tx=PADL+CLEFW+KSW+G*1.1,fs=G*2.7,mb=CL(st.v)==='t'?30:18;
-        out+=`<text class="ts" x="${tx}" y="${st.y(mb+6)+G*.95}" font-size="${fs}" text-anchor="middle">${song.mn}</text><text class="ts" x="${tx}" y="${st.y(mb+2)+G*.95}" font-size="${fs}" text-anchor="middle">${song.md}</text>`}
+      out+=clefSVG(st.id,PADL,st);
+      const sgn=song.key>0?1:-1;ksSteps(st.id).forEach((s,k)=>{out+=accGlyph(sgn,PADL+CLEFW+G*.3+k*G*1.0,st.y(s))});
+      if(li===0){const tx=PADL+CLEFW+KSW+G*1.2,fs=G*2.7,mb=c.base;
+        if(song.msym){const cy=st.y(mb+4);out+=`<text class="ts" x="${tx}" y="${cy+G*1.05}" font-size="${G*3.3}" text-anchor="middle">C</text>`;
+          if(song.msym==='¢')out+=`<line class="bl" x1="${tx+G*.1}" x2="${tx+G*.1}" y1="${cy-G*2.4}" y2="${cy+G*2.4}"/>`}
+        else out+=`<text class="ts" x="${tx}" y="${st.y(mb+6)+G*.95}" font-size="${fs}" text-anchor="middle">${song.mn}</text><text class="ts" x="${tx}" y="${st.y(mb+2)+G*.95}" font-size="${fs}" text-anchor="middle">${song.md}</text>`}
     });
+    if(li>0)out+=`<text class="mnum" x="${PADL+G*.2}" y="${topT-G*1.2}" font-size="${G*1.1}">${ln.ms[0].num}</text>`;
     if(two){out+=`<line class="bl" x1="${PADL}" x2="${PADL}" y1="${topT}" y2="${botB}"/>`;
       const h=botB-topT,bx=PADL-G*.5;
       out+=`<path class="brace" stroke-width="${G*.32}" d="M${bx} ${topT}C${bx-G*1.1} ${topT+h*.12} ${bx+G*.2} ${topT+h*.38} ${bx-G*.8} ${topT+h*.5}C${bx+G*.2} ${topT+h*.62} ${bx-G*1.1} ${topT+h*.88} ${bx} ${botB}"/>`}
     const barTop=topT,barBot=two?botB:botT;
-    const repDots=x=>staves.map(st=>{const mb=CL(st.v)==='t'?34:22;return`<circle class="clefdot" cx="${x}" cy="${st.y(mb+1)}" r="${G*.22}"/><circle class="clefdot" cx="${x}" cy="${st.y(mb-1)}" r="${G*.22}"/>`}).join('');
+    const repDots=x=>staves.map(st=>{const mb=(CLEFS[st.id]||CLEFS.t).base+4;return`<circle class="clefdot" cx="${x}" cy="${st.y(mb+1)}" r="${G*.22}"/><circle class="clefdot" cx="${x}" cy="${st.y(mb-1)}" r="${G*.22}"/>`}).join('');
     let x=x0;
     ln.ms.forEach((m,mi)=>{
-      const mStart=x;
+      const mStart=x,mEnd=mStart+m.w*sc;
       if(m.rs){out+=`<line class="blk" stroke-width="${G*.45}" x1="${x+G*.35}" x2="${x+G*.35}" y1="${barTop}" y2="${barBot}"/><line class="bl" x1="${x+G*.95}" x2="${x+G*.95}" y1="${barTop}" y2="${barBot}"/>`+repDots(x+G*1.45)}
-      const inner=m.inner*sc,xs=x+G*.9*sc+(m.rs?G*1.5:0);
+      const inner=m.inner*sc,xs=x+G*.9*sc+(m.rs?G*1.5:0)+(m.sg||m.co?G*1.2:0);
+      // measure-level marks
+      if(m.vo){const yv=topT-voOff;out+=`<path class="ln" stroke-width="${G*.12}" d="M${mStart+G*.4} ${yv+G*1.7}V${yv}H${mEnd-G*.5}${m.re?`V${yv+G*1.7}`:''}"/><text class="stx" x="${mStart+G*.8}" y="${yv+G*1.4}" font-size="${G*1.2}">${m.vo}.</text>`}
+      if(anyMk){const ym=topT-mkOff;let mx=mStart+G*.2;
+        if(m.reh){const wdt=G*2.2;out+=`<rect class="box" stroke-width="${G*.12}" x="${mx}" y="${ym-G*1.9}" width="${wdt}" height="${G*2.4}" rx="${G*.25}"/><text class="stx" x="${mx+wdt/2}" y="${ym}" font-size="${G*1.6}" text-anchor="middle">${m.rehL}</text>`;mx+=wdt+G*.8}
+        if(m.sg){out+=segnoSVG(mx+G*1,ym+G*.2);mx+=G*2.4}
+        if(m.co){out+=codaSVG(mx+G*1.1,ym+G*.2);mx+=G*2.4}
+        const rt=[m.rx>2?`${m.rx}×`:'',m.fi?'Fine':'',m.dc?'D.C.':'',m.ds?'D.S.':'',m.tco?'To Coda':''].filter(Boolean).join('  ');
+        if(rt)out+=`<text class="wd" x="${mEnd-G*.5}" y="${ym}" font-size="${G*1.45}" text-anchor="end">${rt}</text>`}
       ['t','b'].forEach(v=>{if(v==='b'&&!two)return;
         const st=v==='t'?staves[0]:staves[1];
-        const items=m[v].map(e=>{const n=V(v)[e.i],slot=beats(n)/L*inner,sx=xs+e.off/L*inner;
-          const a=AM[v][e.i]||[];const cx=sx+accCols(a)*G*1.1+G*.8;
-          return{n,v,i:e.i,off:e.off,sx,slot,cx,acc:a,...info0(n,v),bot:st.bot,top:st.top}});
+        const items=[];let gb=[];
+        const mk=(e,extra)=>{const n=V(v)[e.i];return{n,v,i:e.i,off:e.off,acc:AM[v][e.i]||[],...info0(n,v),bot:st.bot,top:st.top,...extra}};
+        m[v].forEach(e=>{const n=V(v)[e.i];const sx=xs+e.off/L*inner;
+          if(n.gr){gb.push(e);return}
+          const a=AM[v][e.i]||[];const slot=beats(n)/L*inner;
+          gb.forEach((g,k)=>{const gcx=sx+G*.6+accCols(AM[v][g.i])*G*.8+k*G*1.5;items.push(mk(g,{sx:gcx-G*.7,slot:G*1.4,cx:gcx,grace:true}))});
+          const cx=sx+accCols(a)*G*1.1+G*.8+preW(n)+gb.length*G*1.5;gb=[];
+          items.push(mk(e,{sx,slot,cx}))});
+        gb.forEach((g,k)=>{const gcx=xs+inner-G*(gb.length-k)*1.6;items.push(mk(g,{sx:gcx-G*.7,slot:G*1.4,cx:gcx,grace:true}))});
         // beam groups
         const groups=[];let g=[];
-        items.forEach(it=>{const bm=(it.n.d==='e'||it.n.d==='s')&&it.n.ps.length;it.gi=Math.floor(it.off/grpLen+1e-6);
+        items.forEach(it=>{const bm=LVL[it.n.d]&&it.n.ps.length&&!it.grace;it.gi=Math.floor(it.off/grpLen+1e-6);
+          if(it.grace)return;
           if(bm&&g.length&&g[g.length-1].gi===it.gi)g.push(it);else{if(g.length>1)groups.push(g);g=bm?[it]:[]}});
         if(g.length>1)groups.push(g);
         groups.forEach(gr=>{const avg=gr.reduce((a,it)=>a+(it.steps[0]+it.steps[it.steps.length-1])/2,0)/gr.length;const up=avg<gr[0].mid;
@@ -605,40 +707,48 @@ function build(o){
           gr.forEach(it=>{const diff=up?line(it.sx2)-it.tip0:it.tip0-line(it.sx2);if(diff>d)d=diff});
           const b0=up?a.tip0-d:a.tip0+d;line=xx=>b0+slope*(xx-a.sx2);
           gr.forEach(it=>it.tip=line(it.sx2));gr.line=line;gr.up=up});
-        items.forEach(it=>{const r=drawItem(it);out+=r.svg;
-          pos[v][it.i]={x0:it.sx-G*.35,x1:it.sx+it.slot-G*.35,cx:it.cx,sy,top:st.top,bot:st.bot,heads:r.heads,up:it.up,tip:r.tip,lineEnd:xEnd,line:li,dynY:v==='t'?dynT:dynB};
-          const n=it.n;
+        items.forEach(it=>{const r=drawItem(it);out+=r.svg;const n=it.n;
+          pos[v][it.i]={x0:it.grace?it.cx-G*.75:it.sx-G*.35,x1:it.grace?it.cx+G*.75:it.sx+it.slot-G*.35,cx:it.cx,sy,top:st.top,bot:st.bot,heads:r.heads,up:it.up,tip:r.tip,lineEnd:xEnd,line:li,sh:SYS,dynY:v==='t'?dynT:dynB,grace:!!it.grace,hiY:it.hiY,loY:it.loY};
           if(v==='t'&&n.t)out+=`<text class="lyr" x="${it.cx}" y="${lyrY}" font-size="${G*1.3}" text-anchor="middle">${esc(n.t)}</text>`;
           if(n.dyn)out+=`<text class="dyn" x="${it.cx}" y="${(v==='t'?dynT:dynB)+G*.5}" font-size="${G*1.7}" text-anchor="middle">${n.dyn}</text>`;
           if(n.ped&&(two?v==='b':true))out+=n.ped==='d'?`<text class="ped" x="${it.cx-G*.4}" y="${pedY+G*.5}" font-size="${G*1.5}">Ped.</text>`:`<text class="ped" x="${it.cx}" y="${pedY+G*.9}" font-size="${G*2.2}" text-anchor="middle">*</text>`;
+          if(n.ch)out+=`<text class="stx" x="${it.cx-G*.5}" y="${topT-chOff}" font-size="${G*1.45}">${esc(n.ch)}</text>`;
+          if(anyTx){let tx=it.cx-G*.5;const ty=topT-txOff;
+            if(n.tc){out+=tempoSVG(tx,ty,n.tc);tx+=G*(4.2+String(n.tc).length*.7)}
+            const w=[n.tm?TMW[n.tm]:'',n.pz==='pizz'?'pizz.':n.pz==='arco'?'arco':'',n.sw==='on'?'Swing':n.sw==='off'?'Straight':''].filter(Boolean).join('  ');
+            if(w){out+=`<text class="wd" x="${tx}" y="${ty}" font-size="${G*1.4}">${w}</text>`;tx+=w.length*G*.75+G}
+            if(n.tx){const wdt=n.tx.length*G*.82+G*1.2;out+=`<rect class="box" stroke-width="${G*.1}" x="${tx-G*.2}" y="${ty-G*1.45}" width="${wdt}" height="${G*1.95}" rx="${G*.2}"/><text class="stx" x="${tx+G*.4}" y="${ty}" font-size="${G*1.3}">${esc(n.tx)}</text>`}}
         });
-        groups.forEach(gr=>{const up=gr.up,t=up?G*.5:-G*.5,o2=up?G*.8:-G*.8,a=gr[0],z=gr[gr.length-1];
-          const xa=a.drawnX,xz=z.drawnX,L2=gr.line;
-          out+=`<path class="beam" d="M${xa} ${L2(xa)}L${xz} ${L2(xz)}L${xz} ${L2(xz)+t}L${xa} ${L2(xa)+t}Z"/>`;
-          gr.forEach((it,k)=>{if(it.n.d!=='s')return;const nx=gr[k+1],pv=gr[k-1];
-            if(nx&&nx.n.d==='s'){out+=`<path class="beam" d="M${it.drawnX} ${L2(it.drawnX)+o2}L${nx.drawnX} ${L2(nx.drawnX)+o2}L${nx.drawnX} ${L2(nx.drawnX)+o2+t}L${it.drawnX} ${L2(it.drawnX)+o2+t}Z"/>`}
-            else if(!(pv&&pv.n.d==='s')){const x2=nx?it.drawnX+G*1.1:it.drawnX-G*1.1;out+=`<path class="beam" d="M${it.drawnX} ${L2(it.drawnX)+o2}L${x2} ${L2(x2)+o2}L${x2} ${L2(x2)+o2+t}L${it.drawnX} ${L2(it.drawnX)+o2+t}Z"/>`}})});
+        groups.forEach(gr=>{const up=gr.up,t=up?G*.5:-G*.5,a=gr[0],z=gr[gr.length-1],L2=gr.line;
+          const bar=(x1,x2,o)=>`<path class="beam" d="M${x1} ${L2(x1)+o}L${x2} ${L2(x2)+o}L${x2} ${L2(x2)+o+t}L${x1} ${L2(x1)+o+t}Z"/>`;
+          out+=bar(a.drawnX,z.drawnX,0);
+          for(let lv=2;lv<=4;lv++){const o2=(up?1:-1)*(lv-1)*G*.8;
+            gr.forEach((it,k)=>{if((LVL[it.n.d]||0)<lv)return;const nx=gr[k+1],pv=gr[k-1];
+              if(nx&&(LVL[nx.n.d]||0)>=lv)out+=bar(it.drawnX,nx.drawnX,o2);
+              else if(!(pv&&(LVL[pv.n.d]||0)>=lv)){const x2=nx?it.drawnX+G*1.1:it.drawnX-G*1.1;out+=bar(Math.min(it.drawnX,x2),Math.max(it.drawnX,x2),o2)}})}});
         // triplets
         let tg=[];const flushT=()=>{if(tg.length){const a=tg[0],z=tg[tg.length-1],mx=(a.cx+z.cx)/2;
           let yy;if(a.beamed&&a.up===z.up&&a.up)yy=Math.min(...tg.map(t=>t.tipY))-G*.9;else if(a.beamed&&!a.up)yy=Math.max(...tg.map(t=>t.tipY))+G*1.9;
           else{yy=Math.min(st.top-G*1.2,...tg.map(t=>Math.min(t.tipY??1e9,t.hiY??1e9)-G*1.1));
             out+=`<path class="brk" stroke-width="${G*.1}" d="M${a.cx-G*.7} ${yy+G*.2}v${-G*.6}H${mx-G*.8}M${mx+G*.8} ${yy-G*.4}H${z.cx+G*.7}v${G*.6}"/>`}
           out+=`<text class="tri" x="${mx}" y="${yy}" font-size="${G*1.3}" text-anchor="middle">3</text>`;tg=[]}};
-        items.forEach(it=>{if(it.n.tr){tg.push(it);if(tg.length===3)flushT()}else flushT()});flushT();
+        items.forEach(it=>{if(it.grace)return;if(it.n.tr){tg.push(it);if(tg.length===3)flushT()}else flushT()});flushT();
       });
-      x=mStart+m.w*sc;
+      x=mEnd;
       const isLast=lastLine&&mi===ln.ms.length-1;
       if(m.re){out+=repDots(x-G*1.45)+`<line class="bl" x1="${x-G*.95}" x2="${x-G*.95}" y1="${barTop}" y2="${barBot}"/><line class="blk" stroke-width="${G*.45}" x1="${x-G*.35}" x2="${x-G*.35}" y1="${barTop}" y2="${barBot}"/>`}
+      else if(m.dbl)out+=`<line class="bl" x1="${x-G*.5}" x2="${x-G*.5}" y1="${barTop}" y2="${barBot}"/><line class="bl" x1="${x-G*.05}" x2="${x-G*.05}" y1="${barTop}" y2="${barBot}"/>`;
       else if(!isLast)out+=`<line class="bl" x1="${x}" x2="${x}" y1="${barTop}" y2="${barBot}"/>`;
     });
     const lastM=ln.ms[ln.ms.length-1];
-    if(lastLine&&!(print&&lastM.re))out+=`<line class="bl" x1="${xEnd-G*.9}" x2="${xEnd-G*.9}" y1="${barTop}" y2="${barBot}"/><line class="blk" stroke-width="${G*.4}" x1="${xEnd-G*.2}" x2="${xEnd-G*.2}" y1="${barTop}" y2="${barBot}"/>`;
+    if(lastLine&&!lastM.re&&!lastM.dbl)out+=`<line class="bl" x1="${xEnd-G*.9}" x2="${xEnd-G*.9}" y1="${barTop}" y2="${barBot}"/><line class="blk" stroke-width="${G*.4}" x1="${xEnd-G*.2}" x2="${xEnd-G*.2}" y1="${barTop}" y2="${barBot}"/>`;
     if(li===0)pos.start={t:{x:x0+G*.6,top:topT,bot:botT},b:{x:x0+G*.6,top:topB,bot:botB}};
   });
-  // ties, slurs, hairpins
+  // ties, slurs, hairpins, glissandi, octave lines
   ['t','b'].forEach(v=>{const arr=V(v),P=pos[v];
+    const nextMain=i=>{let j=i+1;while(j<arr.length&&arr[j].gr)j++;return j<arr.length?j:-1};
     arr.forEach((n,i)=>{const a=P[i];if(!a)return;
-      if(n.tie&&a.heads.length){const b=P[i+1];
+      if(n.tie&&a.heads.length){const b=P[nextMain(i)];
         a.heads.forEach(h=>{const nh=b&&b.line===a.line&&b.heads.find(q=>q.p===h.p);const dy=a.up?G*.55:-G*.55,hh=a.up?G*.75:-G*.75;
           const x1=h.x+G*.65,x2=nh?nh.x-G*.65:a.lineEnd-G*.4,y1=h.y+dy;
           over+=`<path class="tie" stroke-width="${G*.16}" d="M${x1} ${y1}C${x1+(x2-x1)*.25} ${y1+hh} ${x2-(x2-x1)*.25} ${y1+hh} ${x2} ${y1}"/>`})}
@@ -654,38 +764,70 @@ function build(o){
         if(end!=null&&P[end]&&P[end].line===a.line)x2=P[end].cx-G*1.8;else{const k=Math.min(arr.length-1,i+3);x2=P[k]&&P[k].line===a.line?P[k].x1:a.lineEnd-G}
         if(x2<x1+G)x2=x1+G*3;const y=a.dynY,o=G*.6;
         over+=n.hp==='<'?`<path class="hp" stroke-width="${G*.12}" d="M${x2} ${y-o}L${x1} ${y}L${x2} ${y+o}"/>`:`<path class="hp" stroke-width="${G*.12}" d="M${x1} ${y-o}L${x2} ${y}L${x1} ${y+o}"/>`}
-    })});
+      if(n.gl&&a.heads.length){const j=nextMain(i),b=j>=0?P[j]:null;const h=a.heads[0];
+        const nh=b&&b.line===a.line&&b.heads.length?b.heads[0]:null;
+        const x1=h.x+G*1.1+(n.dot?G*.6:0),y1=h.y,x2=nh?nh.x-G*1.3:a.lineEnd-G*.6,y2=nh?nh.y:h.y;
+        over+=`<path class="ln" stroke-width="${G*.14}" d="M${x1} ${y1}L${x2} ${y2}"/>`}
+    });
+    // 8va / 8vb / 15ma lines
+    let i=0;while(i<arr.length){const n=arr[i];if(!n.ott||!P[i]){i++;continue}
+      let j=i;while(j+1<arr.length&&arr[j+1].ott===n.ott&&P[j+1]&&P[j+1].line===P[i].line)j++;
+      const a=P[i],z=P[j],below=n.ott==='8vb';
+      let yy;if(below){yy=Math.max(a.bot+G*2.6,...arr.slice(i,j+1).map((q,k)=>(P[i+k].loY||0)+G*1.6))}
+      else{yy=Math.min(a.top-G*2.2,...arr.slice(i,j+1).map((q,k)=>(P[i+k].hiY||1e9)-G*1.2))}
+      const lab=n.ott==='15ma'?'15ma':n.ott;const tw=G*(lab.length*.75+.4);const x1=a.cx-G*.8,x2=Math.max(x1+tw+G,z.x1-G*.3);
+      over+=`<text class="wd" x="${x1}" y="${yy+(below?G*.4:G*.4)}" font-size="${G*1.35}">${lab}</text><path class="ln oct" stroke-width="${G*.11}" d="M${x1+tw} ${yy}H${x2}V${yy+(below?-G*1:G*1)}"/>`;
+      i=j+1}
+  });
   out+=over;
   if(!print){
     let pre='';const p=pos[vo][sel];
-    if(sel>=0&&p&&!playing)pre=`<rect class="selbg" x="${p.x0+2}" y="${p.top-G*3}" width="${Math.max(G*2,p.x1-p.x0-4)}" height="${G*10}" rx="${G*.8}"/>`;
+    if(sel>=0&&p&&!playing)pre=`<rect class="selbg" x="${p.x0+2}" y="${p.top-G*3}" width="${Math.max(G*1.6,p.x1-p.x0-4)}" height="${G*10}" rx="${G*.8}"/>`;
     const zi=out.indexOf('<line');out=out.slice(0,zi)+pre+out.slice(zi);
     if(!playing){let cx,c;if(p&&sel>=0){cx=p.x1;c=p}else{c=pos.start[vo];cx=c.x}
       out+=`<line class="cur" x1="${cx}" x2="${cx}" y1="${c.top-G*1.6}" y2="${c.bot+G*1.6}"/>`}
     ['t','b'].forEach(v=>V(v).forEach((n,i)=>{const q=pos[v][i];if(!q)return;
-      const y0=v==='t'?q.sy:q.top-G*2.6,y1=v==='t'?(two?q.bot+G*4:q.sy+SYS):q.sy+SYS;
-      out+=`<rect class="hit" data-v="${v}" data-i="${i}" x="${q.x0}" y="${y0}" width="${Math.max(4,q.x1-q.x0)}" height="${y1-y0}"/>`}));
+      const y0=v==='t'?q.sy:q.top-G*2.6,y1=v==='t'?(two?q.bot+G*4:q.sy+q.sh):q.sy+q.sh;
+      const r=`<rect class="hit" data-v="${v}" data-i="${i}" x="${q.x0}" y="${y0}" width="${Math.max(4,q.x1-q.x0)}" height="${y1-y0}"/>`;
+      if(q.grace)ghits+=r;else hits+=r}));
+    out+=hits+ghits;
   }
-  return{html:out,H:lines.length*SYS+G,systems,W};
+  return{html:out,H:yAcc+G,systems,W};
 }
 function natTip(it){const y=s=>it.bot-(s-it.base)*G/2;const lo=it.steps[0],hi=it.steps[it.steps.length-1];
-  const extra=it.n.d==='s'?G*.6:0;
+  const l=LVL[it.n.d]||0,extra=l>=2?(l-1)*G*.8:0;
   return it.up?Math.min(y(hi)-G*3.4-extra,y(it.mid)):Math.max(y(lo)+G*3.4+extra,y(it.mid))}
 function drawItem(it){
-  const n=it.n,cx=it.cx,y=s=>it.bot-(s-it.base)*G/2,rx=G*.66,ry=G*.47,mid=it.mid;
-  let s=`<g class="note" data-k="${it.v}${it.i}">`;const heads=[];let tip=null;it.drawnX=cx;
+  const n=it.n,cx=it.cx,y=s=>it.bot-(s-it.base)*G/2,rx=G*.66,ry=G*.47,mid=it.mid,lvl=LVL[n.d]||0;
+  let s='';const heads=[];let tip=null;it.drawnX=cx;
   const art=n.ar||[];
+  const aboveStack=(startY,list)=>{let yy=startY;list.forEach(([fn,h])=>{s+=fn(yy);yy-=h});return yy};
+  const aboveList=[];
+  if(art.includes('up'))aboveList.push([yy=>`<path class="artl" stroke-width="${G*.15}" d="M${cx-G*.5} ${yy-G*1.1}L${cx} ${yy}L${cx+G*.5} ${yy-G*1.1}"/>`,G*1.6]);
+  if(art.includes('down'))aboveList.push([yy=>`<path class="artl" stroke-width="${G*.15}" d="M${cx-G*.6} ${yy}V${yy-G*.95}H${cx+G*.6}V${yy}"/><rect class="art" x="${cx-G*.6}" y="${yy-G*1.1}" width="${G*1.2}" height="${G*.35}"/>`,G*1.6]);
+  if(art.includes('stop'))aboveList.push([yy=>`<path class="artl" stroke-width="${G*.17}" d="M${cx-G*.55} ${yy-G*.55}H${cx+G*.55}M${cx} ${yy-G*1.1}V${yy}"/>`,G*1.5]);
+  if(art.includes('open'))aboveList.push([yy=>`<circle class="artl" stroke-width="${G*.14}" cx="${cx}" cy="${yy-G*.5}" r="${G*.42}"/>`,G*1.4]);
+  if(n.orn==='tr')aboveList.push([yy=>`<text class="wd" x="${cx}" y="${yy}" font-size="${G*1.6}" text-anchor="middle">tr</text>`,G*1.8]);
+  if(n.orn==='mord'||n.orn==='prall')aboveList.push([yy=>{const z=`M${cx-G*1.1} ${yy-G*.25}L${cx-G*.6} ${yy-G*.85}L${cx-G*.1} ${yy-G*.25}L${cx+G*.4} ${yy-G*.85}L${cx+G*.9} ${yy-G*.25}`;
+    return`<path class="artl" stroke-width="${G*.16}" d="${z}"/>`+(n.orn==='mord'?`<path class="artl" stroke-width="${G*.12}" d="M${cx-G*.1} ${yy-G*1.2}V${yy+G*.15}"/>`:'')},G*1.5]);
+  if(n.orn==='turn'||n.orn==='iturn')aboveList.push([yy=>{const c=yy-G*.55;
+    return`<path class="artl" stroke-width="${G*.17}" d="M${cx-G*1.1} ${c+G*.1}C${cx-G*1.2} ${c-G*.6} ${cx-G*.4} ${c-G*.6} ${cx-G*.2} ${c-G*.1}C${cx} ${c+G*.4} ${cx+G*.2} ${c+G*.55} ${cx+G*.6} ${c+G*.4}C${cx+G*1.2} ${c+G*.2} ${cx+G*1.1} ${c-G*.5} ${cx+G*.6} ${c-G*.45}"/>`+(n.orn==='iturn'?`<path class="artl" stroke-width="${G*.12}" d="M${cx} ${c-G*.85}V${c+G*.85}"/>`:'')},G*1.5]);
+  const col=song.color&&n.ps.length?p=>NCOL[((p%12)+12)%12]:null;
   if(!n.ps.length){
     const yb=y(mid),k=G*.22;
     if(n.d==='w')s+=`<rect class="rf" x="${cx-G*.6}" y="${y(mid+2)}" width="${G*1.2}" height="${G*.5}"/>`;
     else if(n.d==='h')s+=`<rect class="rf" x="${cx-G*.6}" y="${yb-G*.5}" width="${G*1.2}" height="${G*.5}"/>`;
     else if(n.d==='q'){const t=yb-G*1.5;s+=`<path class="rs" stroke-width="${k}" d="M${cx-G*.3} ${t}l${G*.6} ${G*.85}l${-G*.55} ${G*.75}l${G*.6} ${G*.85}q${-G*.9} ${-G*.35} ${-G*.55} ${G*.8}"/>`}
-    else{s+=`<circle class="rf" cx="${cx-G*.35}" cy="${yb-G*.5}" r="${G*.25}"/><path class="rs" stroke-width="${k*.8}" d="M${cx-G*.35} ${yb-G*.3}q${G*.45} ${G*.25} ${G*.8} ${-G*.4}l${-G*.6} ${G*1.8}"/>`;
-      if(n.d==='s')s+=`<circle class="rf" cx="${cx-G*.6}" cy="${yb+G*.5}" r="${G*.25}"/><path class="rs" stroke-width="${k*.8}" d="M${cx-G*.6} ${yb+G*.7}q${G*.45} ${G*.25} ${G*.75} ${-G*.4}l${-G*.35} ${G*1.2}"/>`}
-    if(n.dot)s+=`<circle class="dt" cx="${cx+G*.95}" cy="${yb-G*.5}" r="${G*.2}"/>`;
-    if(art.includes('ferm'))s+=fermata(cx,Math.min(y(it.base+8)-G*1.4,yb-G*2.4));
-    it.tipY=yb-G*1.5;it.hiY=yb-G*1.5;
-    return{svg:s+'</g>',heads,tip};
+    else{const hk=lvl,top=yb-G*.5,sx1=cx+G*.45,sy1=top-G*.25,sx2=cx-G*.1-hk*G*.28,sy2=yb+G*(hk*1.0+.4);
+      s+=`<path class="rs" stroke-width="${k*.8}" d="M${sx1} ${sy1}L${sx2} ${sy2}"/>`;
+      for(let h=0;h<hk;h++){const fy=top+h*G*1.0,fx=sx1+(fy-sy1)*(sx2-sx1)/(sy2-sy1),dx=fx-G*.8;
+        s+=`<circle class="rf" cx="${dx}" cy="${fy}" r="${G*.25}"/><path class="rs" stroke-width="${k*.8}" d="M${dx} ${fy+G*.15}Q${(dx+fx)/2} ${fy+G*.4} ${fx} ${fy-G*.05}"/>`}}
+    if(n.dot){s+=`<circle class="dt" cx="${cx+G*.95}" cy="${yb-G*.5}" r="${G*.2}"/>`;if(n.dot===2)s+=`<circle class="dt" cx="${cx+G*1.5}" cy="${yb-G*.5}" r="${G*.2}"/>`}
+    let ab=Math.min(y(it.base+8)-G*1.4,yb-G*2.4);ab=aboveStack(ab,aboveList);
+    if(art.includes('ferm'))s+=fermata(cx,ab);
+    if(art.includes('breath'))s+=breathSVG(cx+G*1.9,y(it.base+8)-G*.8);
+    it.tipY=yb-G*1.5;it.hiY=yb-G*1.5;it.loY=yb+G*1.5;
+    return{svg:`<g class="note" data-k="${it.v}${it.i}">${s}</g>`,heads,tip};
   }
   const steps=it.steps,up=it.up,lo=steps[0],hi=steps[steps.length-1];
   const shift=steps.map(()=>0),hw=rx*2-G*.12;
@@ -695,37 +837,54 @@ function drawItem(it){
   const lx1=cx-G*1.05-(anyL?hw:0),lx2=cx+G*1.05+(anyR?hw:0);
   for(let k=it.base-2;k>=lo;k-=2)s+=`<line class="led" x1="${lx1}" x2="${lx2}" y1="${y(k)}" y2="${y(k)}"/>`;
   for(let k=it.base+10;k<=hi;k+=2)s+=`<line class="led" x1="${lx1}" x2="${lx2}" y1="${y(k)}" y2="${y(k)}"/>`;
-  let col=0,prev=null;const minX=cx-rx-(anyL?hw:0);
-  for(let k=steps.length-1;k>=0;k--){if(it.acc[k]==null)continue;if(prev!=null&&prev-steps[k]<6)col=(col+1)%3;else col=0;prev=steps[k];
-    s+=accGlyph(it.acc[k],minX-G*.75-col*G*1.15,y(steps[k]))}
+  let colA=0,prev=null;const minX=cx-rx-(anyL?hw:0);let accLeft=minX;
+  for(let k=steps.length-1;k>=0;k--){if(it.acc[k]==null)continue;if(prev!=null&&prev-steps[k]<6)colA=(colA+1)%3;else colA=0;prev=steps[k];
+    const ax=minX-G*.75-colA*G*1.15;accLeft=Math.min(accLeft,ax-G*.6);s+=accGlyph(it.acc[k],ax,y(steps[k]))}
   const hollow=n.d==='w'||n.d==='h';
-  steps.forEach((st,k)=>{const hx=cx+shift[k]*hw,hy=y(st);heads.push({p:n.ps[k],x:hx,y:hy});
-    if(n.d==='w')s+=`<ellipse class="hd hollow" cx="${hx}" cy="${hy}" rx="${rx*1.12}" ry="${ry*1.05}" transform="rotate(-12 ${hx} ${hy})"/>`;
-    else s+=`<ellipse class="hd${hollow?' hollow':''}" cx="${hx}" cy="${hy}" rx="${rx}" ry="${ry}" transform="rotate(-22 ${hx} ${hy})"/>`});
+  steps.forEach((st,k)=>{const hx=cx+shift[k]*hw,hy=y(st),p=n.ps[k];heads.push({p,x:hx,y:hy});
+    const cs=col?(hollow?` style="stroke:${col(p)}"`:` style="fill:${col(p)}"`):'';
+    if(n.d==='w')s+=`<ellipse class="hd hollow"${cs} cx="${hx}" cy="${hy}" rx="${rx*1.12}" ry="${ry*1.05}" transform="rotate(-12 ${hx} ${hy})"/>`;
+    else s+=`<ellipse class="hd${hollow?' hollow':''}"${cs} cx="${hx}" cy="${hy}" rx="${rx}" ry="${ry}" transform="rotate(-22 ${hx} ${hy})"/>`});
   let sx=cx;
   if(n.d!=='w'){
     sx=up?cx+rx-.8:cx-rx+.8;it.drawnX=sx;
     tip=it.beamed?it.tip:natTip(it);const y0=up?y(lo):y(hi);
     s+=`<line class="stem" stroke-width="${G*.12}" x1="${sx}" x2="${sx}" y1="${y0}" y2="${tip}"/>`;
-    if(!it.beamed&&(n.d==='e'||n.d==='s')){const d=up?1:-1,nf=n.d==='s'?2:1;
-      for(let f=0;f<nf;f++){const ey=tip+d*f*G*.85;
+    if(!it.beamed&&lvl){const d=up?1:-1;
+      for(let f=0;f<lvl;f++){const ey=tip+d*f*G*.85;
         s+=`<path class="fl" d="M${sx} ${ey}C${sx+G*.2} ${ey+d*G*1.2} ${sx+G*1.5} ${ey+d*G*1.25} ${sx+G*.95} ${ey+d*G*2.8}C${sx+G*1.15} ${ey+d*G*1.7} ${sx+G*.45} ${ey+d*G*1.5} ${sx} ${ey+d*G*1.6}Z"/>`}}
-  }
-  if(n.dot){const dx=cx+rx+(anyR?hw:0)+G*.5;steps.forEach(st=>{s+=`<circle class="dt" cx="${dx}" cy="${y(st)-(st%2===0?G/2:0)}" r="${G*.2}"/>`})}
-  // articulations
+    if(n.trem){const ym=(y0+tip)/2+(up?G*.4:-G*.4);for(let k=0;k<n.trem;k++){const yy=ym+(k-(n.trem-1)/2)*G*.8;
+      s+=`<path class="artl" stroke-width="${G*.32}" stroke-linecap="butt" d="M${sx-G*.6} ${yy+G*.3}L${sx+G*.6} ${yy-G*.3}"/>`}}
+    if(it.grace&&n.gr==='a'){const yy=up?y0-G*1.6:y0+G*1.6;s+=`<path class="artl" stroke-width="${G*.14}" d="M${sx-G*.9} ${yy+G*.7}L${sx+G*1.1} ${yy-G*.9}"/>`}
+  }else if(n.trem){const ym=y(hi)-G*2.2;for(let k=0;k<n.trem;k++){const yy=ym-k*G*.8;s+=`<path class="artl" stroke-width="${G*.32}" stroke-linecap="butt" d="M${cx-G*.6} ${yy+G*.3}L${cx+G*.6} ${yy-G*.3}"/>`}}
+  if(n.dot){const dx=cx+rx+(anyR?hw:0)+G*.5;steps.forEach(st=>{const dy=y(st)-(st%2===0?G/2:0);s+=`<circle class="dt" cx="${dx}" cy="${dy}" r="${G*.2}"/>`;if(n.dot===2)s+=`<circle class="dt" cx="${dx+G*.55}" cy="${dy}" r="${G*.2}"/>`})}
+  if(n.arp&&steps.length){const ax=Math.min(accLeft,minX)-G*.55,yA=y(hi)-G*.7,yB=y(lo)+G*.7;let d=`M${ax} ${yB}`,yy=yB,k=0;while(yy>yA){yy-=G*.45;d+=`L${ax+(k++%2?-G*.22:G*.22)} ${yy}`}
+    s+=`<path class="artl" stroke-width="${G*.12}" d="${d}"/>`}
+  if(n.jz){const hy=y(steps[0]),xl=minX,xr=cx+rx+(anyR?hw:0);
+    const jd={scoop:`M${xl-G*2} ${hy+G*1.3}Q${xl-G*.6} ${hy+G*1.2} ${xl-G*.2} ${hy}`,plop:`M${xl-G*2} ${hy-G*1.5}Q${xl-G*.6} ${hy-G*1.3} ${xl-G*.2} ${hy}`,
+      fall:`M${xr+G*.3} ${hy}Q${xr+G*1.6} ${hy+G*.2} ${xr+G*2.2} ${hy+G*1.7}`,doit:`M${xr+G*.3} ${hy}Q${xr+G*1.6} ${hy-G*.2} ${xr+G*2.2} ${hy-G*1.7}`}[n.jz];
+    if(jd)s+=`<path class="artl" stroke-width="${G*.16}" d="${jd}"/>`}
+  // articulations near the head
   const below=up&&n.d!=='w';let ay=below?y(lo)+G*1.3:y(hi)-G*1.3;const step=below?G*1.1:-G*1.1;
-  ['stac','ten','acc','marc'].forEach(a=>{if(!art.includes(a))return;
+  ['stac','stacc2','port','ten','acc','marc'].forEach(a=>{if(!art.includes(a))return;
     if(a==='stac')s+=`<circle class="art" cx="${cx}" cy="${ay}" r="${G*.22}"/>`;
+    else if(a==='stacc2')s+=below?`<path class="art" d="M${cx-G*.25} ${ay+G*.45}L${cx} ${ay-G*.45}L${cx+G*.25} ${ay+G*.45}Z"/>`:`<path class="art" d="M${cx-G*.25} ${ay-G*.45}L${cx} ${ay+G*.45}L${cx+G*.25} ${ay-G*.45}Z"/>`;
+    else if(a==='port'){s+=`<circle class="art" cx="${cx}" cy="${ay}" r="${G*.22}"/><path class="artl" stroke-width="${G*.18}" d="M${cx-G*.6} ${ay+step*.6}H${cx+G*.6}"/>`;ay+=step*.6}
     else if(a==='ten')s+=`<path class="artl" stroke-width="${G*.18}" d="M${cx-G*.6} ${ay}H${cx+G*.6}"/>`;
     else if(a==='acc')s+=`<path class="artl" stroke-width="${G*.15}" d="M${cx-G*.7} ${ay-G*.4}L${cx+G*.7} ${ay}L${cx-G*.7} ${ay+G*.4}"/>`;
     else s+=below?`<path class="artl" stroke-width="${G*.18}" d="M${cx-G*.55} ${ay-G*.4}L${cx} ${ay+G*.5}L${cx+G*.55} ${ay-G*.4}"/>`:`<path class="artl" stroke-width="${G*.18}" d="M${cx-G*.55} ${ay+G*.4}L${cx} ${ay-G*.5}L${cx+G*.55} ${ay+G*.4}"/>`;
     ay+=step});
-  const topY=Math.min(y(hi),up&&tip!=null?tip:1e9);
-  if(art.includes('ferm'))s+=fermata(cx,Math.min(y(it.base+8)-G*1.4,topY-G*1.6,(!below?ay:1e9)));
-  it.tipY=tip!=null?tip:y(hi);it.hiY=topY;
-  return{svg:s+'</g>',heads,tip};
+  const topY=Math.min(y(hi),up&&tip!=null?tip:1e9),botY=Math.max(y(lo),!up&&tip!=null?tip:-1e9);
+  let ab=Math.min(y(it.base+8)-G*1.3,topY-G*1.5,(!below?ay+G*.4:1e9));
+  ab=aboveStack(ab,aboveList);
+  if(art.includes('ferm')){s+=fermata(cx,ab);ab-=G*1.7}
+  if(art.includes('breath'))s+=breathSVG(cx+rx+G*1.6+(n.dot?G*.6:0),y(it.base+8)-G*.8);
+  it.tipY=tip!=null?tip:y(hi);it.hiY=Math.min(topY,ab+G*1.2);it.loY=below?Math.max(botY,ay):botY;
+  if(it.grace){const hy=heads[0].y;s=`<g transform="translate(${cx} ${hy}) scale(.62) translate(${-cx} ${-hy})">${s}</g>`}
+  return{svg:`<g class="note" data-k="${it.v}${it.i}">${s}</g>`,heads,tip};
 }
 function fermata(cx,fy){return`<path class="artl" stroke-width="${G*.2}" d="M${cx-G*1.15} ${fy}C${cx-G*1.15} ${fy-G*1.5} ${cx+G*1.15} ${fy-G*1.5} ${cx+G*1.15} ${fy}"/><circle class="art" cx="${cx}" cy="${fy-G*.3}" r="${G*.22}"/>`}
+function breathSVG(x,y){return`<circle class="art" cx="${x}" cy="${y}" r="${G*.26}"/><path class="artl" stroke-width="${G*.14}" d="M${x+G*.2} ${y}Q${x+G*.3} ${y+G*.6} ${x-G*.25} ${y+G*1}"/>`}
 
 function render(){
   const W=scoreEl.clientWidth;if(W<200)return;
@@ -744,48 +903,88 @@ function info(){
   $('handGrp').hidden=song.hands!==2;
   document.querySelectorAll('#handGrp .tb').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===vo));
   const el=$('info');if(!el)return;const n=cur();
-  el.innerHTML=n?(n.ps.length?`<b>${n.ps.map(p=>pname(p,n)).join(' ')}</b> · ${DNAME[n.d]}`:`<b>pauza</b> · ${DNAME[n.d]}`)+(n.dot?' z kropką':'')+(n.tr?' (triola)':''):`${song.notes.length+song.bass.length} nut`;
+  el.innerHTML=n?(n.ps.length?`<b>${n.ps.map(p=>pname(p,n)).join(' ')}</b> · ${DNAME[n.d]}`:`<b>pauza</b> · ${DNAME[n.d]}`)+(n.dot===2?' z dwiema kropkami':n.dot?' z kropką':'')+(n.tr?' (triola)':'')+(n.gr?' · przednutka':''):`${song.notes.length+song.bass.length} nut`;
 }
 
 /* ---------- palette (tabs) ---------- */
+const SK='fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"';
+const noteIc=(f,hollow)=>`<svg viewBox="0 0 24 24"><ellipse cx="9" cy="19.5" rx="4.4" ry="3.1" ${hollow?'fill="none" stroke="currentColor" stroke-width="2"':'fill="currentColor"'} transform="rotate(-20 9 19.5)"/><path d="M13 18.6V${f>2?1.5:3}" stroke="currentColor" stroke-width="1.8"/>${Array.from({length:f},(_, k)=>`<path d="M13 ${(f>2?1.5:3)+k*3.6}c1 2.2 5.6 3 4.2 7.4" ${SK} stroke-width="1.9"/>`).join('')}</svg>`;
+const txtIc=(t,size=11,italic=true)=>`<svg viewBox="0 0 24 24"><text x="12" y="16" font-size="${size}" text-anchor="middle" font-family="Georgia,serif" ${italic?'font-style="italic"':''} font-weight="700" fill="currentColor">${t}</text></svg>`;
 const I={
   w:'<svg viewBox="0 0 24 24"><ellipse cx="12" cy="13" rx="6" ry="4" fill="none" stroke="currentColor" stroke-width="2.4" transform="rotate(-15 12 13)"/></svg>',
-  h:'<svg viewBox="0 0 24 24"><ellipse cx="10" cy="18" rx="4.6" ry="3.3" fill="none" stroke="currentColor" stroke-width="2" transform="rotate(-20 10 18)"/><path d="M14.2 17V3" stroke="currentColor" stroke-width="1.8"/></svg>',
-  q:'<svg viewBox="0 0 24 24"><ellipse cx="10" cy="18" rx="4.6" ry="3.3" fill="currentColor" transform="rotate(-20 10 18)"/><path d="M14.2 17V3" stroke="currentColor" stroke-width="1.8"/></svg>',
-  e:'<svg viewBox="0 0 24 24"><ellipse cx="9" cy="18" rx="4.6" ry="3.3" fill="currentColor" transform="rotate(-20 9 18)"/><path d="M13.2 17V3" stroke="currentColor" stroke-width="1.8"/><path d="M13.2 3c1 3 6 4 4.5 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
-  s:'<svg viewBox="0 0 24 24"><ellipse cx="9" cy="19" rx="4.6" ry="3.3" fill="currentColor" transform="rotate(-20 9 19)"/><path d="M13.2 18V2" stroke="currentColor" stroke-width="1.8"/><path d="M13.2 2c1 2.5 6 3.5 4.5 8.5M13.2 7c1 2.5 6 3.5 4.5 8.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
-  dot:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="currentColor"/></svg>',
+  h:noteIc(0,true),q:noteIc(0),e:noteIc(1),s:noteIc(2),t:noteIc(3),x:noteIc(4),
+  dot:'<svg viewBox="0 0 24 24"><ellipse cx="9" cy="14" rx="4.4" ry="3.1" fill="currentColor" transform="rotate(-20 9 14)"/><circle cx="17.5" cy="13" r="2.2" fill="currentColor"/></svg>',
+  dot2:'<svg viewBox="0 0 24 24"><ellipse cx="7" cy="14" rx="4.2" ry="3" fill="currentColor" transform="rotate(-20 7 14)"/><circle cx="14.5" cy="13" r="2" fill="currentColor"/><circle cx="20" cy="13" r="2" fill="currentColor"/></svg>',
   tri:'<svg viewBox="0 0 24 24"><path d="M3 9V6h6M15 6h6v3" fill="none" stroke="currentColor" stroke-width="1.8"/><text x="12" y="10" font-size="9" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-weight="700" fill="currentColor">3</text><g fill="currentColor"><ellipse cx="5" cy="19" rx="2.6" ry="2" transform="rotate(-20 5 19)"/><ellipse cx="12" cy="19" rx="2.6" ry="2" transform="rotate(-20 12 19)"/><ellipse cx="19" cy="19" rx="2.6" ry="2" transform="rotate(-20 19 19)"/></g></svg>',
   rest:'<svg viewBox="0 0 24 24"><path d="M10 3l4.5 5.5-4 4.5 4.5 5.5c-4-1.5-6 1.5-3 3.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   chord:'<svg viewBox="0 0 24 24"><g fill="currentColor"><ellipse cx="10" cy="19" rx="4" ry="2.8" transform="rotate(-20 10 19)"/><ellipse cx="10" cy="13.5" rx="4" ry="2.8" transform="rotate(-20 10 13.5)"/><ellipse cx="10" cy="8" rx="4" ry="2.8" transform="rotate(-20 10 8)"/></g><path d="M13.8 18V2" stroke="currentColor" stroke-width="1.8"/></svg>',
+  grA:'<svg viewBox="0 0 24 24"><ellipse cx="9" cy="18" rx="3.4" ry="2.4" fill="currentColor" transform="rotate(-20 9 18)"/><path d="M12 17V5" stroke="currentColor" stroke-width="1.6"/><path d="M12 5c1 2 4.5 2.6 3.4 6" '+'fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M7 13l9-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  grP:'<svg viewBox="0 0 24 24"><ellipse cx="9" cy="18" rx="3.4" ry="2.4" fill="currentColor" transform="rotate(-20 9 18)"/><path d="M12 17V5" stroke="currentColor" stroke-width="1.6"/><path d="M12 5c1 2 4.5 2.6 3.4 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  color:'<svg viewBox="0 0 24 24"><circle cx="7" cy="8" r="3.3" fill="#E53935"/><circle cx="16" cy="7" r="3.3" fill="#F9C80E"/><circle cx="8" cy="17" r="3.3" fill="#1E6FE0"/><circle cx="17" cy="16" r="3.3" fill="#43A047"/></svg>',
   sharp:'<svg viewBox="0 0 24 24"><path d="M9.5 3v18M14.5 3v18" stroke="currentColor" stroke-width="1.7"/><path d="M5.5 10l13-3M5.5 17l13-3" stroke="currentColor" stroke-width="3"/></svg>',
   flat:'<svg viewBox="0 0 24 24"><path d="M8 2v19" stroke="currentColor" stroke-width="2"/><path d="M8 21c8-4 9-9 5-10s-5 2-5 2" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>',
   natural:'<svg viewBox="0 0 24 24"><path d="M8.5 2v15M15.5 7v15" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 10l7-2M8.5 17l7-2" stroke="currentColor" stroke-width="3"/></svg>',
   enh:'<svg viewBox="0 0 24 24"><path d="M5 9h13l-3-3M19 15H6l3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   tie:'<svg viewBox="0 0 24 24"><g fill="currentColor"><ellipse cx="5" cy="10" rx="3.2" ry="2.3" transform="rotate(-20 5 10)"/><ellipse cx="19" cy="10" rx="3.2" ry="2.3" transform="rotate(-20 19 10)"/></g><path d="M5 14c3 4 11 4 14 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
   slur:'<svg viewBox="0 0 24 24"><path d="M3 16C6 6 18 6 21 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
-  stac:'<svg viewBox="0 0 24 24"><ellipse cx="12" cy="9" rx="5" ry="3.6" fill="currentColor" transform="rotate(-20 12 9)"/><circle cx="12" cy="18" r="2.2" fill="currentColor"/></svg>',
+  stac:'<svg viewBox="0 0 24 24"><ellipse cx="12" cy="17" rx="5" ry="3.6" fill="currentColor" transform="rotate(-20 12 17)"/><circle cx="12" cy="7" r="2.2" fill="currentColor"/></svg>',
+  stacc2:'<svg viewBox="0 0 24 24"><ellipse cx="12" cy="17" rx="5" ry="3.6" fill="currentColor" transform="rotate(-20 12 17)"/><path d="M10.3 3h3.4L12 10z" fill="currentColor"/></svg>',
+  port:'<svg viewBox="0 0 24 24"><ellipse cx="12" cy="18" rx="5" ry="3.6" fill="currentColor" transform="rotate(-20 12 18)"/><circle cx="12" cy="5" r="2" fill="currentColor"/><path d="M6 10.5h12" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>',
   acc:'<svg viewBox="0 0 24 24"><path d="M4 7l16 5-16 5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/></svg>',
-  ten:'<svg viewBox="0 0 24 24"><ellipse cx="12" cy="9" rx="5" ry="3.6" fill="currentColor" transform="rotate(-20 12 9)"/><path d="M5 18h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>',
+  ten:'<svg viewBox="0 0 24 24"><ellipse cx="12" cy="17" rx="5" ry="3.6" fill="currentColor" transform="rotate(-20 12 17)"/><path d="M5 7h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>',
   marc:'<svg viewBox="0 0 24 24"><path d="M5 19L12 5l7 14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/></svg>',
   ferm:'<svg viewBox="0 0 24 24"><path d="M3 17C3 6 21 6 21 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="15" r="2.2" fill="currentColor"/></svg>',
+  breath:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2" fill="currentColor"/><path d="M14.5 8c.6 4-1.5 7.5-5 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+  stop:'<svg viewBox="0 0 24 24"><path d="M12 4v16M4 12h16" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>',
+  open:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>',
+  up:'<svg viewBox="0 0 24 24"><path d="M6 4l6 16 6-16" '+SK+' stroke-width="2.2"/></svg>',
+  down:'<svg viewBox="0 0 24 24"><path d="M5 20V5h14v15" '+SK+' stroke-width="2"/><path d="M5 5h14v4H5z" fill="currentColor"/></svg>',
   cresc:'<svg viewBox="0 0 24 24"><path d="M21 6L3 12l18 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>',
   dim:'<svg viewBox="0 0 24 24"><path d="M3 6l18 6-18 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>',
-  ctr:'<svg viewBox="0 0 24 24"><path d="'+TREBLE+'" transform="translate(12 14) scale(3)" fill="none" stroke="currentColor" stroke-width=".55" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.6" cy="21.3" r="1.5" fill="currentColor"/></svg>',
-  cbs:'<svg viewBox="0 0 24 24"><path d="'+BASS+'" transform="translate(5 9) scale(6)" fill="none" stroke="currentColor" stroke-width=".42" stroke-linecap="round"/><circle cx="6" cy="9" r="2" fill="currentColor"/><circle cx="20" cy="6.5" r="1.3" fill="currentColor"/><circle cx="20" cy="11.5" r="1.3" fill="currentColor"/></svg>',
-  cbo:'<svg viewBox="0 0 24 24"><path d="M4 2C1.5 5 5 9 2.5 12 5 15 1.5 19 4 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 4h13M8 7h13M8 10h13M8 14h13M8 17h13M8 20h13" stroke="currentColor" stroke-width="1.1"/></svg>',
+  tr:txtIc('tr',17),
+  mord:'<svg viewBox="0 0 24 24"><path d="M2 14l4-5 4 5 4-5 4 5 4-5" '+SK+' stroke-width="2.2"/><path d="M12 5v14" stroke="currentColor" stroke-width="1.6"/></svg>',
+  prall:'<svg viewBox="0 0 24 24"><path d="M2 14l4-5 4 5 4-5 4 5 4-5" '+SK+' stroke-width="2.2"/></svg>',
+  turn:'<svg viewBox="0 0 24 24"><path d="M3 14c-.5-5 6-5 7.5-1s3.5 5 7 3.5c4-2 2.5-7-1-6" '+SK+' stroke-width="2.2"/></svg>',
+  iturn:'<svg viewBox="0 0 24 24"><path d="M3 14c-.5-5 6-5 7.5-1s3.5 5 7 3.5c4-2 2.5-7-1-6" '+SK+' stroke-width="2.2"/><path d="M12 4v16" stroke="currentColor" stroke-width="1.6"/></svg>',
+  trem1:'<svg viewBox="0 0 24 24"><ellipse cx="9" cy="19.5" rx="4.4" ry="3.1" fill="currentColor" transform="rotate(-20 9 19.5)"/><path d="M13 18.6V2" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 11l9-3" stroke="currentColor" stroke-width="2.8"/></svg>',
+  trem2:'<svg viewBox="0 0 24 24"><ellipse cx="9" cy="19.5" rx="4.4" ry="3.1" fill="currentColor" transform="rotate(-20 9 19.5)"/><path d="M13 18.6V2" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 9l9-3M8.5 13.5l9-3" stroke="currentColor" stroke-width="2.6"/></svg>',
+  trem3:'<svg viewBox="0 0 24 24"><ellipse cx="9" cy="20" rx="4.4" ry="3.1" fill="currentColor" transform="rotate(-20 9 20)"/><path d="M13 19V2" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 7l9-3M8.5 11l9-3M8.5 15l9-3" stroke="currentColor" stroke-width="2.3"/></svg>',
+  arp:'<svg viewBox="0 0 24 24"><path d="M6 21l2-1.6-2-1.6 2-1.6-2-1.6 2-1.6-2-1.6 2-1.6-2-1.6 2-1.6-2-1.6" '+SK+' stroke-width="1.6"/><g fill="currentColor"><ellipse cx="15" cy="18" rx="3.4" ry="2.4" transform="rotate(-20 15 18)"/><ellipse cx="15" cy="12" rx="3.4" ry="2.4" transform="rotate(-20 15 12)"/><ellipse cx="15" cy="6" rx="3.4" ry="2.4" transform="rotate(-20 15 6)"/></g></svg>',
+  gliss:'<svg viewBox="0 0 24 24"><g fill="currentColor"><ellipse cx="5" cy="18" rx="3.2" ry="2.3" transform="rotate(-20 5 18)"/><ellipse cx="19" cy="6" rx="3.2" ry="2.3" transform="rotate(-20 19 6)"/></g><path d="M8.5 16L15.5 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  scoop:'<svg viewBox="0 0 24 24"><ellipse cx="17" cy="9" rx="4" ry="2.9" fill="currentColor" transform="rotate(-20 17 9)"/><path d="M3 19c5 0 8-2 10-8" '+SK+' stroke-width="2"/></svg>',
+  plop:'<svg viewBox="0 0 24 24"><ellipse cx="17" cy="16" rx="4" ry="2.9" fill="currentColor" transform="rotate(-20 17 16)"/><path d="M3 4c5 0 8 3 10 10" '+SK+' stroke-width="2"/></svg>',
+  fall:'<svg viewBox="0 0 24 24"><ellipse cx="7" cy="8" rx="4" ry="2.9" fill="currentColor" transform="rotate(-20 7 8)"/><path d="M11.5 9c5 0 8 3 9.5 11" '+SK+' stroke-width="2"/></svg>',
+  doit:'<svg viewBox="0 0 24 24"><ellipse cx="7" cy="17" rx="4" ry="2.9" fill="currentColor" transform="rotate(-20 7 17)"/><path d="M11.5 16c5 0 8-3 9.5-11" '+SK+' stroke-width="2"/></svg>',
+  dbl:'<svg viewBox="0 0 24 24"><path d="M9 3v18M15 3v18" stroke="currentColor" stroke-width="2"/></svg>',
   rs:'<svg viewBox="0 0 24 24"><path d="M5 4v16" stroke="currentColor" stroke-width="3.4"/><path d="M10 4v16" stroke="currentColor" stroke-width="1.6"/><circle cx="15" cy="9.5" r="1.8" fill="currentColor"/><circle cx="15" cy="14.5" r="1.8" fill="currentColor"/></svg>',
   re:'<svg viewBox="0 0 24 24"><path d="M19 4v16" stroke="currentColor" stroke-width="3.4"/><path d="M14 4v16" stroke="currentColor" stroke-width="1.6"/><circle cx="9" cy="9.5" r="1.8" fill="currentColor"/><circle cx="9" cy="14.5" r="1.8" fill="currentColor"/></svg>',
+  segno:'<svg viewBox="0 0 24 24"><path d="M16 5c-2-2-7-1-6 2.5s7 3 6 7-6 3-7 .5" '+SK+' stroke-width="2.4"/><path d="M6 19L18 4" stroke="currentColor" stroke-width="1.4"/><circle cx="7" cy="10" r="1.4" fill="currentColor"/><circle cx="17" cy="14" r="1.4" fill="currentColor"/></svg>',
+  coda:'<svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="4.5" ry="6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 2v20M3 12h18" stroke="currentColor" stroke-width="1.5"/></svg>',
+  br:'<svg viewBox="0 0 24 24"><path d="M19 5v7a3 3 0 0 1-3 3H6M10 11l-4 4 4 4" '+SK+' stroke-width="2.2"/></svg>',
+  reh:'<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><text x="12" y="17" font-size="12" text-anchor="middle" font-family="Arial,sans-serif" font-weight="800" fill="currentColor">A</text></svg>',
+  tc:'<svg viewBox="0 0 24 24"><ellipse cx="6" cy="17" rx="3.4" ry="2.4" fill="currentColor" transform="rotate(-20 6 17)"/><path d="M9 16V4" stroke="currentColor" stroke-width="1.6"/><path d="M13 10h8M13 14h8" stroke="currentColor" stroke-width="1.8"/></svg>',
+  st1:'<svg viewBox="0 0 24 24"><path d="M3 7h18M3 10h18M3 13h18M3 16h18M3 19h18" stroke="currentColor" stroke-width="1.2"/></svg>',
+  cbo:'<svg viewBox="0 0 24 24"><path d="M4 2C1.5 5 5 9 2.5 12 5 15 1.5 19 4 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 4h13M8 7h13M8 10h13M8 14h13M8 17h13M8 20h13" stroke="currentColor" stroke-width="1.1"/></svg>',
 };
+const clefIc=id=>{const st='<path d="M2 6h20M2 9h20M2 12h20M2 15h20M2 18h20" stroke="currentColor" stroke-width=".8" opacity=".55"/>';
+  if(id==='t'||id==='t8')return`<svg viewBox="0 0 24 24">${st}<path d="${TREBLE}" transform="translate(12 15) scale(2.6)" ${SK} stroke-width=".6"/>${id==='t8'?'<text x="12" y="24" font-size="6" text-anchor="middle" font-family="Georgia,serif" font-weight="700" fill="currentColor">8</text>':''}</svg>`;
+  if(id==='b')return`<svg viewBox="0 0 24 24">${st}<path d="${BASS}" transform="translate(5 9) scale(5.6)" ${SK} stroke-width=".45"/><circle cx="6" cy="9" r="1.8" fill="currentColor"/><circle cx="19.5" cy="7.5" r="1.1" fill="currentColor"/><circle cx="19.5" cy="10.5" r="1.1" fill="currentColor"/></svg>`;
+  const cy=id==='a'?12:9;return`<svg viewBox="0 0 24 24">${st}<path d="M7 ${cy-6}v12" stroke="currentColor" stroke-width="2.6"/><path d="M10 ${cy-6}v12" stroke="currentColor" stroke-width="1.2"/><path d="M11.5 ${cy}l2-2c1-2 1.5-4 4-4s2.5 4 0 4M11.5 ${cy}l2 2c1 2 1.5 4 4 4s2.5-4 0-4" ${SK} stroke-width="1.6"/></svg>`};
+const keyIc=k=>{if(!k)return txtIc('♮',14,false);const n=Math.abs(k),g=k>0?'♯':'♭';return`<svg viewBox="0 0 24 24"><text x="12" y="16" font-size="${n>3?9:11}" text-anchor="middle" font-family="Arial,sans-serif" font-weight="800" fill="currentColor">${n}${g}</text></svg>`};
 const has=(k,v)=>{const n=cur();return!!n&&(v===undefined?!!n[k]:n[k]===v)};
 const hasArt=a=>{const n=cur();return!!n&&!!n.ar&&n.ar.includes(a)};
+const DYNNAME={ppp:'pianississimo',pp:'pianissimo',p:'piano',mp:'mezzo piano',mf:'mezzo forte',f:'forte',ff:'fortissimo',fff:'fortississimo',sfz:'sforzando',rfz:'rinforzando',fp:'forte-piano',pf:'piano-forte',sf:'sforzato',rf:'rinforzato',sfp:'sforzando-piano',sfpp:'sforzando-pianissimo',sffz:'sforzatissimo',fz:'forzando'};
 const PAL={
   nuty:[
-    ...['w','h','q','e','s'].map(d=>({ic:I[d],t:DNAME[d]+` (${'whqes'.indexOf(d)+1})`,on:()=>dur===d,go:()=>setDur(d)})),'|',
-    {ic:I.dot,t:'Kropka przedłużająca (.)',on:()=>dot,go:toggleDot},
+    ...['w','h','q','e','s','t','x'].map((d,k)=>({ic:I[d],t:DNAME[d]+` (${k+1})`,on:()=>dur===d,go:()=>setDur(d)})),'|',
+    {ic:I.dot,t:'Kropka przedłużająca (.)',on:()=>dot===1,go:()=>setDotN(1)},
+    {ic:I.dot2,t:'Podwójna kropka',on:()=>dot===2,go:()=>setDotN(2)},
     {ic:I.tri,t:'Triola (T)',on:()=>tri,go:toggleTri},
-    {ic:I.rest,t:'Wstaw pauzę (P)',go:()=>{if(!playing)insert({ps:[],d:dur,dot,...(tri?{tr:true}:{})})}},'|',
+    {ic:I.rest,t:'Wstaw pauzę (P)',go:insertRest},'|',
+    {ic:I.grA,t:'Przednutka krótka (acciaccatura)',on:()=>grace==='a',go:()=>toggleGrace('a')},
+    {ic:I.grP,t:'Przednutka długa (appoggiatura)',on:()=>grace==='p',go:()=>toggleGrace('p')},'|',
     {ic:I.chord,t:'Akord: klawisze dodają dźwięki do zaznaczonej nuty (Z)',label:'Akord',on:()=>chord,go:()=>{chord=!chord;chordAnchor=null;palette();toast(chord?'Akord: pierwszy klawisz wstawia nutę, kolejne dokładają dźwięki':'Akord wyłączony')}},
+    {ic:I.color,t:'Kolorowe nuty: każdy dźwięk ma swój kolor',label:'Kolory',on:()=>song.color,go:()=>{song.color=!song.color;changed()}},
     'info'],
   znaki:[
     {ic:I.sharp,t:'Krzyżyk ♯',go:()=>accid(1)},{ic:I.flat,t:'Bemol ♭',go:()=>accid(-1)},{ic:I.natural,t:'Kasownik ♮',on:()=>has('cn'),go:()=>accid(0)},
@@ -793,55 +992,127 @@ const PAL={
     {ic:I.tie,t:'Łuk łączący z następną nutą',on:()=>has('tie'),go:()=>toggleFlag('tie')},
     {ic:I.slur,t:'Łuk legato: zaznacz początek, potem koniec',on:()=>!!(cur()&&cur().sl),go:slur},'|',
     {ic:I.stac,t:'Staccato',on:()=>hasArt('stac'),go:()=>toggleArt('stac')},
-    {ic:I.acc,t:'Akcent',on:()=>hasArt('acc'),go:()=>toggleArt('acc')},
+    {ic:I.stacc2,t:'Staccatissimo',on:()=>hasArt('stacc2'),go:()=>toggleArt('stacc2')},
     {ic:I.ten,t:'Tenuto',on:()=>hasArt('ten'),go:()=>toggleArt('ten')},
+    {ic:I.port,t:'Portato',on:()=>hasArt('port'),go:()=>toggleArt('port')},
+    {ic:I.acc,t:'Akcent',on:()=>hasArt('acc'),go:()=>toggleArt('acc')},
     {ic:I.marc,t:'Marcato',on:()=>hasArt('marc'),go:()=>toggleArt('marc')},
-    {ic:I.ferm,t:'Fermata',on:()=>hasArt('ferm'),go:()=>toggleArt('ferm')},'info'],
+    {ic:I.ferm,t:'Fermata',on:()=>hasArt('ferm'),go:()=>toggleArt('ferm')},
+    {ic:I.breath,t:'Oddech',on:()=>hasArt('breath'),go:()=>toggleArt('breath')},'|',
+    {ic:I.up,t:'Smyczek w górę',on:()=>hasArt('up'),go:()=>toggleArt('up')},
+    {ic:I.down,t:'Smyczek w dół',on:()=>hasArt('down'),go:()=>toggleArt('down')},
+    {txt:'pizz.',t:'Pizzicato (szarpanie strun)',on:()=>has('pz','pizz'),go:()=>setMark('pz','pizz')},
+    {txt:'arco',t:'Arco (powrót do smyczka)',on:()=>has('pz','arco'),go:()=>setMark('pz','arco')},
+    {ic:I.stop,t:'Dźwięk tłumiony (+)',on:()=>hasArt('stop'),go:()=>toggleArt('stop')},
+    {ic:I.open,t:'Struna pusta / flażolet (o)',on:()=>hasArt('open'),go:()=>toggleArt('open')},'|',
+    {txt:'8va',t:'Oktawa wyżej',on:()=>has('ott','8va'),go:()=>setOtt('8va')},
+    {txt:'8vb',t:'Oktawa niżej',on:()=>has('ott','8vb'),go:()=>setOtt('8vb')},
+    {txt:'15ma',t:'Dwie oktawy wyżej',on:()=>has('ott','15ma'),go:()=>setOtt('15ma')},'info'],
+  orn:[
+    {ic:I.tr,t:'Tryl',on:()=>has('orn','tr'),go:()=>setMark('orn','tr')},
+    {ic:I.mord,t:'Mordent',on:()=>has('orn','mord'),go:()=>setMark('orn','mord')},
+    {ic:I.prall,t:'Mordent górny (pralltriller)',on:()=>has('orn','prall'),go:()=>setMark('orn','prall')},
+    {ic:I.turn,t:'Obiegnik',on:()=>has('orn','turn'),go:()=>setMark('orn','turn')},
+    {ic:I.iturn,t:'Obiegnik odwrócony',on:()=>has('orn','iturn'),go:()=>setMark('orn','iturn')},'|',
+    {ic:I.trem1,t:'Tremolo: ósemki',on:()=>has('trem',1),go:()=>setMark('trem',1)},
+    {ic:I.trem2,t:'Tremolo: szesnastki',on:()=>has('trem',2),go:()=>setMark('trem',2)},
+    {ic:I.trem3,t:'Tremolo: trzydziestodwójki',on:()=>has('trem',3),go:()=>setMark('trem',3)},'|',
+    {ic:I.arp,t:'Arpeggio (akord rozłożony)',on:()=>has('arp'),go:()=>toggleFlag('arp')},
+    {ic:I.gliss,t:'Glissando do następnej nuty',on:()=>has('gl'),go:()=>toggleFlag('gl')},'|',
+    {ic:I.scoop,t:'Scoop (podjazd od dołu)',on:()=>has('jz','scoop'),go:()=>setMark('jz','scoop')},
+    {ic:I.plop,t:'Plop (zjazd z góry)',on:()=>has('jz','plop'),go:()=>setMark('jz','plop')},
+    {ic:I.fall,t:'Fall (opadanie po dźwięku)',on:()=>has('jz','fall'),go:()=>setMark('jz','fall')},
+    {ic:I.doit,t:'Doit (wzlot po dźwięku)',on:()=>has('jz','doit'),go:()=>setMark('jz','doit')},'info'],
   dyn:[
-    ...['pp','p','mp','mf','f','ff'].map(d=>({txt:d,t:{pp:'pianissimo',p:'piano',mp:'mezzo piano',mf:'mezzo forte',f:'forte',ff:'fortissimo'}[d],on:()=>has('dyn',d),go:()=>setMark('dyn',d)})),'|',
+    ...['ppp','pp','p','mp','mf','f','ff','fff'].map(d=>({txt:d,t:DYNNAME[d],on:()=>has('dyn',d),go:()=>setMark('dyn',d)})),'|',
+    ...['sfz','sf','sffz','fz','rfz','rf','fp','sfp','sfpp','pf'].map(d=>({txt:d,t:DYNNAME[d],on:()=>has('dyn',d),go:()=>setMark('dyn',d)})),'|',
     {ic:I.cresc,t:'Crescendo (coraz głośniej)',on:()=>has('hp','<'),go:()=>setMark('hp','<')},
     {ic:I.dim,t:'Diminuendo (coraz ciszej)',on:()=>has('hp','>'),go:()=>setMark('hp','>')},'|',
     {txt:'Ped.',t:'Wciśnij pedał',on:()=>has('ped','d'),go:()=>setMark('ped','d')},
     {txt:'✱',t:'Puść pedał',on:()=>has('ped','u'),go:()=>setMark('ped','u')},'info'],
   takty:[
-    {ic:I.ctr,label:'Wiolinowy',t:'Jeden klucz: wiolinowy',on:()=>staffMode()==='t',go:()=>setStaff('t')},
-    {ic:I.cbs,label:'Basowy',t:'Jeden klucz: basowy',on:()=>staffMode()==='b',go:()=>setStaff('b')},
-    {ic:I.cbo,label:'Oba',t:'Dwa klucze: prawa i lewa ręka',on:()=>staffMode()==='tb',go:()=>setStaff('tb')},'|',
+    {ic:I.dbl,t:'Podwójna kreska taktowa na końcu taktu',on:()=>has('dbl'),go:()=>toggleFlag('dbl')},
     {ic:I.rs,t:'Początek repetycji (takt z zaznaczoną nutą)',on:()=>has('rs'),go:()=>toggleFlag('rs')},
-    {ic:I.re,t:'Koniec repetycji: powtórz od początku repetycji',on:()=>has('re'),go:()=>toggleFlag('re')},'|',
-    {wide:()=>`${song.mn}/${song.md} · ${KEYS.find(k=>k[0]===song.key)[1]}`,t:'Zmień metrum i tonację',go:openD},'info'],
+    {ic:I.re,t:'Koniec repetycji: powtórz od początku repetycji',on:()=>has('re'),go:()=>toggleFlag('re')},
+    {txt:()=>(cur()&&cur().rx?cur().rx:3)+'×',t:'Ile razy zagrać repetycję (3×, 4×)',on:()=>has('rx'),go:cycleRx},'|',
+    {txt:'1.',t:'Pierwsza volta (zakończenie 1.)',on:()=>has('vo',1),go:()=>setMark('vo',1)},
+    {txt:'2.',t:'Druga volta (zakończenie 2.)',on:()=>has('vo',2),go:()=>setMark('vo',2)},
+    {txt:'3.',t:'Trzecia volta',on:()=>has('vo',3),go:()=>setMark('vo',3)},'|',
+    {ic:I.segno,t:'Segno (znak, do którego wraca D.S.)',on:()=>has('sg'),go:()=>toggleFlag('sg')},
+    {ic:I.coda,t:'Coda (zakończenie)',on:()=>has('co'),go:()=>toggleFlag('co')},
+    {txt:'Fine',t:'Fine: tu kończy się utwór po D.C. lub D.S.',on:()=>has('fi'),go:()=>toggleFlag('fi')},
+    {txt:'D.C.',t:'Da capo: wróć do początku',on:()=>has('dc'),go:()=>toggleFlag('dc')},
+    {txt:'D.S.',t:'Dal segno: wróć do znaku segno',on:()=>has('ds'),go:()=>toggleFlag('ds')},
+    {txt:'To Coda',t:'Przy powtórce skocz do Cody',on:()=>has('tco'),go:()=>toggleFlag('tco')},'|',
+    {ic:I.br,t:'Nowa linia po tym takcie',on:()=>has('br'),go:()=>toggleFlag('br')},
+    {ic:I.reh,t:'Litera próbna (A, B, C…)',on:()=>has('reh'),go:()=>toggleFlag('reh')},'|',
+    {txt:'accel.',t:'Accelerando: coraz szybciej',on:()=>has('tm','accel'),go:()=>setMark('tm','accel')},
+    {txt:'rit.',t:'Ritardando: coraz wolniej',on:()=>has('tm','rit'),go:()=>setMark('tm','rit')},
+    {txt:'a tempo',t:'A tempo: powrót do tempa',on:()=>has('tm','atempo'),go:()=>setMark('tm','atempo')},
+    {ic:I.tc,t:'Zmiana tempa od tej nuty',on:()=>has('tc'),go:toggleTc},
+    {num:true,show:()=>has('tc'),label:'♩ =',get:()=>cur().tc,set:v=>{const n=cur();if(!n)return;snap();n.tc=Math.max(30,Math.min(240,v||song.tempo));changed()}},
+    {txt:'Swing',t:'Swing: ósemki grane z kołysaniem',on:()=>has('sw','on'),go:()=>setMark('sw','on')},
+    {txt:'Straight',t:'Koniec swingu',on:()=>has('sw','off'),go:()=>setMark('sw','off')},'info'],
+  klucze:[
+    {lab:'Pięciolinie'},
+    {ic:I.st1,label:'Jedna',t:'Jedna pięciolinia',on:()=>song.hands!==2,go:()=>setStaff(song.clefs.t)},
+    {ic:I.cbo,label:'Dwie',t:'Dwie pięciolinie: prawa i lewa ręka',on:()=>song.hands===2,go:()=>setStaff('tb')},'|',
+    {lab:()=>song.hands===2?(vo==='b'?'Klucz lewej ręki':'Klucz prawej ręki'):'Klucz'},
+    ...Object.keys(CLEFS).map(id=>({ic:clefIc(id),t:'Klucz '+CLEFS[id].n.toLowerCase(),on:()=>clefId(vo)===id,go:()=>setClef(id)})),'|',
+    {lab:'Tonacja'},
+    ...[0,1,2,3,4,5,6,7,-1,-2,-3,-4,-5,-6,-7].map(k=>({ic:keyIc(k),t:KEYS.find(x=>x[0]===k)[1],on:()=>song.key===k,go:()=>setKey(k)})),'|',
+    {lab:'Metrum'},
+    ...METERS.map(([a,b,sy])=>({txt:sy||`${a}/${b}`,plain:true,t:sy==='C'?'4/4 (alla breve: C)':sy==='¢'?'2/2 (alla breve)':`${a}/${b}`,on:()=>song.mn===a&&song.md===b&&(song.msym||'')===(sy||''),go:()=>setMeter(a,b,sy||'')}))],
 };
 function palette(){
   const P=$('palette');
   document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===tab));
   if(tab==='tekst'){
-    if(!$('lyr')){P.innerHTML=`<span class="plabel">Sylaba</span><input class="lyrin" id="lyr" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="np. Ma-"><button class="cbtn" id="lyrNext">Dalej →</button><span class="hint">Spacja przechodzi dalej · myślnik łączy sylaby</span><div class="info" id="info"></div>`;
+    if(!$('lyr')){P.innerHTML=`<div class="seg" id="txtSeg"><button data-m="t">Sylaby</button><button data-m="ch">Akordy</button><button data-m="tx">Napis</button></div><input class="lyrin" id="lyr" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="cbtn" id="lyrNext">Dalej →</button><span class="hint" id="txtHint"></span><div class="info" id="info"></div>`;
       wireLyr()}
-    const n=vo==='t'?song.notes[sel]:null;if(document.activeElement!==$('lyr'))$('lyr').value=n&&n.t||'';info();return}
+    document.querySelectorAll('#txtSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===txtMode));
+    $('lyr').placeholder={t:'np. Ma-',ch:'np. Am, G7, F/A',tx:'np. Refren'}[txtMode];
+    $('txtHint').textContent={t:'Spacja przechodzi dalej · myślnik łączy sylaby',ch:'Spacja przechodzi do następnej nuty',tx:'Napis nad pięciolinią, np. Refren, Zwrotka 1'}[txtMode];
+    const n=cur();const fld=txtMode;if(document.activeElement!==$('lyr'))$('lyr').value=n&&n[fld]||'';info();return}
   P.innerHTML='';
   PAL[tab].forEach(it=>{
-    if(it==='|'){const d=document.createElement('span');d.style.width='4px';P.appendChild(d);return}
+    if(it==='|'){const d=document.createElement('span');d.className='psep';P.appendChild(d);return}
     if(it==='info'){const d=document.createElement('div');d.className='info';d.id='info';P.appendChild(d);return}
-    const b=document.createElement('button');b.className='tb'+(it.txt?' dyn':'')+(it.label||it.wide?' wide':'');b.title=it.t;b.setAttribute('aria-label',it.t);
-    if(it.ic)b.innerHTML=it.ic+(it.label?it.label:'');else if(it.txt)b.textContent=it.txt;else if(it.wide)b.textContent=it.wide();
+    if(it.lab){const d=document.createElement('span');d.className='plabel';d.textContent=typeof it.lab==='function'?it.lab():it.lab;P.appendChild(d);return}
+    if(it.num){if(!it.show())return;const w=document.createElement('label');w.className='numwrap';w.innerHTML=`<span>${it.label}</span><input class="numin" id="tcIn" type="number" min="30" max="240" step="1">`;
+      const inp=w.querySelector('input');inp.value=it.get();inp.onchange=()=>it.set(+inp.value);P.appendChild(w);return}
+    const b=document.createElement('button');const txt=typeof it.txt==='function'?it.txt():it.txt;
+    b.className='tb'+(txt&&!it.plain?' dyn':'')+(txt&&it.plain?' plain':'')+(it.label?' wide':'')+(txt&&txt.length>3?' wide':'');b.title=it.t;b.setAttribute('aria-label',it.t);
+    if(it.ic)b.innerHTML=it.ic+(it.label?it.label:'');else b.textContent=txt;
     if(it.on)b.setAttribute('aria-pressed',!!it.on());
     b.onclick=()=>it.go();P.appendChild(b)});
   info();
 }
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{const was=tab;tab=b.dataset.tab;$('palette').innerHTML='';
-  if(tab==='tekst'){if(vo!=='t')setVoice('t');if(sel<0&&song.notes.length)sel=0}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{const was=tab;tab=b.dataset.tab;$('palette').innerHTML='';$('palette').scrollLeft=0;
+  if(tab==='tekst'){if(txtMode==='t'&&vo!=='t')setVoice('t');if(sel<0&&V(vo).length)sel=0}
   palette();render();if(tab==='tekst')setTimeout(()=>$('lyr')&&$('lyr').focus(),30);else if(was==='tekst')render()});
 
 /* ---------- editing ---------- */
 function need(){const n=cur();if(!n){toast('Najpierw zaznacz nutę');return null}return n}
+function newNote(ps){const n={ps,d:dur,dot};if(tri)n.tr=true;if(grace)n.gr=grace;return n}
 function insert(n){snap();V(vo).splice(sel+1,0,n);sel++;changed()}
-function select(v,i){chordAnchor=null;vo=v;sel=Math.max(-1,Math.min(V(vo).length-1,i));const n=cur();if(n){dur=n.d;dot=n.dot;tri=!!n.tr;if(chord)chordAnchor=n}render();reveal();palette()}
+function insertRest(){if(!playing)insert(newNote([]))}
+function select(v,i){chordAnchor=null;vo=v;sel=Math.max(-1,Math.min(V(vo).length-1,i));const n=cur();if(n){dur=n.d;dot=n.dot||0;tri=!!n.tr;grace=n.gr||null;if(chord)chordAnchor=n}render();reveal();palette()}
 function setDur(d){dur=d;const n=cur();if(n&&n.d!==d){snap();n.d=d;changed()}else palette()}
-function toggleDot(){dot=!dot;const n=cur();if(n&&n.dot!==dot){snap();n.dot=dot;changed()}else palette()}
+function setDotN(k){dot=dot===k?0:k;const n=cur();if(n&&(n.dot||0)!==dot){snap();n.dot=dot;changed()}else palette()}
+function toggleDot(){setDotN(1)}
 function toggleTri(){tri=!tri;const n=cur();if(n&&!!n.tr!==tri){snap();if(tri)n.tr=true;else delete n.tr;changed()}else palette()}
+function toggleGrace(k){grace=grace===k?null:k;const n=cur();if(n&&(n.gr||null)!==grace){snap();if(grace)n.gr=grace;else delete n.gr;changed()}else palette();
+  if(grace)toast(grace==='a'?'Przednutki krótkie: kolejne klawisze wstawiają przednutki':'Przednutki długie: kolejne klawisze wstawiają przednutki')}
 function toggleFlag(k){const n=need();if(!n)return;snap();if(n[k])delete n[k];else n[k]=true;changed()}
 function toggleArt(a){const n=need();if(!n)return;snap();n.ar=n.ar||[];const i=n.ar.indexOf(a);if(i>=0)n.ar.splice(i,1);else n.ar.push(a);if(!n.ar.length)delete n.ar;changed()}
 function setMark(k,v){const n=need();if(!n)return;snap();if(n[k]===v)delete n[k];else n[k]=v;changed()}
+function cycleRx(){const n=need();if(!n)return;snap();n.rx=!n.rx?3:n.rx===3?4:0;if(!n.rx)delete n.rx;else n.re=true;changed()}
+function toggleTc(){const n=need();if(!n)return;snap();if(n.tc)delete n.tc;else n.tc=song.tempo;changed();if(n.tc)setTimeout(()=>$('tcIn')&&$('tcIn').focus(),30)}
+const OTTS={'8va':12,'8vb':-12,'15ma':24};
+function setOtt(k){const n=need();if(!n)return;if(!n.ps.length){toast('Pauza nie ma oktawy');return}snap();
+  if(n.ott){const was=n.ott;n.ps=n.ps.map(p=>p-OTTS[was]);delete n.ott;if(was===k){changed();return}}
+  n.ott=k;n.ps=n.ps.map(p=>p+OTTS[k]);changed()}
 function slur(){const n=need();if(!n)return;snap();
   if(n.sl){delete n.sl;changed();return}
   const arr=V(vo);let open=false;for(let i=sel-1;i>=0;i--){if(arr[i].sl==='e')break;if(arr[i].sl==='s'){open=true;break}}
@@ -851,38 +1122,47 @@ function accid(kind){const n=need();if(!n)return;if(!n.ps.length){toast('Pauza n
   if(kind===1){if(SH[p%12]&&sp.alt===-1)n.sp='s';else{p++;if(SH[p%12])n.sp='s';delete n.cn}}
   else if(kind===-1){if(SH[p%12]&&sp.alt===1)n.sp='b';else{p--;if(SH[p%12])n.sp='b';delete n.cn}}
   else{if(SH[p%12]){p=sp.alt===1?p-1:p+1;delete n.sp}else{if(n.cn)delete n.cn;else n.cn=true}}
-  n.ps[k]=Math.max(MIN-4,Math.min(MAX+7,p));n.ps.sort((a,b)=>a-b);blipNote(n);changed()}
+  n.ps[k]=Math.max(MIN-12,Math.min(MAX+24,p));n.ps.sort((a,b)=>a-b);blipNote(n);changed()}
 function enharm(){const n=need();if(!n)return;const bl=n.ps.find(p=>SH[p%12]);if(bl==null){toast('Ta nuta nie ma drugiej nazwy');return}
   snap();n.sp=spell(bl,n).alt===1?'b':'s';changed();toast(n.ps.map(p=>pname(p,n)).join(' '))}
-function transpose(k){const n=cur();if(!n||!n.ps.length)return;snap();n.ps=n.ps.map(p=>Math.max(MIN-4,Math.min(MAX+7,p+k)));
+function transpose(k){const n=cur();if(!n||!n.ps.length)return;snap();n.ps=n.ps.map(p=>Math.max(MIN-12,Math.min(MAX+24,p+k)));
   if(n.ps.some(p=>SH[p%12]))n.sp=k>0?'s':'b';blipNote(n,.45);changed()}
 function del(){if(sel<0)return;snap();V(vo).splice(sel,1);sel=Math.min(sel,V(vo).length-1);changed()}
 function setStaff(m){
   const was=staffMode();if(m===was)return;snap();
-  if(m==='tb'){song.hands=2;if(was==='b'&&!song.bass.length){song.bass=song.notes;song.notes=[];vo='b';sel=song.bass.length-1}}
-  else{if(was==='tb'){if(m==='b'&&!song.notes.length&&song.bass.length){song.notes=song.bass;song.bass=[]}vo='t';sel=song.notes.length-1}
-    song.hands=1;song.clef1=m}
-  pianoStart=m==='b'||vo==='b'?7:14;changed();buildPiano();if(!$('drawer').hidden)settings();
-  toast({t:'Klucz wiolinowy',b:'Klucz basowy',tb:'Dwa klucze: prawa i lewa ręka'}[m])}
-function setVoice(v){if(v===vo)return;vo=v;sel=V(v).length-1;pianoStart=v==='b'?7:14;buildPiano();render();reveal();palette()}
+  if(m==='tb'){if(song.hands!==2){if(CLF('t').base<26&&!song.bass.length){song.bass=song.notes;song.notes=[];song.clefs={t:'t',b:song.clefs.t==='ten'?'ten':'b'};vo='b';sel=song.bass.length-1}
+      else if(song.clefs.t==='b')song.clefs.t='t';song.hands=2}}
+  else{if(song.hands===2){if(CLEFS[m].base<26&&!song.notes.length&&song.bass.length){song.notes=song.bass;song.bass=[]}vo='t';sel=song.notes.length-1;song.hands=1}
+    song.clefs.t=m}
+  pianoStart=CLF(vo).base<26?7:14;changed();buildPiano();if(!$('drawer').hidden)settings();
+  toast(m==='tb'?'Dwie pięciolinie: prawa i lewa ręka':'Klucz '+CLEFS[m].n.toLowerCase())}
+function setClef(id){const s=song.hands===2?vo:'t';if(song.clefs[s]===id)return;snap();song.clefs={...song.clefs,[s]:id};
+  pianoStart=CLEFS[id].base<26?7:14;changed();buildPiano();if(!$('drawer').hidden)settings()}
+function setKey(k){if(song.key===k)return;snap();song.key=k;changed();buildPiano();if(!$('drawer').hidden)settings()}
+function setMeter(a,b,sy){if(song.mn===a&&song.md===b&&(song.msym||'')===sy)return;snap();song.mn=a;song.md=b;song.msym=sy;changed();if(!$('drawer').hidden)settings()}
+function setVoice(v){if(v===vo)return;vo=v;sel=V(v).length-1;pianoStart=CLF(v).base<26?7:14;buildPiano();render();reveal();palette()}
 
 svg.addEventListener('pointerdown',e=>{if(playing)return;
   const h=e.target.closest('[data-i]');
-  if(h){const v=h.dataset.v,i=+h.dataset.i;if(v!==vo){pianoStart=v==='b'?7:14;buildPiano()}select(v,i);blipNote(V(v)[i],.6,v);if(tab==='tekst'&&v==='t')setTimeout(()=>$('lyr')&&$('lyr').focus(),0);return}
+  if(h){const v=h.dataset.v,i=+h.dataset.i;if(v!==vo){pianoStart=CLF(v).base<26?7:14;buildPiano()}select(v,i);blipNote(V(v)[i],.6,v);if(tab==='tekst')setTimeout(()=>$('lyr')&&$('lyr').focus(),0);return}
   const z=e.target.closest('[data-z]');if(z)setVoice(z.dataset.z)});
 
-/* ---------- lyrics ---------- */
+/* ---------- text: lyrics, chord symbols, staff text ---------- */
 let lyrSnapFor=null;
 function wireLyr(){
-  $('lyr').addEventListener('input',e=>{if(vo!=='t'||sel<0)return;const n=song.notes[sel];if(!n)return;
-    if(lyrSnapFor!==sel){snap();lyrSnapFor=sel}
-    const v=e.target.value.replace(/\s+/g,'');if(v)n.t=v;else delete n.t;song.updated=Date.now();render();persist(song)});
-  $('lyr').addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();lyrNext()}
-    else if(e.key==='-'&&$('lyr').value&&!$('lyr').value.endsWith('-'))setTimeout(lyrNext,0)});
+  document.querySelectorAll('#txtSeg button').forEach(b=>b.onclick=()=>{txtMode=b.dataset.m;if(txtMode==='t'&&vo!=='t')setVoice('t');palette();render();$('lyr').focus()});
+  $('lyr').addEventListener('input',e=>{const n=cur();if(!n)return;
+    const key=txtMode+':'+vo+':'+sel;if(lyrSnapFor!==key){snap();lyrSnapFor=key}
+    const v=txtMode==='tx'?e.target.value.replace(/\s+/g,' ').trimStart():e.target.value.replace(/\s+/g,'');
+    if(v)n[txtMode]=v.slice(0,40);else delete n[txtMode];song.updated=Date.now();render();persist(song)});
+  $('lyr').addEventListener('keydown',e=>{
+    if(txtMode==='tx'){if(e.key==='Enter'){e.preventDefault();$('lyr').blur();toast('Zapisano napis')}return}
+    if(e.key===' '||e.key==='Enter'){e.preventDefault();lyrNext()}
+    else if(txtMode==='t'&&e.key==='-'&&$('lyr').value&&!$('lyr').value.endsWith('-'))setTimeout(lyrNext,0)});
   $('lyrNext').onclick=lyrNext;
 }
-function lyrNext(){if(vo!=='t')setVoice('t');let i=sel+1;while(i<song.notes.length&&!song.notes[i].ps.length)i++;
-  if(i>=song.notes.length){toast('To ostatnia nuta');return}lyrSnapFor=null;select('t',i);$('lyr').value=song.notes[i].t||'';$('lyr').focus()}
+function lyrNext(){if(txtMode==='t'&&vo!=='t')setVoice('t');const arr=V(vo);let i=sel+1;while(i<arr.length&&(!arr[i].ps.length||arr[i].gr))i++;
+  if(i>=arr.length){toast('To ostatnia nuta');return}lyrSnapFor=null;select(vo,i);$('lyr').value=arr[i][txtMode]||'';$('lyr').focus()}
 
 /* ---------- piano ---------- */
 const piano=$('piano');
@@ -891,7 +1171,7 @@ let pianoStart=14,keyEls={},firstVisible=60;
 function buildPiano(){
   const w=piano.clientWidth;const count=Math.max(7,Math.min(WHITES.length,Math.floor(w/46)));
   pianoStart=Math.max(0,Math.min(pianoStart,WHITES.length-count));
-  const ws=WHITES.slice(pianoStart,pianoStart+count);{const pref=CL(vo)==='b'?48:60;firstVisible=ws.includes(pref)?pref:(ws.find(m=>m%12===0)||ws[0])}
+  const ws=WHITES.slice(pianoStart,pianoStart+count);{const pref=CLF(vo).base<26?48:60;firstVisible=ws.includes(pref)?pref:(ws.find(m=>m%12===0)||ws[0])}
   piano.innerHTML='';keyEls={};const kw=100/count;
   ws.forEach((m,j)=>{const k=document.createElement('div');k.className='wk'+(m%12===0?' c':'');k.dataset.m=m;
     k.innerHTML=`<span>${m%12===0?pname(m):BASEN[LET[m%12]].toUpperCase()}</span>`;piano.appendChild(k);keyEls[m]=k;
@@ -904,7 +1184,7 @@ function keyDown(m,id){if(held.has(id))return;audio();const v=tone(m,ac.currentT
   if(!write||playing)return;
   const n=cur();
   if(chord&&n&&n.ps.length&&chordAnchor===n){snap();const i=n.ps.indexOf(m);if(i>=0){if(n.ps.length>1)n.ps.splice(i,1)}else{n.ps.push(m);n.ps.sort((a,b)=>a-b)}changed();return}
-  insert({ps:[m],d:dur,dot,...(tri?{tr:true}:{})});if(chord)chordAnchor=cur()}
+  insert(newNote([m]));if(chord)chordAnchor=cur()}
 function keyUp(id){const h=held.get(id);if(!h)return;h.v.release();keyEls[h.m]?.classList.remove('down');held.delete(id)}
 piano.addEventListener('pointerdown',e=>{const k=e.target.closest('[data-m]');if(!k)return;e.preventDefault();keyDown(+k.dataset.m,e.pointerId)});
 ['pointerup','pointercancel','pointerleave'].forEach(t=>piano.addEventListener(t,e=>keyUp(e.pointerId)));
@@ -912,13 +1192,40 @@ $('octDown').onclick=()=>{pianoStart-=7;buildPiano()};
 $('octUp').onclick=()=>{pianoStart+=7;buildPiano()};
 
 /* ---------- playback ---------- */
-function voiceData(v){const arr=V(v);let t=0,vel=.8;const ev=[],hl=[];let tied={};
-  arr.forEach((n,i)=>{const d=beats(n);if(n.dyn)vel=DYNV[n.dyn];const art=n.ar||[];
-    const len=d*(art.includes('stac')?.42:art.includes('ten')?.99:.92),vol=vel*(art.includes('acc')||art.includes('marc')?1.3:1);
-    const nt={};
-    n.ps.forEach(p=>{if(tied[p]){tied[p].len+=d;nt[p]=tied[p]}else{const e={t,len,p,vol,inst:song.inst[v]};ev.push(e);nt[p]=e}});
+const DYNX={sfz:{acc:1.45},sf:{acc:1.4},sffz:{acc:1.6},fz:{acc:1.45},rfz:{acc:1.35},rf:{acc:1.3},fp:{acc:1.4,lvl:'p'},sfp:{acc:1.5,lvl:'p'},sfpp:{acc:1.5,lvl:'pp'},pf:{acc:.6,lvl:'f'}};
+function scaleSet(){const t=((song.key*7)%12+12)%12;return new Set([0,2,4,5,7,9,11].map(i=>(t+i)%12))}
+function nbr(p,dir){const S=scaleSet(),a=p+dir;return S.has(((a%12)+12)%12)?a:p+2*dir}
+function voiceData(v){const arr=V(v),vel=[];let cv=.8;
+  arr.forEach((n,i)=>{if(n.dyn&&DYNV[n.dyn]!=null)cv=DYNV[n.dyn];vel[i]=cv;if(n.dyn&&DYNX[n.dyn]&&DYNX[n.dyn].lvl)cv=DYNV[DYNX[n.dyn].lvl]});
+  arr.forEach((n,i)=>{if(!n.hp)return;let j=i+1;while(j<arr.length&&j<=i+12&&!arr[j].dyn)j++;
+    const end=Math.min(j,arr.length),tg=j<arr.length&&arr[j].dyn&&DYNV[arr[j].dyn]!=null?DYNV[arr[j].dyn]:vel[i]*(n.hp==='<'?1.35:.6);
+    const v0=vel[i];for(let k=i;k<end;k++)vel[k]=v0+(tg-v0)*(k-i)/Math.max(1,end-i)});
+  let t=0,tied={},pz=false,graces=[];const ev=[],hl=[];
+  const nextP=i=>{let j=i+1;while(j<arr.length&&(arr[j].gr||!arr[j].ps.length))j++;return j<arr.length?arr[j].ps[0]:null};
+  arr.forEach((n,i)=>{const d=beats(n),art=n.ar||[];if(n.pz)pz=n.pz==='pizz';
+    let vol=vel[i]*(art.includes('acc')||art.includes('marc')?1.3:1);if(n.dyn&&DYNX[n.dyn])vol=vel[i]*DYNX[n.dyn].acc;
+    const f=art.includes('stacc2')?.25:art.includes('stac')?.42:art.includes('port')?.75:art.includes('ten')?.99:art.includes('breath')?.8:.92;
+    const inst=pz&&INST[song.inst[v]]&&INST[song.inst[v]].cat==='smy'?'pizzicato':song.inst[v];
+    if(n.gr){graces.push({n,i,inst,vol});return}
+    graces.forEach((g,k)=>{const pre=(graces.length-k)*(g.n.gr==='p'?.12:.075);g.n.ps.forEach((p,ci)=>ev.push({t,pre,len:0,full:0,p,ci,vol:g.vol*.85,inst:g.inst,n:g.n,i:g.i,grace:true}));hl.push({k:v+g.i,t,d:.25,v})});graces=[];
+    const nt={},np=nextP(i);
+    n.ps.forEach((p,ci)=>{if(tied[p]){tied[p].len+=d;tied[p].full+=d;nt[p]=tied[p]}else{const e={t,len:d*f,full:d,p,ci,vol,inst,n,i,np};ev.push(e);nt[p]=e}});
     tied=n.tie?nt:{};hl.push({k:v+i,t,d,v});t+=d});
   return{ev,hl,end:t}}
+function measOrder(MF,count){const order=[];let k=0,start=0,pass=1,jumped=false,back=false;const times={};
+  const segno=MF.findIndex(f=>f.sg);
+  const laterVolta=k=>{let j=k+1;while(j<count&&MF[j].vo){if(MF[j].vo>MF[k].vo)return true;j++}return false};
+  while(k<count&&order.length<3000){const f=MF[k];
+    if(f.rs&&!back){start=k;pass=1}
+    back=false;
+    if(f.vo&&(jumped?laterVolta(k):f.vo!==pass)){k++;continue}
+    order.push(k);
+    if(jumped&&f.fi)break;
+    if(jumped&&f.tco){const c=MF.findIndex((g,j)=>j>k&&g.co);if(c>=0){k=c;continue}}
+    if(f.re&&!jumped){const need=(f.rx||2)-1;times[k]=times[k]||0;if(times[k]<need){times[k]++;pass++;k=start;back=true;continue}}
+    if((f.dc||f.ds)&&!jumped){jumped=true;k=f.dc?0:Math.max(0,segno);back=true;continue}
+    k++}
+  return order}
 let voices=[],raf,metroTimer=null;
 function stopClicks(){clicks.forEach(o=>{try{o.stop()}catch(e){}});clicks.length=0}
 function startMetro(){if(metroTimer||playing)return;audio();const unit=4/song.md;let next=ac.currentTime+.06,b=0;
@@ -931,28 +1238,64 @@ function play(){
   const L=ML(),vl=song.hands===2?['t','b']:['t'];
   const D=vl.map(voiceData),maxEnd=Math.max(...D.map(d=>d.end));
   const count=Math.max(1,Math.ceil(maxEnd/L-1e-6));
-  const rs=new Set([0]),re=new Set();
-  vl.forEach(v=>{let t=0;V(v).forEach(n=>{const m=Math.floor(t/L+1e-6);if(n.rs)rs.add(m);if(n.re)re.add(m);t+=beats(n)})});
-  const order=[];let k=0,start=0;const done=new Set();
-  while(k<count&&order.length<500){if(rs.has(k))start=k;order.push(k);if(re.has(k)&&!done.has(k)){done.add(k);k=start}else k++}
+  const MF=Array.from({length:count},()=>({}));const TE=[],FE=[],SW=[],PED=[];
+  vl.forEach(v=>{let t=0;V(v).forEach(n=>{const k=Math.min(count-1,Math.floor(t/L+1e-6)),f=MF[k];
+    ['rs','re','sg','co','fi','dc','ds','tco'].forEach(x=>{if(n[x])f[x]=true});if(n.rx)f.rx=n.rx;if(n.vo)f.vo=n.vo;
+    if(n.tc)TE.push({b:t,ty:'tc',val:n.tc});if(n.tm)TE.push({b:t,ty:n.tm});
+    if(n.sw)SW.push({b:t,on:n.sw==='on'});
+    if((n.ar||[]).includes('ferm')&&!n.gr)FE.push([t,t+beats(n)]);
+    if(n.ped&&v===(song.hands===2?'b':'t'))PED.push({b:t,d:n.ped==='d'});
+    t+=beats(n)})});
+  TE.sort((a,b)=>a.b-b.b);SW.sort((a,b)=>a.b-b.b);PED.sort((a,b)=>a.b-b.b);
+  const bpmAt=b=>{let base=song.tempo,cv=base,mode=null,mb=0,from=base;
+    const ramp=x=>from*(1+(mode==='accel'?.35:-.3)*Math.min(1,(x-mb)/4));
+    for(const e of TE){if(e.b>b+1e-9)break;const now=mode?ramp(e.b):cv;
+      if(e.ty==='tc'){base=cv=e.val;mode=null}else if(e.ty==='atempo'){cv=base;mode=null}else{from=now;mb=e.b;mode=e.ty}}
+    return mode?ramp(b):cv};
+  const swingOn=b=>{let on=false;for(const s of SW){if(s.b>b+1e-9)break;on=s.on}return on};
+  const warp=b=>{if(!SW.length||!swingOn(b))return b;const fb=Math.floor(b+1e-9),f=b-fb;return fb+(f<=.5?f*4/3:2/3+(f-.5)*2/3)};
+  const inFerm=b=>FE.some(([a,c])=>b>=a-1e-9&&b<c-1e-9);
+  const spbAt=b=>60/bpmAt(b)*(inFerm(b)?1.9:1);
+  const pedEnd=b=>{let down=false;for(const p of PED){if(p.b<=b+1e-9)down=p.d;else if(down)return p.b}return down?maxEnd+L:null};
+  const order=measOrder(MF,count);
   let t0=0;const cv=V(vo);if(sel>0&&sel<cv.length-1){for(let i=0;i<sel;i++)t0+=beats(cv[i])}
-  const m0=Math.floor(t0/L+1e-6),oi=Math.max(0,order.indexOf(m0)),off0=t0-m0*L;
-  const spb=60/song.tempo,T0=ac.currentTime+.15;voices=[];const tl=[];let P=-off0;
-  order.slice(oi).forEach((mk,j)=>{const s=mk*L,e=s+L,first=j===0;
-    D.forEach(d=>{d.ev.forEach(ev=>{if(ev.t>=s-1e-6&&ev.t<e-1e-6&&(!first||ev.t>=s+off0-1e-6)){const at=P+ev.t-s;voices.push(tone(ev.p,T0+at*spb,ev.len*spb,ev.vol,ev.inst))}});
-      d.hl.forEach(h=>{if(h.t>=s-1e-6&&h.t<e-1e-6&&(!first||h.t>=s+off0-1e-6))tl.push({k:h.k,a:P+h.t-s,b:P+h.t-s+h.d,v:h.v})})});
-    if(metro){const unit=4/song.md;for(let q=0;q<song.mn;q++){const at=P+q*unit;if(at>=-1e-6)click(T0+at*spb,q===0)}}
-    P+=L});
-  const endB=Math.max(P,...tl.map(x=>x.b));
+  const m0=Math.min(count-1,Math.floor(t0/L+1e-6)),oi=Math.max(0,order.indexOf(m0)),off0=order.indexOf(m0)>=0?t0-m0*L:0;
+  const seq=order.slice(oi),N=seq.length,RES=24,per=Math.round(L*RES);
+  const tabS=new Float64Array(N*per+2);let acc=0,ix=0;
+  seq.forEach(mk=>{const s=mk*L;for(let q=0;q<per;q++){tabS[ix++]=acc;acc+=spbAt(s+q/RES)/RES}});tabS[ix]=acc;tabS[ix+1]=acc;
+  const tAt=x=>{x=Math.max(0,Math.min(N*L,x));const fq=x*RES,i=Math.floor(fq);return tabS[i]+(tabS[Math.min(i+1,ix)]-tabS[i])*(fq-i)};
+  const T0=ac.currentTime+.15-tAt(off0);voices=[];const tl=[];
+  const push=(m,t,d,vol,inst,o)=>voices.push(tone(m,t,d,vol,inst,o));
+  seq.forEach((mk,j)=>{const s=mk*L,e=s+L,first=j===0,P=j*L;
+    D.forEach(d=>{
+      d.ev.forEach(ev=>{if(ev.t<s-1e-6||ev.t>=e-1e-6)return;if(first&&ev.t<s+off0-1e-6)return;
+        const xs=P+warp(ev.t)-s,st0=T0+tAt(xs);
+        if(ev.grace){push(ev.p,st0-ev.pre,ev.n.gr==='p'?.11:.07,ev.vol,ev.inst);return}
+        const n=ev.n;let endB=ev.t+ev.len;const pe=pedEnd(ev.t);if(pe!=null)endB=Math.max(endB,pe);
+        const durFull=Math.max(.04,tAt(P+warp(ev.t+ev.full)-s)-tAt(xs));
+        const du=Math.max(.04,tAt(P+warp(endB)-s)-tAt(xs));
+        let st=st0;if(n.arp)st+=ev.ci*.035;
+        const opt=n.jz?{bend:n.jz}:null,p=ev.p,vol=ev.vol,inst=ev.inst;
+        if(n.trem){const sub={1:.5,2:.25,3:.125}[n.trem],cnt=Math.max(1,Math.round(ev.full/sub)),dt=durFull/cnt;for(let c=0;c<cnt;c++)push(p,st+c*dt,dt*.85,vol,inst)}
+        else if(n.orn==='tr'){const up=nbr(p,1),q=.065;let c=0;for(let tt=st;tt<st+durFull-.04;tt+=q,c++)push(c%2?up:p,tt,q*.95,vol*.9,inst)}
+        else if(n.orn==='mord'||n.orn==='prall'){const o2=nbr(p,n.orn==='mord'?-1:1),q=Math.min(.07,durFull/4);push(p,st,q,vol,inst);push(o2,st+q,q,vol,inst);push(p,st+2*q,Math.max(.05,du-2*q),vol,inst,opt)}
+        else if(n.orn==='turn'||n.orn==='iturn'){const a=nbr(p,n.orn==='turn'?1:-1),b2=nbr(p,n.orn==='turn'?-1:1),q=Math.min(.075,durFull/5);[a,p,b2].forEach((m,k)=>push(m,st+k*q,q,vol,inst));push(p,st+3*q,Math.max(.05,du-3*q),vol,inst,opt)}
+        else if(n.gl&&ev.np!=null&&ev.np!==p&&ev.ci===0){const steps=Math.abs(ev.np-p),dir=Math.sign(ev.np-p),hold=durFull*.35,q=(durFull-hold)/steps;push(p,st,hold,vol,inst);for(let k=1;k<=steps;k++)push(p+dir*k,st+hold+(k-1)*q,q*1.1,vol*.8,inst)}
+        else push(p,st,du,vol,inst,opt)});
+      d.hl.forEach(h=>{if(h.t<s-1e-6||h.t>=e-1e-6)return;if(first&&h.t<s+off0-1e-6)return;
+        tl.push({k:h.k,a:T0+tAt(P+warp(h.t)-s),b:T0+tAt(P+warp(h.t+h.d)-s)})})});
+    if(metro){const unit=4/song.md;for(let q=0;q<song.mn;q++){const x=P+q*unit;if(!first||x>=off0-1e-6)click(T0+tAt(x),q===0)}}
+  });
+  const endT=Math.max(T0+tAt(N*L),...tl.map(x=>x.b));
   playing=true;render();
   $('playTxt').textContent='Stop';$('playIcon').innerHTML='<rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/>';
   let on=new Set();
-  const tick=()=>{const nb=(ac.currentTime-T0)/spb;if(nb>=endB){stop();return}
-    const now=new Set(tl.filter(e=>nb>=e.a&&nb<e.b).map(e=>e.k));
-    on.forEach(k=>{if(!now.has(k))svg.querySelector(`.note[data-k="${k}"]`)?.classList.remove('on')});
-    now.forEach(k=>{if(!on.has(k)){const g=svg.querySelector(`.note[data-k="${k}"]`);if(g){g.classList.add('on');
+  const tick=()=>{const now=ac.currentTime;if(now>=endT){stop();return}
+    const curS=new Set(tl.filter(e=>now>=e.a&&now<e.b).map(e=>e.k));
+    on.forEach(k=>{if(!curS.has(k))svg.querySelector(`.note[data-k="${k}"]`)?.classList.remove('on')});
+    curS.forEach(k=>{if(!on.has(k)){const g=svg.querySelector(`.note[data-k="${k}"]`);if(g){g.classList.add('on');
       if(k[0]==='t'){const a=g.getBoundingClientRect(),b=scoreEl.getBoundingClientRect();if(a.bottom>b.bottom-30||a.top<b.top)scoreEl.scrollTop+=a.top-b.top-60}}}});
-    on=now;raf=requestAnimationFrame(tick)};
+    on=curS;raf=requestAnimationFrame(tick)};
   raf=requestAnimationFrame(tick);
 }
 function stop(){cancelAnimationFrame(raf);voices.forEach(v=>v.kill());voices=[];stopClicks();playing=false;
@@ -973,10 +1316,10 @@ function header(){
   if(document.activeElement!==$('title'))$('title').value=song.title;
   $('tempo').value=song.tempo;$('tempoLbl').textContent='♩ '+song.tempo;$('tword').textContent=tempoWord(song.tempo);
   let d=new Date(song.updated).toLocaleDateString('pl-PL',{weekday:'long',day:'numeric',month:'long'});d=d.charAt(0).toUpperCase()+d.slice(1);
-  $('meta').textContent=`${d} · ${KEYS.find(k=>k[0]===song.key)[1].split(' / ')[0]} · ${song.mn}/${song.md}`;
+  $('meta').textContent=`${d} · ${KEYS.find(k=>k[0]===song.key)[1].split(' / ')[0]} · ${song.msym||song.mn+'/'+song.md}`;
 }
 function applySong(resetHist){
-  if(resetHist){undoS=[];redoS=[];vo='t';sel=song.notes.length-1;scoreEl.scrollTop=0;pianoStart=staffMode()==='b'?7:14}
+  if(resetHist){undoS=[];redoS=[];vo='t';sel=song.notes.length-1;scoreEl.scrollTop=0;pianoStart=CLF('t').base<26?7:14}
   header();render();buildPiano();palette();ensureInst();
 }
 
@@ -984,15 +1327,15 @@ function applySong(resetHist){
 function openD(){list();settings();$('drawer').hidden=false;$('scrim').hidden=false}
 function closeD(){$('drawer').hidden=true;$('scrim').hidden=true}
 $('keySel').innerHTML=KEYS.map(([k,n])=>`<option value="${k}">${n}${k?` (${Math.abs(k)} ${k>0?'♯':'♭'})`:''}</option>`).join('');
-$('keySel').onchange=e=>{snap();song.key=+e.target.value;changed();buildPiano()};
-$('meterSeg').innerHTML=METERS.map(([a,b])=>`<button data-m="${a}/${b}">${a}/${b}</button>`).join('');
+$('keySel').onchange=e=>setKey(+e.target.value);
+$('meterSeg').innerHTML=METERS.map(([a,b,sy])=>`<button data-m="${a}/${b}/${sy||''}">${sy||a+'/'+b}</button>`).join('');
 function settings(){
   $('looks').innerHTML=Object.entries(LOOKS).map(([k,l])=>`<button class="lk" data-l="${k}" aria-pressed="${song.look===k}" aria-label="${l.n}" title="${l.n}" style="background:${l.bg}"><i style="background:${l.c}"></i></button>`).join('');
   $('looks').querySelectorAll('.lk').forEach(b=>b.onclick=()=>{song.look=b.dataset.l;song.updated=Date.now();persist(song);header();settings();list()});
   document.querySelectorAll('#handsSeg button').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.s===staffMode());b.onclick=()=>setStaff(b.dataset.s)});
   $('keySel').value=song.key;
-  document.querySelectorAll('#meterSeg button').forEach(b=>{const [a,c]=b.dataset.m.split('/').map(Number);b.setAttribute('aria-pressed',a===song.mn&&c===song.md);
-    b.onclick=()=>{if(a===song.mn&&c===song.md)return;snap();song.mn=a;song.md=c;changed();settings()}});
+  document.querySelectorAll('#meterSeg button').forEach(b=>{const [a,c,sy]=b.dataset.m.split('/');b.setAttribute('aria-pressed',+a===song.mn&&+c===song.md&&(sy||'')===(song.msym||''));
+    b.onclick=()=>setMeter(+a,+c,sy||'')});
 }
 function swatch(s){const l=LOOKS[s.look];return`<span class="sw" style="background:${l.bg}"><i style="background:${l.c}"></i></span>`}
 function list(){
@@ -1022,7 +1365,7 @@ $('newSong').onclick=()=>{if(playing)stop();song=newSongObj();songs.push(song);p
 $('menuBtn').onclick=openD;$('closeDrawer').onclick=closeD;$('scrim').onclick=closeD;
 
 /* ---------- export ---------- */
-const PRINT_CSS='.stl{stroke:#888;stroke-width:1}.bl{stroke:#111;stroke-width:1.3}.blk{stroke:#111}.led{stroke:#111;stroke-width:1.2}.hd,.fl,.dt,.rf,.clefdot,.beam,.art{fill:#111}.hd.hollow{fill:none;stroke:#111;stroke-width:1.8}.stem,.rs,.sh,.clef,.brace,.tie,.artl,.hp,.brk{stroke:#111;fill:none;stroke-linecap:round;stroke-linejoin:round}.ts{fill:#111;font-family:Georgia,"Times New Roman",serif;font-weight:700}.lyr{fill:#111;font-family:Arial,Helvetica,sans-serif}.dyn,.ped,.tri{fill:#111;font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:700}';
+const PRINT_CSS='.stl{stroke:#888;stroke-width:1}.bl{stroke:#111;stroke-width:1.3}.blk{stroke:#111}.led{stroke:#111;stroke-width:1.2}.hd,.fl,.dt,.rf,.clefdot,.beam,.art{fill:#111}.hd.hollow{fill:none;stroke:#111;stroke-width:1.8}.stem,.rs,.sh,.clef,.brace,.tie,.artl,.hp,.brk{stroke:#111;fill:none;stroke-linecap:round;stroke-linejoin:round}.ts{fill:#111;font-family:Georgia,"Times New Roman",serif;font-weight:700}.lyr{fill:#111;font-family:Arial,Helvetica,sans-serif}.dyn,.ped,.tri,.wd{fill:#111;font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:700}.stx{fill:#111;font-family:Arial,Helvetica,sans-serif;font-weight:800}.mnum{fill:#777;font-family:Arial,Helvetica,sans-serif;font-weight:700}.ln,.box{stroke:#111;fill:none;stroke-linecap:round;stroke-linejoin:round}.oct{stroke-dasharray:4 4}';
 let dl;async function downloads(){if(dl===undefined){try{dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null}catch(e){dl=null}}return dl}
 if('serviceWorker' in navigator&&location.protocol==='https:'&&!window.claude)navigator.serviceWorker.register('sw.js').catch(()=>{});
 async function saveFile(filename,data){const d=await downloads();if(!d){try{const blob=data instanceof Blob?data:new Blob([data]);const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);toast('Zapisano plik')}catch(e){toast('Nie udało się zapisać pliku')}return}
@@ -1052,49 +1395,78 @@ $('pdfBtn').onclick=async()=>{
   }catch(e){toast('Nie udało się zrobić PDF')}
 };
 function musicXML(){
-  const L=ML(),two=song.hands===2,DV=24,dv=n=>Math.round(beats(n)*DV);
+  const L=ML(),two=song.hands===2,DV=96,dv=n=>Math.round(beats(n)*DV);
   const T=splitVoice(song.notes,L),B=two?splitVoice(song.bass,L):{ms:[],cur:[]};
   const count=Math.max(T.ms.length+(T.cur.length?1:0),B.ms.length+(B.cur.length?1:0),1);
   const getM=(S,k)=>k<S.ms.length?S.ms[k]:k===S.ms.length?S.cur:[];
-  const TYPE={w:'whole',h:'half',q:'quarter',e:'eighth',s:'16th'},STEP='CDEFGAB';
+  const TYPE={w:'whole',h:'half',q:'quarter',e:'eighth',s:'16th',t:'32nd',x:'64th'},STEP='CDEFGAB';
   const AM={t:accMap('t'),b:two?accMap('b'):[]};
+  const CLX={t:'<sign>G</sign><line>2</line>',t8:'<sign>G</sign><line>2</line><clef-octave-change>-1</clef-octave-change>',b:'<sign>F</sign><line>4</line>',a:'<sign>C</sign><line>3</line>',ten:'<sign>C</sign><line>4</line>'};
+  const ARX={stac:'<staccato/>',stacc2:'<staccatissimo/>',port:'<detached-legato/>',ten:'<tenuto/>',acc:'<accent/>',marc:'<strong-accent type="up"/>',breath:'<breath-mark/>',stop:'<stopped/>'};
+  const JZX={scoop:'<scoop/>',fall:'<falloff/>',doit:'<doit/>',plop:'<plop/>'};
+  const ORX={tr:'<trill-mark/>',mord:'<mordent/>',prall:'<inverted-mordent/>',turn:'<turn/>',iturn:'<inverted-turn/>'};
   const wedge={t:null,b:null},wcount={t:0,b:0};
-  const dir=(inner,staff,place='below')=>`<direction placement="${place}"><direction-type>${inner}</direction-type>${two?`<staff>${staff}</staff>`:''}</direction>`;
+  const dir=(inner,staff,place='below',sound='')=>`<direction placement="${place}"><direction-type>${inner}</direction-type>${two?`<staff>${staff}</staff>`:''}${sound}</direction>`;
+  const words=(w,staff,extra='')=>dir(`<words${extra}>${esc(w)}</words>`,staff,'above');
   const noteX=(v,i,voice,staff)=>{const n=V(v)[i],arr=V(v);let x='';
     if(wedge[v]&&(n.dyn||n.hp||wcount[v]>=4)){x+=dir('<wedge type="stop"/>',staff);wedge[v]=null}
     if(n.dyn)x+=dir(`<dynamics><${n.dyn}/></dynamics>`,staff);
     if(n.hp){x+=dir(`<wedge type="${n.hp==='<'?'crescendo':'diminuendo'}"/>`,staff);wedge[v]=true;wcount[v]=0}else if(wedge[v])wcount[v]++;
     if(n.ped)x+=dir(`<pedal type="${n.ped==='d'?'start':'stop'}" line="no"/>`,staff);
+    if(n.tc)x+=dir(`<metronome><beat-unit>quarter</beat-unit><per-minute>${n.tc}</per-minute></metronome>`,staff,'above',`<sound tempo="${n.tc}"/>`);
+    if(n.tm)x+=words(TMW[n.tm],staff,' font-style="italic"');
+    if(n.pz)x+=words(n.pz==='pizz'?'pizz.':'arco',staff);
+    if(n.sw)x+=words(n.sw==='on'?'Swing':'Straight',staff,' font-weight="bold"');
+    if(n.tx)x+=words(n.tx,staff,' enclosure="rectangle" font-weight="bold"');
+    if(n.ch)x+=words(n.ch,staff,' font-weight="bold"');
     const prev=arr[i-1];const ps=n.ps.length?n.ps:[null];
-    ps.forEach((p,k)=>{x+='<note>';if(k>0)x+='<chord/>';
+    ps.forEach((p,k)=>{x+='<note>';if(n.gr)x+=`<grace${n.gr==='a'?' slash="yes"':''}/>`;if(k>0)x+='<chord/>';
       if(p==null)x+='<rest/>';else{const s=spell(p,n);x+=`<pitch><step>${STEP[s.letter]}</step>${s.alt?`<alter>${s.alt}</alter>`:''}<octave>${Math.floor(s.step/7)}</octave></pitch>`}
-      x+=`<duration>${dv(n)}</duration>`;
+      if(!n.gr)x+=`<duration>${dv(n)}</duration>`;
       const tStop=p!=null&&prev&&prev.tie&&prev.ps.includes(p),tStart=p!=null&&n.tie&&arr[i+1]&&arr[i+1].ps.includes(p);
       if(tStop)x+='<tie type="stop"/>';if(tStart)x+='<tie type="start"/>';
-      x+=`<voice>${voice}</voice><type>${TYPE[n.d]}</type>${n.dot?'<dot/>':''}`;
+      x+=`<voice>${voice}</voice><type>${TYPE[n.d]}</type>${'<dot/>'.repeat(n.dot||0)}`;
       const a=(AM[v][i]||[])[k];if(a!=null)x+=`<accidental>${a===1?'sharp':a===-1?'flat':'natural'}</accidental>`;
       if(n.tr)x+='<time-modification><actual-notes>3</actual-notes><normal-notes>2</normal-notes></time-modification>';
       if(two)x+=`<staff>${staff}</staff>`;
       let nt='';if(tStop)nt+='<tied type="stop"/>';if(tStart)nt+='<tied type="start"/>';
+      if(n.arp&&p!=null)nt+='<arpeggiate/>';
       if(k===0){if(n.sl)nt+=`<slur type="${n.sl==='s'?'start':'stop'}" number="1"/>`;
-        const ar=(n.ar||[]).filter(a=>a!=='ferm').map(a=>({stac:'<staccato/>',acc:'<accent/>',ten:'<tenuto/>',marc:'<strong-accent type="up"/>'}[a])).join('');
-        if(ar)nt+=`<articulations>${ar}</articulations>`;if((n.ar||[]).includes('ferm'))nt+='<fermata type="upright"/>'}
+        if(n.gl)nt+='<glissando type="start" line-type="solid"/>';if(prev&&prev.gl)nt+='<glissando type="stop" line-type="solid"/>';
+        const art=n.ar||[];const ar=art.map(a=>ARX[a]||'').join('')+(n.jz?JZX[n.jz]:'');
+        if(ar)nt+=`<articulations>${ar}</articulations>`;
+        const tech=(art.includes('up')?'<up-bow/>':'')+(art.includes('down')?'<down-bow/>':'')+(art.includes('open')?'<harmonic/>':'');
+        if(tech)nt+=`<technical>${tech}</technical>`;
+        const orn=(n.orn?ORX[n.orn]:'')+(n.trem?`<tremolo type="single">${n.trem}</tremolo>`:'');
+        if(orn)nt+=`<ornaments>${orn}</ornaments>`;
+        if(art.includes('ferm'))nt+='<fermata type="upright"/>'}
       if(nt)x+=`<notations>${nt}</notations>`;
       if(k===0&&v==='t'&&n.t){const cont=n.t.endsWith('-');x+=`<lyric number="1"><syllabic>${cont?'begin':'single'}</syllabic><text>${esc(n.t.replace(/-$/,''))}</text></lyric>`}
       x+='</note>'});
     return x};
   const full=(voice,staff)=>`<note><rest measure="yes"/><duration>${Math.round(L*DV)}</duration><voice>${voice}</voice>${two?`<staff>${staff}</staff>`:''}</note>`;
-  let body='';
+  let body='',prevBr=false,rehN=0;
   for(let k=0;k<count;k++){
     const t=getM(T,k),b=getM(B,k);const all=[...t.map(e=>song.notes[e.i]),...b.map(e=>song.bass[e.i])];
+    const f={};['rs','re','dbl','sg','co','fi','dc','ds','tco','br','reh'].forEach(x=>{f[x]=all.some(n=>n[x])});
+    f.rx=Math.max(0,...all.map(n=>n.rx||0));f.vo=Math.max(0,...all.map(n=>n.vo||0));
     body+=`<measure number="${k+1}">`;
-    if(all.some(n=>n.rs))body+='<barline location="left"><bar-style>heavy-light</bar-style><repeat direction="forward"/></barline>';
-    if(k===0)body+=`<attributes><divisions>${DV}</divisions><key><fifths>${song.key}</fifths></key><time><beats>${song.mn}</beats><beat-type>${song.md}</beat-type></time>${two?'<staves>2</staves>':''}<clef number="1">${CL('t')==='t'?'<sign>G</sign><line>2</line>':'<sign>F</sign><line>4</line>'}</clef>${two?'<clef number="2"><sign>F</sign><line>4</line></clef>':''}</attributes><direction placement="above"><direction-type><metronome><beat-unit>quarter</beat-unit><per-minute>${song.tempo}</per-minute></metronome></direction-type><sound tempo="${song.tempo}"/></direction>`;
+    if(k>0&&prevBr)body+='<print new-system="yes"/>';prevBr=f.br;
+    if(f.rs||f.vo)body+=`<barline location="left">${f.rs?'<bar-style>heavy-light</bar-style>':''}${f.vo?`<ending number="${f.vo}" type="start"/>`:''}${f.rs?'<repeat direction="forward"/>':''}</barline>`;
+    if(k===0){const tsym=song.msym==='C'?' symbol="common"':song.msym==='¢'?' symbol="cut"':'';
+      body+=`<attributes><divisions>${DV}</divisions><key><fifths>${song.key}</fifths></key><time${tsym}><beats>${song.mn}</beats><beat-type>${song.md}</beat-type></time>${two?'<staves>2</staves>':''}<clef number="1">${CLX[song.clefs.t]||CLX.t}</clef>${two?`<clef number="2">${CLX[song.clefs.b]||CLX.b}</clef>`:''}</attributes><direction placement="above"><direction-type><metronome><beat-unit>quarter</beat-unit><per-minute>${song.tempo}</per-minute></metronome></direction-type><sound tempo="${song.tempo}"/></direction>`}
+    if(f.reh)body+=dir(`<rehearsal>${String.fromCharCode(65+(rehN++%26))}</rehearsal>`,1,'above');
+    if(f.sg)body+=dir('<segno/>',1,'above','<sound segno="s1"/>');
+    if(f.co)body+=dir('<coda/>',1,'above','<sound coda="c1"/>');
     let td=0;
-    if(t.length)t.forEach(e=>{body+=noteX('t',e.i,1,1);td+=dv(song.notes[e.i])});else{body+=full(1,1);td=Math.round(L*DV)}
+    if(t.length)t.forEach(e=>{body+=noteX('t',e.i,1,1);td+=song.notes[e.i].gr?0:dv(song.notes[e.i])});else{body+=full(1,1);td=Math.round(L*DV)}
     if(two){body+=`<backup><duration>${td}</duration></backup>`;if(b.length)b.forEach(e=>body+=noteX('b',e.i,5,2));else body+=full(5,2)}
-    if(all.some(n=>n.re))body+='<barline location="right"><bar-style>light-heavy</bar-style><repeat direction="backward"/></barline>';
-    else if(k===count-1)body+='<barline location="right"><bar-style>light-heavy</bar-style></barline>';
+    if(f.fi)body+=dir('<words>Fine</words>',1,'above','<sound fine="yes"/>');
+    if(f.dc)body+=dir('<words>D.C.</words>',1,'above','<sound dacapo="yes"/>');
+    if(f.ds)body+=dir('<words>D.S.</words>',1,'above','<sound dalsegno="s1"/>');
+    if(f.tco)body+=dir('<words>To Coda</words>',1,'above','<sound tocoda="c1"/>');
+    const last=k===count-1;
+    if(f.re||f.vo||f.dbl||last)body+=`<barline location="right"><bar-style>${f.re?'light-heavy':f.dbl?'light-light':last?'light-heavy':'regular'}</bar-style>${f.vo?`<ending number="${f.vo}" type="${f.re?'stop':'discontinue'}"/>`:''}${f.re?`<repeat direction="backward"${f.rx>2?` times="${f.rx}"`:''}/>`:''}</barline>`;
     body+='</measure>';
   }
   return`<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">\n<score-partwise version="4.0"><work><work-title>${esc(song.title)}</work-title></work><identification><creator type="composer">Aniela</creator><encoding><software>AnnApp</software></encoding></identification><part-list><score-part id="P1"><part-name>${esc(INST[song.inst.t].n)}</part-name></score-part></part-list><part id="P1">${body}</part></score-partwise>`;
@@ -1135,6 +1507,113 @@ $('instBtn').onclick=openPicker;$('instRow').onclick=()=>{closeD();openPicker()}
 $('closePicker').onclick=closePicker;$('pscrim').onclick=closePicker;
 $('newBtn').onclick=()=>$('newSong').click();
 
+/* ---------- sheet music from a photo ---------- */
+let sampler=null,omrLim=null,omrFiles=[],omrDest='new',omrCtl=null;
+(async()=>{try{sampler=window.claude&&window.claude.use?await window.claude.use('sample'):null}catch(e){sampler=null}
+  if(sampler){try{const l=await sampler.limits();omrLim=l&&l.images?l.images:null}catch(e){omrLim=null}}
+  $('camBtn').hidden=!omrLim;$('omrRow').hidden=!omrLim})();
+function openOmr(){$('omr').hidden=false;$('oscrim').hidden=false;omrUI()}
+function closeOmr(){if(omrCtl)return;$('omr').hidden=true;$('oscrim').hidden=true}
+function omrUI(){
+  const th=$('omrThumbs');th.innerHTML='';
+  omrFiles.forEach((f,i)=>{const d=document.createElement('div');d.className='th';const u=URL.createObjectURL(f);
+    d.innerHTML=`<img alt="Zdjęcie ${i+1}" src="${u}"><button class="thx" aria-label="Usuń zdjęcie">×</button>`;
+    d.querySelector('img').onload=()=>URL.revokeObjectURL(u);
+    d.querySelector('.thx').onclick=()=>{if(omrCtl)return;omrFiles.splice(i,1);omrUI()};th.appendChild(d)});
+  $('omrGo').disabled=!omrFiles.length&&!omrCtl;
+  $('omrGoTxt').textContent=omrCtl?'Zatrzymaj':'Odczytaj nuty';
+  document.querySelectorAll('#omrDest button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.d===omrDest));
+}
+function addOmrFiles(list){const max=omrLim?Math.min(4,omrLim.maxCount):4;
+  for(const f of list){if(!/^image\//.test(f.type)&&!/\.(heic|heif|jpe?g|png|webp)$/i.test(f.name))continue;if(omrFiles.length>=max){toast(`Najwyżej ${max} zdjęcia naraz`);break}omrFiles.push(f)}
+  omrUI()}
+['omrCam','omrPick'].forEach(id=>$(id).addEventListener('change',e=>{addOmrFiles([...e.target.files]);e.target.value=''}));
+document.querySelectorAll('#omrDest button').forEach(b=>b.onclick=()=>{omrDest=b.dataset.d;omrUI()});
+async function loadBitmap(f){
+  try{return await createImageBitmap(f,{imageOrientation:'from-image'})}catch(e){}
+  return await new Promise((res,rej)=>{const u=URL.createObjectURL(f),i=new Image();i.onload=()=>{URL.revokeObjectURL(u);res(i)};i.onerror=rej;i.src=u})}
+async function prepParts(files,maxCount){
+  const imgs=[];for(const f of files){try{imgs.push(await loadBitmap(f))}catch(e){}}
+  if(!imgs.length)throw{code:'image_rejected'};
+  const parts=imgs.map(b=>b.height>b.width*1.25?Math.min(3,Math.ceil(b.height/(b.width*.85))):1);
+  while(parts.reduce((a,b)=>a+b,0)>maxCount){const i=parts.indexOf(Math.max(...parts));if(parts[i]===1){parts.pop();imgs.pop()}else parts[i]--}
+  const out=[];
+  imgs.forEach((b,ii)=>{const n=parts[ii],h=b.height/n,ov=n>1?h*.1:0;
+    for(let k=0;k<n;k++){const y0=Math.max(0,k*h-ov),y1=Math.min(b.height,(k+1)*h+ov);const sc=Math.min(1,2400/b.width);
+      const c=document.createElement('canvas');c.width=Math.round(b.width*sc);c.height=Math.round((y1-y0)*sc);
+      const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(b,0,y0,b.width,y1-y0,0,0,c.width,c.height);out.push(c)}});
+  return Promise.all(out.map(c=>new Promise(r=>c.toBlob(r,'image/jpeg',.9))))}
+function omrPrompt(n){return`You are an expert at optical music recognition. The attached image${n>1?'s are photos':' is a photo'} of sheet music (printed or handwritten).
+${n>1?'The images are consecutive parts in reading order (top to bottom of a page, then the next page). Neighbouring parts of the same page overlap a little, so a line of music may appear at the bottom of one image and again at the top of the next one: transcribe every measure exactly once.\n':''}
+Transcribe the music for a notation app. Reply with ONLY one JSON object: no prose, no code fence, no indentation, no line breaks.
+
+Shape:
+{"title":string|null,"tempo":number|null,"time":"3/4","timeSymbol":"C"|"cut"|null,"key":integer from -7 to 7 (number of sharps positive, flats negative),"clefs":["treble"|"bass"|"alto"|"tenor"|"treble8", one per staff, top first],"voices":[[note,...],...] one list per staff (one for a single staff, two for a piano score), top staff first}
+
+Each note: {"p":[pitches],"d":duration} plus optional fields.
+- "p": sounding pitch names like "C4","F#4","Bb3","E5" (scientific octave, middle C = C4; English letters, so B is the note just below C). Apply the key signature and any accidental that carries through the measure, so each pitch is the real pitch to play. A chord lists all its notes. A rest is "p":[].
+- "d": "w" whole, "h" half, "q" quarter, "e" eighth, "s" 16th, "t" 32nd, "x" 64th.
+- optional: "dot":1 or 2; "tri":true for each note inside a triplet; "tie":true when tied to the next note; "gr":"a" (acciaccatura, slashed grace note) or "p" (appoggiatura) for grace notes; "ar": list from "stac","stacc2","ten","port","acc","marc","ferm","breath"; "orn":"tr"|"mord"|"prall"|"turn"; "dyn": "ppp","pp","p","mp","mf","f","ff","fff","sfz","sf","fz","fp"; "hp":"<" or ">" on the note where a hairpin starts; "sl":"s" on the first note and "sl":"e" on the last note of a slur; "t": lyric syllable under the note (end it with "-" when the word continues); "ch": chord symbol above; "tx": text above the staff such as "Refren"; "tm":"rit"|"accel"|"atempo"; "rs":true on the first note of a measure that starts a repeat; "re":true on the last note of a measure that ends a repeat; "vo":1 or 2 on notes inside a first or second ending; "dbl":true on the last note before a double barline.
+Every measure must add up to the full time signature (use rests), and with two staves the measures of both staves must line up. Skip what you cannot read rather than guessing. If there is no sheet music in the image${n>1?'s':''}, reply {"error":"no music"}.`}
+const pitchOf=str=>{const m=String(str).trim().match(/^([A-Ga-g])(##|bb|#|b|x|♯|♭)?(-?\d)$/);if(!m)return null;
+  const base={C:0,D:2,E:4,F:5,G:7,A:9,B:11}[m[1].toUpperCase()],a={'#':1,'♯':1,'##':2,x:2,b:-1,'♭':-1,bb:-2}[m[2]]||0;
+  return{m:(+m[3]+1)*12+base+a,sp:a>0?'s':a<0?'b':null}};
+const OMR_AR=['stac','stacc2','ten','port','acc','marc','ferm','breath'],OMR_DYN=Object.keys(DYNNAME);
+function convNote(o){if(!o||typeof o!=='object')return null;const ps=[];let sp=null;
+  (Array.isArray(o.p)?o.p:o.p?[o.p]:[]).forEach(x=>{const r=pitchOf(x);if(r&&r.m>=21&&r.m<=108&&!ps.includes(r.m)){ps.push(r.m);if(r.sp)sp=r.sp}});
+  const n={ps,d:DUR[o.d]?o.d:'q',dot:o.dot===2?2:o.dot?1:0};
+  if(sp)n.sp=sp;if(o.tri)n.tr=true;if(o.tie)n.tie=true;if(o.gr==='a'||o.gr==='p')n.gr=o.gr;
+  if(Array.isArray(o.ar)){const a=o.ar.filter(x=>OMR_AR.includes(x));if(a.length)n.ar=a}
+  if(['tr','mord','prall','turn','iturn'].includes(o.orn))n.orn=o.orn;
+  if(OMR_DYN.includes(o.dyn))n.dyn=o.dyn;if(o.hp==='<'||o.hp==='>')n.hp=o.hp;if(o.sl==='s'||o.sl==='e')n.sl=o.sl;
+  if(o.tm==='rit'||o.tm==='accel'||o.tm==='atempo')n.tm=o.tm;
+  ['t','ch','tx'].forEach(k=>{if(typeof o[k]==='string'&&o[k].trim())n[k]=o[k].trim().slice(0,40)});
+  ['rs','re','dbl'].forEach(k=>{if(o[k])n[k]=true});if([1,2,3].includes(+o.vo))n.vo=+o.vo;
+  return normNote(n)}
+function parseOMR(text){let s=String(text).trim();const f=s.match(/```(?:json)?\s*([\s\S]*?)```/);if(f)s=f[1];
+  const a=s.indexOf('{'),b=s.lastIndexOf('}');if(a<0||b<a)throw{code:'parse'};return JSON.parse(s.slice(a,b+1))}
+const OMR_ERR={not_granted:'Odczyt zdjęć wymaga zgody na użycie Claude. Możesz ją dać przy następnej próbie.',sampling_disabled:'Odczyt zdjęć jest wyłączony dla tego konta.',
+  rate_limited:'Za dużo prób naraz albo wyczerpany limit. Spróbuj za chwilę.',image_rejected:'Tego zdjęcia nie da się odczytać. Spróbuj inne zdjęcie.',
+  refused:'Claude nie odczytał tego zdjęcia.',session_expired:'Zaloguj się ponownie do Claude i spróbuj jeszcze raz.',
+  images_unavailable:'W tym widoku nie można wysyłać zdjęć. Otwórz AnnApp w claude.ai.',parse:'Nie udało się odczytać nut. Spróbuj wyraźniejszego zdjęcia.',
+  nomusic:'Nie znalazłem nut na zdjęciu.',empty:'Nie udało się odczytać żadnych nut. Spróbuj wyraźniejszego zdjęcia.',truncated:'Utwór jest za długi na jedno podejście. Sfotografuj mniejszy fragment.'};
+async function runOmr(){
+  if(omrCtl){omrCtl.abort();return}
+  if(!sampler||!omrFiles.length)return;
+  const stat=$('omrStat');stat.hidden=false;stat.textContent='Przygotowuję zdjęcia…';
+  omrCtl=new AbortController();omrUI();
+  try{
+    const blobs=await prepParts(omrFiles,omrLim?omrLim.maxCount:4);
+    stat.textContent='Claude czyta nuty… zwykle trwa to od pół minuty do dwóch minut.';
+    let notesSeen=0;
+    const res=await sampler(omrPrompt(blobs.length),{images:blobs,modelTier:'complex',signal:omrCtl.signal,
+      onText:({text})=>{const c=(text.match(/"d"\s*:/g)||[]).length;if(c!==notesSeen){notesSeen=c;stat.textContent=`Claude czyta nuty… odczytano ${c} ${c===1?'nutę':c%10>=2&&c%10<=4&&(c%100<10||c%100>20)?'nuty':'nut'}`}}});
+    if(res.truncated)throw{code:'truncated'};
+    const data=parseOMR(res.text);
+    if(data.error)throw{code:'nomusic'};
+    const vs=(Array.isArray(data.voices)?data.voices:[]).slice(0,2).map(v=>(Array.isArray(v)?v:[]).map(convNote).filter(Boolean));
+    if(!vs.length||!vs.some(v=>v.length))throw{code:'empty'};
+    const CM={treble:'t',bass:'b',alto:'a',tenor:'ten',treble8:'t8'};const cl=Array.isArray(data.clefs)?data.clefs:[];
+    let mn=4,md=4;const tm=String(data.time||'').match(/^(\d+)\/(\d+)$/);if(tm&&[2,4,8].includes(+tm[2])&&+tm[1]>0&&+tm[1]<=16){mn=+tm[1];md=+tm[2]}
+    const msym=data.timeSymbol==='C'&&mn===4&&md===4?'C':data.timeSymbol==='cut'&&mn===2&&md===2?'¢':'';
+    const key=Math.max(-7,Math.min(7,Math.round(+data.key||0)));const two=vs.length>1&&vs[1].length>0;
+    const total=vs.reduce((a,v)=>a+v.length,0);
+    if(omrDest==='new'||(!song.notes.length&&!song.bass.length)){
+      if(playing)stop();
+      const s=norm({title:(typeof data.title==='string'&&data.title.trim())||'Nuty ze zdjęcia',tempo:Math.max(40,Math.min(200,Math.round(+data.tempo||96))),mn,md,msym,key,
+        hands:two?2:1,clefs:{t:CM[cl[0]]||(two?'t':'t'),b:CM[cl[1]]||'b'},look:Object.keys(LOOKS)[songs.length%4],notes:vs[0],bass:two?vs[1]:[]});
+      songs.push(s);song=s;persist(s);applySong(true);
+    }else{snap();song.notes.push(...vs[0]);if(two){if(song.hands!==2)song.hands=2;song.bass.push(...vs[1])}sel=song.notes.length-1;vo='t';changed()}
+    omrFiles=[];omrCtl=null;stat.hidden=true;closeOmr();toast(`Gotowe: odczytano ${total} nut. Sprawdź je i popraw, jeśli coś się nie zgadza.`);
+  }catch(e){
+    const code=e&&e.code;omrCtl=null;
+    if(code==='cancelled'){stat.textContent='Zatrzymano.'}
+    else{stat.textContent=OMR_ERR[code]||(e instanceof SyntaxError?OMR_ERR.parse:'Połączenie przerwane. Spróbuj jeszcze raz.')}
+  }finally{omrCtl=null;omrUI()}
+}
+$('omrGo').onclick=runOmr;$('camBtn').onclick=openOmr;$('omrClose').onclick=()=>{if(omrCtl)omrCtl.abort();omrCtl=null;$('omr').hidden=true;$('oscrim').hidden=true};
+$('oscrim').onclick=closeOmr;$('omrRow').onclick=()=>{closeD();openOmr()};
+
 /* ---------- controls ---------- */
 $('title').addEventListener('input',e=>{song.title=e.target.value;song.updated=Date.now();song.example=false;persist(song)});
 $('title').addEventListener('keydown',e=>{if(e.key==='Enter')e.target.blur()});
@@ -1164,12 +1643,12 @@ document.addEventListener('keydown',e=>{
   else if(k==='arrowup'){e.preventDefault();transpose(1)}
   else if(k==='arrowdown'){e.preventDefault();transpose(-1)}
   else if(k==='backspace'||k==='delete'){e.preventDefault();del()}
-  else if('12345'.includes(k)&&k)setDur('whqes'[+k-1]);
+  else if('1234567'.includes(k)&&k)setDur('whqestx'[+k-1]);
   else if(k==='.')toggleDot();
-  else if(k==='p'&&!playing)insert({ps:[],d:dur,dot,...(tri?{tr:true}:{})});
+  else if(k==='p')insertRest();
   else if(k==='m')$('metroBtn').click();
   else if(k==='z'){chord=!chord;chordAnchor=null;palette()}
-  else if(k==='escape'){closeD();closePicker()}
+  else if(k==='escape'){closeD();closePicker();closeOmr()}
 });
 document.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(kbHeld.has(k)){kbHeld.delete(k);keyUp('kb'+k)}});
 
