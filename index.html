@@ -158,6 +158,11 @@ button:disabled{opacity:.35;cursor:default}
 @media (max-height:760px) and (min-width:641px){.sbody{height:clamp(90px,20vh,180px)}}
 .sheet.min .sbody{display:none}
 .psec h4{margin:8px 0 6px;font-size:12px;font-weight:800;letter-spacing:.01em;opacity:.72}
+.micperm{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--pill);border-radius:16px;padding:10px 12px;font-weight:600;font-size:14px}
+.micperm #micTxt{flex:1 1 180px}
+.micperm a{color:inherit;font-weight:800}
+.mpdot{width:12px;height:12px;border-radius:50%;background:#B0B0B8;flex:none}
+.mpdot.ok{background:#2DA44E}.mpdot.no{background:#E5484D}
 .pgrid{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
 .pgrid .tb{background:var(--pill)}
 .pgrid .tb:hover:not(:disabled){background:var(--pill2)}
@@ -393,6 +398,7 @@ details summary{cursor:pointer;font-weight:800;font-size:13px;padding-block:4px}
   <p class="phint">Zagraj, a AnnApp zapisze nuty razem z rytmem. Najpierw odliczy jeden takt, potem zacznie nagrywać.</p>
   <div class="row"><span>Skąd dźwięk</span><div class="seg" id="recSrc"></div></div>
   <p class="phint" id="recHint"></p>
+  <div class="micperm" id="micPerm" hidden><span class="mpdot" id="micDot"></span><span id="micTxt"></span><button class="cbtn solid" id="micAsk"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Zezwól na mikrofon</button></div>
   <div class="row"><span>Najkrótsza nuta</span><div class="seg" id="recGrid"><button data-g=".5">Ósemki</button><button data-g=".25">Szesnastki</button></div></div>
   <div class="row"><span>Metronom w trakcie</span><div class="seg" id="recMet"><button data-m="1">Tak</button><button data-m="0">Nie</button></div></div>
   <p class="phint"><b>Tempo:</b> <span id="recTempo"></span> Wolniejsze tempo daje dokładniejszy zapis. Zmienisz je suwakiem u góry.</p>
@@ -1902,6 +1908,8 @@ const inClaude=!!window.claude;
 if(location.protocol==='http:'&&!/^(localhost|127\.|192\.168\.|10\.)/.test(location.hostname)){
   fetch('https://'+location.host+'/manifest.webmanifest?'+Date.now(),{mode:'no-cors',cache:'no-store'}).then(()=>location.replace('https://'+location.host+location.pathname+location.search+location.hash)).catch(()=>{})}
 const canMic=!inClaude&&!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)&&window.isSecureContext;
+const micPickable=!inClaude&&(canMic||location.protocol==='http:');
+let micState='unknown';
 const canMidi=!inClaude&&!!navigator.requestMIDIAccess;
 let rec=null,recSrc=canMic?'mic':'screen',recGrid=.25,recMetro=true,midiAccess=null,micStream=null;
 const perfS=()=>performance.now()/1000;
@@ -2020,7 +2028,7 @@ async function startRec(){
   rec={src:recSrc,grid:recGrid,phase:'count',events:[],open:new Map(),count:0,level:0,clicks:[],spb};
   const acNow=ac.currentTime,perfNow=perfS();rec.start=perfNow+lead+song.mn*beatS;
   for(let k=0;k<song.mn;k++)click(acNow+lead+k*beatS,k===0);
-  if(recSrc==='mic'||recSrc==='voice'){try{await(recSrc==='voice'?startVoice():startMic())}catch(e){rec=null;toast('Brak dostępu do mikrofonu. Pozwól stronie używać mikrofonu i spróbuj ponownie.');return}}
+  if(recSrc==='mic'||recSrc==='voice'){if(!canMic){rec=null;openRec();return}try{await(recSrc==='voice'?startVoice():startMic());micState='granted'}catch(e){rec=null;micState=e&&e.name==='NotAllowedError'?'denied':micState;openRec();toast('Brak dostępu do mikrofonu. Naciśnij „Zezwól na mikrofon”.');return}}
   closeRec();$('recBar').hidden=false;recBarUI();
   setTimeout(()=>{if(!rec)return;rec.phase='rec';recBarUI();
     if(recMetro&&recSrc!=='mic'){let b=0,next=ac.currentTime+.02;rec.metroT=setInterval(()=>{while(next<ac.currentTime+.15){click(next,b%song.mn===0);next+=beatS;b++}if(clicks.length>64)clicks.splice(0,32)},25)}
@@ -2070,10 +2078,22 @@ function recBarUI(){if(!rec)return;const el=$('recTxt');
   if(rec.phase==='count'){const left=Math.max(0,rec.start-perfS()),beatS=rec.spb*4/song.md;el.textContent=`Przygotuj się… ${Math.max(1,Math.ceil(left/beatS))}`}
   else{const bar=Math.floor(Math.max(0,perfS()-rec.start)/(rec.spb*ML()))+1;el.textContent=`Nagrywam · takt ${bar} · ${rec.count} ${rec.count===1?'nuta':rec.count%10>=2&&rec.count%10<=4&&(rec.count%100<10||rec.count%100>20)?'nuty':'nut'}`}
   $('recLvl').hidden=rec.src!=='mic'&&rec.src!=='voice';if(!$('recLvl').hidden)$('recLvl').firstElementChild.style.width=Math.min(100,rec.level*900)+'%'}
+function micUI(){const box=$('micPerm'),isMic=recSrc==='mic'||recSrc==='voice';box.hidden=!isMic;$('recGo').disabled=false;if(!isMic)return;
+  const dot=$('micDot'),txt=$('micTxt'),btn=$('micAsk');dot.className='mpdot';
+  if(!canMic){const u='https://'+location.host+location.pathname;dot.classList.add('no');btn.hidden=true;
+    txt.innerHTML=window.isSecureContext?'Ta przeglądarka nie daje dostępu do mikrofonu.':`Mikrofon działa tylko na bezpiecznej stronie. <a href="${u}">Otwórz ${u}</a>`;$('recGo').disabled=true;return}
+  btn.hidden=micState==='granted';
+  if(micState==='granted'){dot.classList.add('ok');txt.textContent='Mikrofon włączony. Możesz nagrywać.'}
+  else if(micState==='denied'){dot.classList.add('no');
+    txt.innerHTML=/iPhone|iPad|Macintosh/.test(navigator.userAgent)&&'ontouchend' in document?'Mikrofon jest zablokowany. Na iPhonie lub iPadzie: dotknij <b>aA</b> (lub ikonę) w pasku adresu → <b>Ustawienia witryny</b> → <b>Mikrofon: Zezwól</b>, albo Ustawienia → Aplikacje → Safari → Mikrofon. Potem odśwież stronę.':'Mikrofon jest zablokowany. Kliknij ikonę kłódki lub ustawień obok adresu strony → <b>Mikrofon: Zezwól</b>, potem odśwież stronę.'}
+  else{txt.textContent='Do nagrywania potrzebny jest mikrofon. Naciśnij przycisk i wybierz „Zezwól”.'}}
+async function refreshMicState(){if(canMic){try{const st=await navigator.permissions.query({name:'microphone'});micState=st.state;st.onchange=()=>{micState=st.state;if(!$('recModal').hidden)micUI()}}catch(e){}}micUI()}
+async function askMic(){if(!canMic)return micUI();try{const st=await navigator.mediaDevices.getUserMedia({audio:true});st.getTracks().forEach(t=>t.stop());micState='granted';toast('Mikrofon włączony')}
+  catch(e){micState=e&&(e.name==='NotAllowedError'||e.name==='SecurityError')?'denied':'unknown';if(micState!=='denied')toast('Nie udało się włączyć mikrofonu: '+(e&&e.name||'błąd'))}micUI()}
 function openRec(){if(rec)return;$('recModal').hidden=false;$('rscrim').hidden=false;recUI()}
 function closeRec(){$('recModal').hidden=true;$('rscrim').hidden=true}
 function recUI(){
-  const srcs=[['mic','Mikrofon (pianino)',canMic],['voice','Głos lub gwizd',canMic],['midi','Klawiatura MIDI',canMidi],['screen','Pianino na ekranie',true]];
+  const srcs=[['mic','Mikrofon (pianino)',micPickable],['voice','Głos lub gwizd',micPickable],['midi','Klawiatura MIDI',canMidi],['screen','Pianino na ekranie',true]];
   if(!srcs.find(s=>s[0]===recSrc)[2])recSrc='screen';
   $('recSrc').innerHTML=srcs.map(([k,l,ok])=>`<button data-s="${k}" ${ok?'':'disabled'} aria-pressed="${recSrc===k}">${l}</button>`).join('');
   $('recSrc').querySelectorAll('button').forEach(b=>b.onclick=async()=>{recSrc=b.dataset.s;if(recSrc==='midi')await connectMidi();recUI()});
@@ -2085,9 +2105,10 @@ function recUI(){
     'Graj rytmicznie na pianinie na dole ekranu albo na klawiaturze komputera. Nuty zapiszą się razem z rytmem.';
   const secUrl='https://'+location.host+location.pathname;
   $('recNote').innerHTML=inClaude?'Mikrofon i klawiatura MIDI działają w AnnApp na stronie annapp.rossa.me.':!canMic&&!window.isSecureContext&&location.protocol==='http:'?`Mikrofon działa tylko na bezpiecznej stronie. <a href="${secUrl}" style="color:inherit;font-weight:800">Otwórz ${secUrl.replace('https://','https://')}</a>`:!canMic?'Ta przeglądarka nie daje dostępu do mikrofonu.':'';
+  micUI();
   $('recTempo').textContent=`${song.tempo} ćwierćnut na minutę, metrum ${song.msym||song.mn+'/'+song.md}.`+(song.hands===2?(recSrc==='voice'?' Melodia trafi do prawej ręki.':' Dźwięki od c¹ w górę trafią do prawej ręki, niższe do lewej.'):'');
 }
-$('recBtn').onclick=openRec;$('recClose').onclick=closeRec;$('rscrim').onclick=closeRec;$('recGo').onclick=startRec;
+$('micAsk').onclick=askMic;$('recBtn').onclick=()=>{openRec();refreshMicState()};$('recClose').onclick=closeRec;$('rscrim').onclick=closeRec;$('recGo').onclick=startRec;
 $('recStop').onclick=()=>finishRec(false);$('recCancel').onclick=()=>finishRec(true);
 
 /* ---------- controls ---------- */
