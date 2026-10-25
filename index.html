@@ -119,6 +119,7 @@ button:disabled{opacity:.35;cursor:default}
 .tb.plain{font-weight:800;font-size:15px;font-variant-numeric:tabular-nums}
 .tb.wide.dyn,.tb.wide.plain{padding:0 10px}
 .psep{width:1px;align-self:stretch;margin:6px 4px;background:var(--line);flex:none}
+.numwrap.plainlab{font-family:var(--body);font-style:normal;font-size:13px}
 .numwrap{display:flex;align-items:center;gap:6px;font-weight:800;font-family:var(--engr);font-style:italic;flex:none}
 .numin{width:74px;height:40px;border-radius:12px;border:0;background:var(--pill2);color:var(--ink);font:inherit;font-style:normal;font-weight:700;font-size:16px;padding:0 10px}
 .omrbtns{display:flex;gap:8px;flex-wrap:wrap}
@@ -298,6 +299,8 @@ details summary{cursor:pointer;font-weight:800;font-size:13px;padding-block:4px}
     <div class="row" id="omrRow" hidden><span>Nuty ze zdjęcia</span><button class="cbtn"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.6" fill="none" stroke="currentColor" stroke-width="2"/></svg>Zrób zdjęcie</button></div>
     <div class="row"><label for="keySel"><b>Tonacja</b></label><select class="sel" id="keySel"></select></div>
     <div class="row"><span>Metrum</span><div class="seg" id="meterSeg"></div></div>
+    <div class="row"><span>Transpozycja</span><div class="seg" id="trSeg"><button data-k="-12">− oktawa</button><button data-k="-1">− półton</button><button data-k="1">+ półton</button><button data-k="12">+ oktawa</button></div></div>
+    <div class="row"><label for="trSel"><b>Przenieś do tonacji</b></label><select class="sel" id="trSel"></select></div>
     <div class="exp">
       <button class="cbtn" id="pdfBtn"><span>PDF</span><small>nuty do druku</small></button>
       <button class="cbtn" id="xmlBtn"><span>MusicXML</span><small>do Flat i MuseScore</small></button>
@@ -1061,6 +1064,12 @@ const PAL={
     ...Object.keys(CLEFS).map(id=>({ic:clefIc(id),t:'Klucz '+CLEFS[id].n.toLowerCase(),on:()=>clefId(vo)===id,go:()=>setClef(id)})),'|',
     {lab:'Tonacja'},
     ...[0,1,2,3,4,5,6,7,-1,-2,-3,-4,-5,-6,-7].map(k=>({ic:keyIc(k),t:KEYS.find(x=>x[0]===k)[1],on:()=>song.key===k,go:()=>setKey(k)})),'|',
+    {lab:'Transpozycja'},
+    {txt:'−8',plain:true,t:'Cały utwór oktawę niżej',go:()=>transposeAll(-12)},
+    {txt:'−½',plain:true,t:'Cały utwór o półton niżej',go:()=>transposeAll(-1)},
+    {txt:'+½',plain:true,t:'Cały utwór o półton wyżej',go:()=>transposeAll(1)},
+    {txt:'+8',plain:true,t:'Cały utwór oktawę wyżej',go:()=>transposeAll(12)},
+    {tsel:true},'|',
     {lab:'Metrum'},
     ...METERS.map(([a,b,sy])=>({txt:sy||`${a}/${b}`,plain:true,t:sy==='C'?'4/4 (alla breve: C)':sy==='¢'?'2/2 (alla breve)':`${a}/${b}`,on:()=>song.mn===a&&song.md===b&&(song.msym||'')===(sy||''),go:()=>setMeter(a,b,sy||'')}))],
 };
@@ -1079,6 +1088,9 @@ function palette(){
     if(it==='|'){const d=document.createElement('span');d.className='psep';P.appendChild(d);return}
     if(it==='info'){const d=document.createElement('div');d.className='info';d.id='info';P.appendChild(d);return}
     if(it.lab){const d=document.createElement('span');d.className='plabel';d.textContent=typeof it.lab==='function'?it.lab():it.lab;P.appendChild(d);return}
+    if(it.tsel){const w=document.createElement('label');w.className='numwrap plainlab';w.innerHTML=`<span>do</span><select class="sel" id="trSelP" aria-label="Przenieś do tonacji"></select>`;
+      const se=w.querySelector('select');se.innerHTML=KEYS.map(([k,n])=>`<option value="${k}">${n.split(' / ')[0]}</option>`).join('');se.value=song.key;
+      se.onchange=()=>transposeAll(0,+se.value);P.appendChild(w);return}
     if(it.num){if(!it.show())return;const w=document.createElement('label');w.className='numwrap';w.innerHTML=`<span>${it.label}</span><input class="numin" id="tcIn" type="number" min="30" max="240" step="1">`;
       const inp=w.querySelector('input');inp.value=it.get();inp.onchange=()=>it.set(+inp.value);P.appendChild(w);return}
     const b=document.createElement('button');const txt=typeof it.txt==='function'?it.txt():it.txt;
@@ -1091,6 +1103,27 @@ function palette(){
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{const was=tab;tab=b.dataset.tab;$('palette').innerHTML='';$('palette').scrollLeft=0;
   if(tab==='tekst'){if(txtMode==='t'&&vo!=='t')setVoice('t');if(sel<0&&V(vo).length)sel=0}
   palette();render();if(tab==='tekst')setTimeout(()=>$('lyr')&&$('lyr').focus(),30);else if(was==='tekst')render()});
+
+/* ---------- transposition ---------- */
+const tonicPc=k=>((k*7)%12+12)%12;
+function bestKey(key,k){const d=((k*7)%12+12)%12;const c=[key+d,key+d-12,key+d+12].filter(x=>x>=-7&&x<=7).sort((a,b)=>Math.abs(a)-Math.abs(b)||a-b);return c.length?c[0]:key}
+const CH_SH=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'],CH_FL=['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+function trRoot(l,a,k,nk){const pc={C:0,D:2,E:4,F:5,G:7,A:9,B:11,H:11}[l.toUpperCase()];if(pc==null)return null;
+  const off=a==='#'||a==='♯'?1:a==='b'||a==='♭'?-1:0;const np=(((pc+off+k)%12)+12)%12;return(nk<0?CH_FL:CH_SH)[np]}
+function trChord(ch,k,nk){const m=ch.match(/^([A-Ha-h])([#♯b♭]?)(.*)$/);if(!m)return ch;
+  const root=trRoot(m[1],m[2],k,nk);if(!root)return ch;let rest=m[3];
+  rest=rest.replace(/\/([A-Ha-h])([#♯b♭]?)/,(x,l,a)=>{const r=trRoot(l,a,k,nk);return r?'/'+r:x});
+  return root+rest}
+function transposeAll(k,target){
+  const all=song.notes.concat(song.bass);
+  if(target!=null){let d=tonicPc(target)-tonicPc(song.key);d=((d%12)+12)%12;if(d>6)d-=12;k=d;if(!k&&target===song.key)return}
+  if(!all.length&&target==null){toast('Najpierw zapisz kilka nut');return}
+  if(all.some(n=>n.ps.some(p=>p+k<21||p+k>108))){toast('Po transpozycji nuty wyszłyby poza klawiaturę fortepianu');return}
+  snap();const nk=target!=null?target:bestKey(song.key,k);
+  all.forEach(n=>{n.ps=n.ps.map(p=>p+k);delete n.sp;delete n.cn;if(n.ch)n.ch=trChord(n.ch,k,nk)});
+  song.key=nk;changed();buildPiano();if(!$('drawer').hidden)settings();
+  const nm=KEYS.find(x=>x[0]===nk)[1].split(' / ')[0];
+  toast(k===12?'Oktawa wyżej':k===-12?'Oktawa niżej':`Przeniesiono ${k>0?'w górę':'w dół'} o ${Math.abs(k)} ${Math.abs(k)===1?'półton':Math.abs(k)<5?'półtony':'półtonów'} · ${nm}`)}
 
 /* ---------- editing ---------- */
 function need(){const n=cur();if(!n){toast('Najpierw zaznacz nutę');return null}return n}
@@ -1329,7 +1362,11 @@ function closeD(){$('drawer').hidden=true;$('scrim').hidden=true}
 $('keySel').innerHTML=KEYS.map(([k,n])=>`<option value="${k}">${n}${k?` (${Math.abs(k)} ${k>0?'♯':'♭'})`:''}</option>`).join('');
 $('keySel').onchange=e=>setKey(+e.target.value);
 $('meterSeg').innerHTML=METERS.map(([a,b,sy])=>`<button data-m="${a}/${b}/${sy||''}">${sy||a+'/'+b}</button>`).join('');
+$('trSel').innerHTML=KEYS.map(([k,n])=>`<option value="${k}">${n}</option>`).join('');
+$('trSel').onchange=e=>transposeAll(0,+e.target.value);
+document.querySelectorAll('#trSeg button').forEach(b=>b.onclick=()=>transposeAll(+b.dataset.k));
 function settings(){
+  $('trSel').value=song.key;
   $('looks').innerHTML=Object.entries(LOOKS).map(([k,l])=>`<button class="lk" data-l="${k}" aria-pressed="${song.look===k}" aria-label="${l.n}" title="${l.n}" style="background:${l.bg}"><i style="background:${l.c}"></i></button>`).join('');
   $('looks').querySelectorAll('.lk').forEach(b=>b.onclick=()=>{song.look=b.dataset.l;song.updated=Date.now();persist(song);header();settings();list()});
   document.querySelectorAll('#handsSeg button').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.s===staffMode());b.onclick=()=>setStaff(b.dataset.s)});
