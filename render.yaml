@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: annapp-omr
+    runtime: docker
+    dockerfilePath: ./omr-server/Dockerfile
+    dockerContext: ./omr-server
+    plan: 1c-2g
+    region: frankfurt
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - omr-server/**
+    envVars:
+      - key: ALLOWED_ORIGINS
+        value: https://annapp.rossa.me,https://mrossa-droid.github.io,http://localhost:8765

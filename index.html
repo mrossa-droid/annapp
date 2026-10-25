@@ -301,6 +301,7 @@ details summary{cursor:pointer;font-weight:800;font-size:13px;padding-block:4px}
     <div class="row"><span>Metrum</span><div class="seg" id="meterSeg"></div></div>
     <div class="row"><span>Transpozycja</span><div class="seg" id="trSeg"><button data-k="-12">− oktawa</button><button data-k="-1">− półton</button><button data-k="1">+ półton</button><button data-k="12">+ oktawa</button></div></div>
     <div class="row"><label for="trSel"><b>Przenieś do tonacji</b></label><select class="sel" id="trSel"></select></div>
+    <div class="row"><span>Wczytaj plik MusicXML<br><small style="font-weight:500;opacity:.8">np. utwór wyeksportowany z Flat</small></span><label class="cbtn" for="mxlIn">Wybierz plik</label><input class="vh" type="file" id="mxlIn"></div>
     <div class="exp">
       <button class="cbtn" id="pdfBtn"><span>PDF</span><small>nuty do druku</small></button>
       <button class="cbtn" id="xmlBtn"><span>MusicXML</span><small>do Flat i MuseScore</small></button>
@@ -323,7 +324,7 @@ details summary{cursor:pointer;font-weight:800;font-size:13px;padding-block:4px}
 <div class="scrim" id="oscrim" hidden></div>
 <section class="picker" id="omr" hidden aria-label="Nuty ze zdjęcia">
   <div class="dhead"><h2>Nuty ze zdjęcia</h2><button class="cbtn solid" id="omrClose">Zamknij</button></div>
-  <p class="phint">Zrób zdjęcie nut albo wybierz zdjęcia z galerii. Claude odczyta nuty i zapisze je w AnnApp, żeby można je było dalej edytować i odtwarzać. Najlepiej działa wyraźny druk, zdjęcie zrobione prosto z góry i w dobrym świetle.</p>
+  <p class="phint" id="omrInfo"></p>
   <div class="omrbtns">
     <label class="cbtn solid big" for="omrCam"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.6" fill="none" stroke="currentColor" stroke-width="2"/></svg>Zrób zdjęcie</label><input class="vh" type="file" id="omrCam" accept="image/*" capture="environment">
     <label class="cbtn big" for="omrPick"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 16l5-5 4 4 3-3 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Wybierz z galerii</label><input class="vh" type="file" id="omrPick" accept="image/*" multiple>
@@ -332,7 +333,7 @@ details summary{cursor:pointer;font-weight:800;font-size:13px;padding-block:4px}
   <div class="row"><span>Gdzie zapisać</span><div class="seg" id="omrDest"><button data-d="new">Nowy utwór</button><button data-d="add">Dopisz do tego</button></div></div>
   <button class="cbtn play omrgo" id="omrGo" disabled><span id="omrGoTxt">Odczytaj nuty</span></button>
   <p class="omrstat" id="omrStat" hidden></p>
-  <p class="phint">Odczyt korzysta z Twojego konta Claude. Po odczytaniu sprawdź nuty: przy trudnych zdjęciach coś może wymagać poprawki.</p>
+  <p class="phint">Po odczytaniu sprawdź nuty: przy trudnych zdjęciach coś może wymagać poprawki.</p>
 </section>
 <div class="toast" id="toast" hidden></div>
 
@@ -1544,12 +1545,141 @@ $('instBtn').onclick=openPicker;$('instRow').onclick=()=>{closeD();openPicker()}
 $('closePicker').onclick=closePicker;$('pscrim').onclick=closePicker;
 $('newBtn').onclick=()=>$('newSong').click();
 
+/* ---------- MusicXML import ---------- */
+const MX_TYPE={breve:'w',whole:'w',half:'h',quarter:'q',eighth:'e','16th':'s','32nd':'t','64th':'x'};
+const MX_STEP={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+const MX_AR={staccato:'stac',staccatissimo:'stacc2',tenuto:'ten',accent:'acc','strong-accent':'marc','detached-legato':'port','breath-mark':'breath',stopped:'stop'};
+const MX_JZ={scoop:'scoop',falloff:'fall',doit:'doit',plop:'plop'};
+const MX_ORN={'trill-mark':'tr',mordent:'mord','inverted-mordent':'prall',turn:'turn','inverted-turn':'iturn'};
+function restsFor(b){const out=[];for(const [d,v] of [['w',4],['h',2],['q',1],['e',.5],['s',.25],['t',.125],['x',.0625]]){while(b>=v-1e-6){out.push({ps:[],d,dot:0});b-=v}}return out}
+function durFromBeats(b){for(const [d,v] of Object.entries(DUR)){if(Math.abs(v-b)<1e-3)return{d,dot:0};if(Math.abs(v*1.5-b)<1e-3)return{d,dot:1};if(Math.abs(v*1.75-b)<1e-3)return{d,dot:2}}
+  let best='q',bd=9;for(const [d,v] of Object.entries(DUR)){if(Math.abs(v-b)<bd){bd=Math.abs(v-b);best=d}}return{d:best,dot:0}}
+function parseMusicXML(text){
+  const doc=new DOMParser().parseFromString(text,'application/xml');
+  if(doc.getElementsByTagName('parsererror').length)throw{code:'parse'};
+  const root=doc.documentElement;if(root.nodeName==='score-timewise')throw{code:'timewise'};
+  const kids=(el,name)=>[...el.children].filter(c=>c.nodeName===name);
+  const kid=(el,name)=>el?[...el.children].find(c=>c.nodeName===name):null;
+  const tx=(el,path)=>{let e=el;for(const p of path.split('/')){e=kid(e,p);if(!e)return''}return e.textContent.trim()};
+  const res={title:tx(root,'work/work-title')||tx(root,'movement-title'),tempo:null,mn:4,md:4,msym:'',key:0,staves:[]};
+  let first=true;
+  kids(root,'part').forEach(part=>{
+    let div=1,L=4,nStaves=1;const S={},clefs={};
+    const staff=k=>S[k]||(S[k]={notes:[],acc:0,voice:null,pend:{},mStart:0});
+    kids(part,'measure').forEach((meas,mi)=>{
+      const mf={};
+      Object.values(S).forEach(s=>{s.acc=0;s.mStart=s.notes.length});
+      for(const el of meas.children){const nm=el.nodeName;
+        if(nm==='attributes'){const d=+tx(el,'divisions');if(d)div=d;
+          const st=+tx(el,'staves');if(st)nStaves=st;
+          const ks=kid(el,'key');if(ks&&first){res.key=Math.max(-7,Math.min(7,+tx(ks,'fifths')||0))}
+          const ti=kid(el,'time');if(ti){const b=+tx(ti,'beats'),bt=+tx(ti,'beat-type');if(b&&[2,4,8].includes(bt)){L=b*4/bt;if(first&&mi<2){res.mn=b;res.md=bt;const sy=ti.getAttribute('symbol');res.msym=sy==='common'&&b===4&&bt===4?'C':sy==='cut'&&b===2&&bt===2?'¢':''}}}
+          kids(el,'clef').forEach(c=>{const no=+(c.getAttribute('number')||1),sg=tx(c,'sign'),ln=+tx(c,'line'),oc=+tx(c,'clef-octave-change')||0;
+            clefs[no]=sg==='F'?'b':sg==='C'?(ln===4?'ten':'a'):oc===-1?'t8':'t'})}
+        else if(nm==='direction'){const sn=+tx(el,'staff')||1,p=staff(sn).pend;
+          kids(el,'direction-type').forEach(dt=>{for(const c of dt.children){const t=c.nodeName;
+            if(t==='dynamics'){const d=c.children[0]&&c.children[0].nodeName;if(DYNNAME[d])p.dyn=d}
+            else if(t==='wedge'){const ty=c.getAttribute('type');if(ty==='crescendo')p.hp='<';else if(ty==='diminuendo')p.hp='>'}
+            else if(t==='words'){const w=c.textContent.trim(),lw=w.toLowerCase();if(!w)continue;
+              if(/^rit|^rall/.test(lw))p.tm='rit';else if(/^accel/.test(lw))p.tm='accel';else if(/^a tempo/.test(lw))p.tm='atempo';
+              else if(/^d\.?\s?c\.?/.test(lw))mf.dc=true;else if(/^d\.?\s?s\.?/.test(lw))mf.ds=true;else if(lw==='fine')mf.fi=true;else if(/to coda/.test(lw))mf.tco=true;
+              else if(/^pizz/.test(lw))p.pz='pizz';else if(/^arco/.test(lw))p.pz='arco';else if(/^swing/.test(lw))p.sw='on';else if(/^straight/.test(lw))p.sw='off';
+              else if(!p.tx)p.tx=w.slice(0,40)}
+            else if(t==='metronome'){const pm=+tx(c,'per-minute');if(pm){if(res.tempo==null&&mi===0)res.tempo=pm;else p.tc=pm}}
+            else if(t==='rehearsal')p.reh=true;else if(t==='segno')mf.sg=true;else if(t==='coda')mf.co=true;
+            else if(t==='pedal'){const ty=c.getAttribute('type');if(ty==='start')p.ped='d';else if(ty==='stop')p.ped='u'}}});
+          const snd=kid(el,'sound');if(snd&&snd.getAttribute('tempo')&&res.tempo==null&&mi===0)res.tempo=+snd.getAttribute('tempo')}
+        else if(nm==='barline'){const loc=el.getAttribute('location')||'right',rep=kid(el,'repeat'),end=kid(el,'ending'),bs=tx(el,'bar-style');
+          if(rep&&rep.getAttribute('direction')==='forward')mf.rs=true;
+          if(rep&&rep.getAttribute('direction')==='backward'){mf.re=true;const ti=+rep.getAttribute('times');if(ti>2)mf.rx=ti}
+          if(end&&(end.getAttribute('type')==='start'||loc==='left')){const no=parseInt(end.getAttribute('number'));if(no>=1&&no<=3)mf.vo=no}
+          if(bs==='light-light'&&loc==='right')mf.dbl=true}
+        else if(nm==='print'){if(el.getAttribute('new-system')==='yes'&&mi>0)mf.brPrev=true}
+        else if(nm==='forward'){const sn=+tx(el,'staff')||1,s=staff(sn),vv=tx(el,'voice')||'1';if(s.voice===null||s.voice===vv){const b=(+tx(el,'duration')||0)/div;restsFor(b).forEach(r=>s.notes.push(normNote(r)));s.acc+=b}}
+        else if(nm==='note'){const sn=+tx(el,'staff')||1,s=staff(sn),vv=tx(el,'voice')||'1';
+          if(s.voice===null)s.voice=vv;if(vv!==s.voice)continue;
+          const isChord=!!kid(el,'chord'),gr=kid(el,'grace'),rest=kid(el,'rest');
+          let midi=null,sp=null;const pi=kid(el,'pitch');
+          if(pi){const st=tx(pi,'step'),al=Math.round(+tx(pi,'alter')||0),oc=+tx(pi,'octave');if(MX_STEP[st]!=null){midi=(oc+1)*12+MX_STEP[st]+al;if(al>0)sp='s';else if(al<0)sp='b'}}
+          if(isChord){const last=s.notes[s.notes.length-1];if(last&&midi!=null&&!last.ps.includes(midi)){last.ps.push(midi);last.ps.sort((a,b)=>a-b);if(sp&&!last.sp)last.sp=sp}continue}
+          const durB=(+tx(el,'duration')||0)/div;
+          if(rest&&rest.getAttribute('measure')==='yes'&&!kid(el,'type')){restsFor(L).forEach(r=>s.notes.push(normNote(r)));s.acc+=L;continue}
+          const ty=MX_TYPE[tx(el,'type')];const dots=kids(el,'dot').length;
+          const tm=kid(el,'time-modification');const trip=tm&&+tx(tm,'actual-notes')===3&&+tx(tm,'normal-notes')===2;
+          let d=ty,dot=Math.min(2,dots);if(!d){const f=durFromBeats(durB/(trip?2/3:1));d=f.d;dot=f.dot}
+          const n={ps:midi!=null&&!rest?[midi]:[],d,dot};if(sp)n.sp=sp;if(trip)n.tr=true;
+          if(gr){n.gr=gr.getAttribute('slash')==='yes'?'a':'p';if(!ty)n.d='e'}
+          if(kids(el,'tie').some(t=>t.getAttribute('type')==='start'))n.tie=true;
+          const no=kid(el,'notations');
+          if(no){const ar=[];
+            for(const c of no.children){const t=c.nodeName;
+              if(t==='slur'){const ty2=c.getAttribute('type');if(ty2==='start')n.sl='s';else if(ty2==='stop'&&!n.sl)n.sl='e'}
+              else if(t==='articulations'){for(const a of c.children){if(MX_AR[a.nodeName])ar.push(MX_AR[a.nodeName]);else if(MX_JZ[a.nodeName])n.jz=MX_JZ[a.nodeName]}}
+              else if(t==='technical'){for(const a of c.children){if(a.nodeName==='up-bow')ar.push('up');else if(a.nodeName==='down-bow')ar.push('down');else if(a.nodeName==='harmonic'||a.nodeName==='open-string')ar.push('open')}}
+              else if(t==='ornaments'){for(const a of c.children){if(MX_ORN[a.nodeName])n.orn=MX_ORN[a.nodeName];else if(a.nodeName==='tremolo'&&a.getAttribute('type')!=='start'&&a.getAttribute('type')!=='stop'){const k=+a.textContent;if(k>=1&&k<=3)n.trem=k}}}
+              else if(t==='fermata')ar.push('ferm');else if(t==='arpeggiate')n.arp=true;
+              else if((t==='glissando'||t==='slide')&&c.getAttribute('type')==='start')n.gl=true}
+            if(ar.length)n.ar=[...new Set(ar)]}
+          const ly=kid(el,'lyric');if(ly&&sn===1){const t=tx(ly,'text'),sy=tx(ly,'syllabic');if(t)n.t=(t+(sy==='begin'||sy==='middle'?'-':'')).slice(0,40)}
+          Object.assign(n,s.pend);s.pend={};
+          s.notes.push(normNote(n));s.acc+=gr?0:durB}}
+      // close the measure on every staff
+      const used=Object.keys(S).length?Object.keys(S).map(Number):[1];
+      for(let k=1;k<=Math.max(nStaves,...used);k++){const s=staff(k);
+        if(s.acc<L-1e-6){const pad=restsFor(L-s.acc).map(normNote);if(meas.getAttribute('implicit')==='yes'&&mi===0)s.notes.splice(s.mStart,0,...pad);else s.notes.push(...pad)}
+        const firstN=s.notes[s.mStart],lastN=s.notes[s.notes.length-1];
+        if(mf.brPrev&&s.mStart>0)s.notes[s.mStart-1].br=true;
+        if(firstN){if(mf.rs)firstN.rs=true;if(mf.vo)firstN.vo=mf.vo;if(k===1){if(mf.sg)firstN.sg=true;if(mf.co)firstN.co=true}}
+        if(lastN&&s.notes.length>s.mStart){if(mf.re)lastN.re=true;if(mf.rx)lastN.rx=mf.rx;if(mf.dbl)lastN.dbl=true;if(k===1){if(mf.fi)lastN.fi=true;if(mf.dc)lastN.dc=true;if(mf.ds)lastN.ds=true;if(mf.tco)lastN.tco=true}}}
+    });
+    Object.keys(S).map(Number).sort((a,b)=>a-b).forEach(k=>{if(S[k].notes.some(n=>n.ps.length))res.staves.push({notes:S[k].notes,clef:clefs[k]||(k>1?'b':'t')})});
+    first=false;
+  });
+  if(!res.staves.length)throw{code:'empty'};
+  return res}
+async function unzipMxl(buf){
+  const u=new Uint8Array(buf),dv=new DataView(buf);let eo=-1;
+  for(let i=u.length-22;i>=Math.max(0,u.length-70000);i--){if(dv.getUint32(i,true)===0x06054b50){eo=i;break}}
+  if(eo<0)throw{code:'parse'};
+  const cnt=dv.getUint16(eo+10,true);let p=dv.getUint32(eo+16,true);const files={};
+  for(let k=0;k<cnt;k++){if(dv.getUint32(p,true)!==0x02014b50)break;
+    const meth=dv.getUint16(p+10,true),cs=dv.getUint32(p+20,true),nl=dv.getUint16(p+28,true),el=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),lo=dv.getUint32(p+42,true);
+    const name=new TextDecoder().decode(u.subarray(p+46,p+46+nl));files[name]={meth,cs,lo};p+=46+nl+el+cl}
+  const read=async f=>{const nl=dv.getUint16(f.lo+26,true),el=dv.getUint16(f.lo+28,true),data=u.subarray(f.lo+30+nl+el,f.lo+30+nl+el+f.cs);
+    if(f.meth===0)return new TextDecoder().decode(data);
+    if(typeof DecompressionStream==='undefined')throw{code:'mxl'};
+    const st=new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'));return await new Response(st).text()};
+  let rootName=null;if(files['META-INF/container.xml']){const c=await read(files['META-INF/container.xml']);const m=c.match(/full-path="([^"]+)"/);if(m)rootName=m[1]}
+  if(!rootName||!files[rootName])rootName=Object.keys(files).find(n=>!n.startsWith('META-INF')&&/\.(xml|musicxml)$/i.test(n));
+  if(!rootName)throw{code:'parse'};return read(files[rootName])}
+function applyImport(r,dest,fallbackTitle){
+  const vs=r.staves.slice(0,2).map(s=>s.notes);const two=vs.length>1&&vs[1].length>0;
+  const total=vs.reduce((a,v)=>a+v.filter(n=>n.ps.length).length,0);
+  if(dest==='new'||(!song.notes.length&&!song.bass.length)){
+    if(playing)stop();
+    const s=norm({title:(r.title||'').trim()||fallbackTitle,tempo:Math.max(40,Math.min(200,Math.round(+r.tempo||96))),mn:r.mn,md:r.md,msym:r.msym,key:r.key,
+      hands:two?2:1,clefs:{t:r.staves[0].clef||'t',b:two?(r.staves[1].clef||'b'):'b'},look:Object.keys(LOOKS)[songs.length%4],notes:vs[0],bass:two?vs[1]:[]});
+    songs.push(s);song=s;persist(s);applySong(true);
+  }else{snap();song.notes.push(...vs[0]);if(two){if(song.hands!==2)song.hands=2;song.bass.push(...vs[1])}sel=song.notes.length-1;vo='t';changed()}
+  return total}
+async function importFile(f){
+  try{let text;if(/\.mxl$/i.test(f.name)){text=await unzipMxl(await f.arrayBuffer())}else text=await f.text();
+    const r=parseMusicXML(text);const n=applyImport(r,'new',f.name.replace(/\.(mxl|musicxml|xml)$/i,''));closeD();toast(`Wczytano utwór: ${n} nut`)}
+  catch(e){toast(e&&e.code==='mxl'?'Ta przeglądarka nie otwiera plików .mxl. Wyeksportuj z Flat plik .musicxml (nieskompresowany).':e&&e.code==='timewise'?'Ten rodzaj pliku MusicXML nie jest obsługiwany.':'Nie udało się wczytać pliku. Sprawdź, czy to plik MusicXML.')}}
+$('mxlIn').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)importFile(f)});
+
 /* ---------- sheet music from a photo ---------- */
-let sampler=null,omrLim=null,omrFiles=[],omrDest='new',omrCtl=null;
-(async()=>{try{sampler=window.claude&&window.claude.use?await window.claude.use('sample'):null}catch(e){sampler=null}
-  if(sampler){try{const l=await sampler.limits();omrLim=l&&l.images?l.images:null}catch(e){omrLim=null}}
-  $('camBtn').hidden=!omrLim;$('omrRow').hidden=!omrLim})();
-function openOmr(){$('omr').hidden=false;$('oscrim').hidden=false;omrUI()}
+const OMR_URL='https://annapp-omr.onrender.com';
+let sampler=null,omrLim=null,omrFiles=[],omrDest='new',omrCtl=null,omrEngine=null;
+(async()=>{
+  if(window.claude&&window.claude.use){try{sampler=await window.claude.use('sample')}catch(e){sampler=null}
+    if(sampler){try{const l=await sampler.limits();omrLim=l&&l.images?l.images:null}catch(e){omrLim=null}}
+    omrEngine=omrLim?'claude':null}
+  else omrEngine='server';
+  $('camBtn').hidden=!omrEngine;$('omrRow').hidden=!omrEngine;
+  $('omrInfo').textContent=omrEngine==='server'?'Zdjęcie trafia na serwer AnnApp, który odczytuje wysokość i rytm nut (bez dynamiki i tekstu). Odczyt trwa kilkanaście sekund. Najlepiej działa wyraźny druk, zdjęcie zrobione prosto z góry i w dobrym świetle.':'Claude odczyta nuty razem z tekstem, dynamiką i repetycjami. Odczyt korzysta z Twojego konta Claude i trwa zwykle od pół minuty do dwóch minut. Najlepiej działa wyraźny druk, zdjęcie zrobione prosto z góry i w dobrym świetle.'})();
+function openOmr(){$('omr').hidden=false;$('oscrim').hidden=false;omrUI();
+  if(omrEngine==='server'){const st=$('omrStat');fetch(OMR_URL+'/health',{cache:'no-store'}).then(r=>{if(!r.ok)throw 0}).catch(()=>{st.hidden=false;st.textContent='Serwer odczytu nie odpowiada. Spróbuj za chwilę.'})}}
 function closeOmr(){if(omrCtl)return;$('omr').hidden=true;$('oscrim').hidden=true}
 function omrUI(){
   const th=$('omrThumbs');th.innerHTML='';
@@ -1569,6 +1699,7 @@ document.querySelectorAll('#omrDest button').forEach(b=>b.onclick=()=>{omrDest=b
 async function loadBitmap(f){
   try{return await createImageBitmap(f,{imageOrientation:'from-image'})}catch(e){}
   return await new Promise((res,rej)=>{const u=URL.createObjectURL(f),i=new Image();i.onload=()=>{URL.revokeObjectURL(u);res(i)};i.onerror=rej;i.src=u})}
+const toJpeg=c=>new Promise(r=>c.toBlob(r,'image/jpeg',.92));
 async function prepParts(files,maxCount){
   const imgs=[];for(const f of files){try{imgs.push(await loadBitmap(f))}catch(e){}}
   if(!imgs.length)throw{code:'image_rejected'};
@@ -1579,7 +1710,11 @@ async function prepParts(files,maxCount){
     for(let k=0;k<n;k++){const y0=Math.max(0,k*h-ov),y1=Math.min(b.height,(k+1)*h+ov);const sc=Math.min(1,2400/b.width);
       const c=document.createElement('canvas');c.width=Math.round(b.width*sc);c.height=Math.round((y1-y0)*sc);
       const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(b,0,y0,b.width,y1-y0,0,0,c.width,c.height);out.push(c)}});
-  return Promise.all(out.map(c=>new Promise(r=>c.toBlob(r,'image/jpeg',.9))))}
+  return Promise.all(out.map(toJpeg))}
+async function prepPages(files){const out=[];for(const f of files){let b;try{b=await loadBitmap(f)}catch(e){continue}
+  const sc=Math.min(1,3000/Math.max(b.width,b.height)),c=document.createElement('canvas');c.width=Math.round(b.width*sc);c.height=Math.round(b.height*sc);
+  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(b,0,0,c.width,c.height);out.push(await toJpeg(c))}
+  if(!out.length)throw{code:'image_rejected'};return out}
 function omrPrompt(n){return`You are an expert at optical music recognition. The attached image${n>1?'s are photos':' is a photo'} of sheet music (printed or handwritten).
 ${n>1?'The images are consecutive parts in reading order (top to bottom of a page, then the next page). Neighbouring parts of the same page overlap a little, so a line of music may appear at the bottom of one image and again at the top of the next one: transcribe every measure exactly once.\n':''}
 Transcribe the music for a notation app. Reply with ONLY one JSON object: no prose, no code fence, no indentation, no line breaks.
@@ -1609,43 +1744,48 @@ function convNote(o){if(!o||typeof o!=='object')return null;const ps=[];let sp=n
   return normNote(n)}
 function parseOMR(text){let s=String(text).trim();const f=s.match(/```(?:json)?\s*([\s\S]*?)```/);if(f)s=f[1];
   const a=s.indexOf('{'),b=s.lastIndexOf('}');if(a<0||b<a)throw{code:'parse'};return JSON.parse(s.slice(a,b+1))}
+function claudeResult(data){
+  if(data.error)throw{code:'nomusic'};
+  const vs=(Array.isArray(data.voices)?data.voices:[]).slice(0,2).map(v=>(Array.isArray(v)?v:[]).map(convNote).filter(Boolean));
+  if(!vs.length||!vs.some(v=>v.length))throw{code:'empty'};
+  const CM={treble:'t',bass:'b',alto:'a',tenor:'ten',treble8:'t8'};const cl=Array.isArray(data.clefs)?data.clefs:[];
+  let mn=4,md=4;const tm=String(data.time||'').match(/^(\d+)\/(\d+)$/);if(tm&&[2,4,8].includes(+tm[2])&&+tm[1]>0&&+tm[1]<=16){mn=+tm[1];md=+tm[2]}
+  const msym=data.timeSymbol==='C'&&mn===4&&md===4?'C':data.timeSymbol==='cut'&&mn===2&&md===2?'¢':'';
+  return{title:typeof data.title==='string'?data.title:'',tempo:data.tempo,mn,md,msym,key:Math.max(-7,Math.min(7,Math.round(+data.key||0))),
+    staves:vs.map((v,i)=>({notes:v,clef:CM[cl[i]]||(i?'b':'t')})).filter(s=>s.notes.length)}}
 const OMR_ERR={not_granted:'Odczyt zdjęć wymaga zgody na użycie Claude. Możesz ją dać przy następnej próbie.',sampling_disabled:'Odczyt zdjęć jest wyłączony dla tego konta.',
   rate_limited:'Za dużo prób naraz albo wyczerpany limit. Spróbuj za chwilę.',image_rejected:'Tego zdjęcia nie da się odczytać. Spróbuj inne zdjęcie.',
   refused:'Claude nie odczytał tego zdjęcia.',session_expired:'Zaloguj się ponownie do Claude i spróbuj jeszcze raz.',
   images_unavailable:'W tym widoku nie można wysyłać zdjęć. Otwórz AnnApp w claude.ai.',parse:'Nie udało się odczytać nut. Spróbuj wyraźniejszego zdjęcia.',
-  nomusic:'Nie znalazłem nut na zdjęciu.',empty:'Nie udało się odczytać żadnych nut. Spróbuj wyraźniejszego zdjęcia.',truncated:'Utwór jest za długi na jedno podejście. Sfotografuj mniejszy fragment.'};
+  nomusic:'Nie znalazłem nut na zdjęciu.',empty:'Nie udało się odczytać żadnych nut. Spróbuj wyraźniejszego zdjęcia.',truncated:'Utwór jest za długi na jedno podejście. Sfotografuj mniejszy fragment.',
+  server:'Serwer odczytu nie odpowiada. Sprawdź internet i spróbuj za chwilę.',busy:'Serwer jest zajęty innym zdjęciem. Spróbuj za chwilę.',noread:'Nie udało się odczytać nut z tego zdjęcia. Spróbuj wyraźniejszego zdjęcia, zrobionego prosto z góry.'};
 async function runOmr(){
   if(omrCtl){omrCtl.abort();return}
-  if(!sampler||!omrFiles.length)return;
+  if(!omrEngine||!omrFiles.length)return;
   const stat=$('omrStat');stat.hidden=false;stat.textContent='Przygotowuję zdjęcia…';
   omrCtl=new AbortController();omrUI();
-  try{
-    const blobs=await prepParts(omrFiles,omrLim?omrLim.maxCount:4);
-    stat.textContent='Claude czyta nuty… zwykle trwa to od pół minuty do dwóch minut.';
-    let notesSeen=0;
-    const res=await sampler(omrPrompt(blobs.length),{images:blobs,modelTier:'complex',signal:omrCtl.signal,
-      onText:({text})=>{const c=(text.match(/"d"\s*:/g)||[]).length;if(c!==notesSeen){notesSeen=c;stat.textContent=`Claude czyta nuty… odczytano ${c} ${c===1?'nutę':c%10>=2&&c%10<=4&&(c%100<10||c%100>20)?'nuty':'nut'}`}}});
-    if(res.truncated)throw{code:'truncated'};
-    const data=parseOMR(res.text);
-    if(data.error)throw{code:'nomusic'};
-    const vs=(Array.isArray(data.voices)?data.voices:[]).slice(0,2).map(v=>(Array.isArray(v)?v:[]).map(convNote).filter(Boolean));
-    if(!vs.length||!vs.some(v=>v.length))throw{code:'empty'};
-    const CM={treble:'t',bass:'b',alto:'a',tenor:'ten',treble8:'t8'};const cl=Array.isArray(data.clefs)?data.clefs:[];
-    let mn=4,md=4;const tm=String(data.time||'').match(/^(\d+)\/(\d+)$/);if(tm&&[2,4,8].includes(+tm[2])&&+tm[1]>0&&+tm[1]<=16){mn=+tm[1];md=+tm[2]}
-    const msym=data.timeSymbol==='C'&&mn===4&&md===4?'C':data.timeSymbol==='cut'&&mn===2&&md===2?'¢':'';
-    const key=Math.max(-7,Math.min(7,Math.round(+data.key||0)));const two=vs.length>1&&vs[1].length>0;
-    const total=vs.reduce((a,v)=>a+v.length,0);
-    if(omrDest==='new'||(!song.notes.length&&!song.bass.length)){
-      if(playing)stop();
-      const s=norm({title:(typeof data.title==='string'&&data.title.trim())||'Nuty ze zdjęcia',tempo:Math.max(40,Math.min(200,Math.round(+data.tempo||96))),mn,md,msym,key,
-        hands:two?2:1,clefs:{t:CM[cl[0]]||(two?'t':'t'),b:CM[cl[1]]||'b'},look:Object.keys(LOOKS)[songs.length%4],notes:vs[0],bass:two?vs[1]:[]});
-      songs.push(s);song=s;persist(s);applySong(true);
-    }else{snap();song.notes.push(...vs[0]);if(two){if(song.hands!==2)song.hands=2;song.bass.push(...vs[1])}sel=song.notes.length-1;vo='t';changed()}
+  try{let r;
+    if(omrEngine==='server'){
+      const pages=await prepPages(omrFiles);
+      stat.textContent=`Odczytuję nuty… (${pages.length>1?pages.length+' zdjęcia, ':''}zwykle kilkanaście sekund)`;
+      const fd=new FormData();pages.forEach((b,i)=>fd.append('files',b,`strona${i+1}.jpg`));
+      let resp;try{resp=await fetch(OMR_URL+'/api/convert',{method:'POST',body:fd,signal:omrCtl.signal})}catch(e){if(e&&e.name==='AbortError')throw{code:'cancelled'};throw{code:'server'}}
+      if(resp.status===429)throw{code:'busy'};if(!resp.ok)throw{code:resp.status===422?'noread':'server'};
+      r=parseMusicXML(await resp.text());
+    }else{
+      const blobs=await prepParts(omrFiles,omrLim?omrLim.maxCount:4);
+      stat.textContent='Claude czyta nuty… zwykle trwa to od pół minuty do dwóch minut.';
+      let seen=0;
+      const res=await sampler(omrPrompt(blobs.length),{images:blobs,modelTier:'complex',signal:omrCtl.signal,
+        onText:({text})=>{const c=(text.match(/"d"\s*:/g)||[]).length;if(c!==seen){seen=c;stat.textContent=`Claude czyta nuty… odczytano ${c} ${c===1?'nutę':c%10>=2&&c%10<=4&&(c%100<10||c%100>20)?'nuty':'nut'}`}}});
+      if(res.truncated)throw{code:'truncated'};
+      r=claudeResult(parseOMR(res.text));
+    }
+    const total=applyImport(r,omrDest,'Nuty ze zdjęcia');
     omrFiles=[];omrCtl=null;stat.hidden=true;closeOmr();toast(`Gotowe: odczytano ${total} nut. Sprawdź je i popraw, jeśli coś się nie zgadza.`);
   }catch(e){
     const code=e&&e.code;omrCtl=null;
-    if(code==='cancelled'){stat.textContent='Zatrzymano.'}
-    else{stat.textContent=OMR_ERR[code]||(e instanceof SyntaxError?OMR_ERR.parse:'Połączenie przerwane. Spróbuj jeszcze raz.')}
+    stat.textContent=code==='cancelled'?'Zatrzymano.':OMR_ERR[code]||(e instanceof SyntaxError?OMR_ERR.parse:'Połączenie przerwane. Spróbuj jeszcze raz.');
   }finally{omrCtl=null;omrUI()}
 }
 $('omrGo').onclick=runOmr;$('camBtn').onclick=openOmr;$('omrClose').onclick=()=>{if(omrCtl)omrCtl.abort();omrCtl=null;$('omr').hidden=true;$('oscrim').hidden=true};
